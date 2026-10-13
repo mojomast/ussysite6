@@ -4,7 +4,9 @@
  */
 
 import { MAGAZINE_ISSUE_META, USSY_PROJECTS, getProjectById } from './projects.js';
-import { initCoverIllustrationCanvas, initArticleLabCanvas } from './magazine-widgets.js';
+import { initArticleLabCanvas } from './magazine-widgets.js';
+import { initCoverPlate } from './cover-plate.js';
+import { mountPlate, toRoman } from './plates/index.js';
 import { FlexiDiscSynth } from './flexidisc-audio.js';
 import { PressSDK } from './press-sdk.js';
 
@@ -187,8 +189,18 @@ document.addEventListener('DOMContentLoaded', () => {
             </aside>
           </div>
 
-          <!-- Interactive 2D Lab Plate + Green-Bar Type-In Listing Column -->
+          <!-- Illustrated Plate + Interactive 2D Lab Plate + Green-Bar Type-In Listing Column -->
           <div class="article-lab-column">
+            <figure class="editorial-plate" data-plate="${proj.id}">
+              <div class="editorial-plate-art" aria-hidden="false">
+                <span class="editorial-plate-placeholder">PLATE ${toRoman(proj.index + 2)} · PLATE IN PRESS…</span>
+              </div>
+              <figcaption class="editorial-plate-caption">
+                <span>PLATE ${toRoman(proj.index + 2)} — <em class="editorial-plate-title">${proj.title}</em></span>
+                <span>FIG. ${proj.index}.2 · ILLUSTRATED LITHOGRAPH</span>
+              </figcaption>
+            </figure>
+
             <div class="interactive-lab-plate">
               <div class="lab-plate-header">
                 <span class="lab-plate-badge">INTERACTIVE 2D BENCH · FIG. ${proj.index}.1</span>
@@ -222,6 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       spreadsContainer.appendChild(section);
+
+      // Lazily print the bespoke SVG illustration plate for this spread
+      mountPlate(section.querySelector('.editorial-plate'), proj.id, proj);
 
       // Initialize the interactive 2D Canvas workbench for this spread
       const canvasEl = section.querySelector(`#lab-canvas-${proj.id}`);
@@ -310,15 +325,16 @@ document.addEventListener('DOMContentLoaded', () => {
       .join('');
   }
 
-  // 4. Initialize Front Cover Interactive Vector Lithograph
-  const coverCanvas = document.getElementById('cover-illustration-canvas');
+  // 4. Initialize Front Cover Interactive SVG Lithograph (Plate I) + TOC Plate II
+  const coverHost = document.getElementById('cover-illustration');
   const coverReadout = document.getElementById('cover-probe-readout');
-  initCoverIllustrationCanvas(coverCanvas, coverReadout, (projectId) => {
+  initCoverPlate(coverHost, coverReadout, (projectId) => {
     const target = document.getElementById(`spread-${projectId}`);
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
     }
   });
+  mountPlate(document.getElementById('toc-plate'), 'toc', MAGAZINE_ISSUE_META);
 
   // 5. Paper Stock / Ink Mode Switcher
   document.querySelectorAll('.stock-btn').forEach((btn) => {

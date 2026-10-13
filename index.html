@@ -112,7 +112,7 @@
 
       <!-- Cover Centerpiece Grid: Left Cover Lines + Interactive 2D Airbrush/Isometric Illustration + Right Cover Lines + Barcode -->
       <div class="cover-body-grid">
-        <div class="cover-left- teasers">
+        <div class="cover-left-teasers">
           <div class="cover-feature-tag">IN THIS ISSUE</div>
           <ul class="cover-story-list">
             <li>
@@ -146,11 +146,11 @@
           </ul>
         </div>
 
-        <!-- Interactive 2D Cover Illustration Plate (Isometric Computing Pyramid & Optical Bus) -->
+        <!-- Interactive SVG Cover Illustration Plate (Isometric Computing Ziggurat & Eleven-Node Bus) -->
         <figure class="cover-art-frame">
-          <canvas id="cover-illustration-canvas" width="760" height="540" aria-label="Interactive 1984-style isometric vector illustration of the 11 Slopverse systems"></canvas>
+          <div id="cover-illustration" class="cover-illustration" role="group" aria-label="Interactive 1984-style isometric lithograph of the 11 Slopverse systems"></div>
           <figcaption class="cover-art-caption">
-            <span>PLATE I — “THE ELEVEN-BUS ARCHIPELAGO” (INTERACTIVE VECTOR LITHOGRAPH · MOVE CURSOR OR CLICK NODES TO PROBE BUS)</span>
+            <span>PLATE I — “THE ELEVEN-BUS ARCHIPELAGO” (INTERACTIVE VECTOR LITHOGRAPH · HOVER OR CLICK NODES TO PROBE BUS)</span>
             <span id="cover-probe-readout" class="cover-probe-readout">BUS CLOCK: 60.0 HZ // NOMINAL</span>
           </figcaption>
         </figure>
@@ -223,6 +223,16 @@
               <div><dt>READER SERVICE BUREAU</dt><dd>Cards #101–#111 (See Perforated Insert on Page 112)</dd></div>
             </dl>
           </div>
+
+          <figure id="toc-plate" class="editorial-plate editorial-plate--toc" data-plate="toc">
+            <div class="editorial-plate-art">
+              <span class="editorial-plate-placeholder">PLATE II · PLATE IN PRESS…</span>
+            </div>
+            <figcaption class="editorial-plate-caption">
+              <span>PLATE II — <em class="editorial-plate-title">The Press Room</em></span>
+              <span>FRONTISPIECE</span>
+            </figcaption>
+          </figure>
         </div>
 
         <!-- Right Column: Annotated Index of All 11 Feature Articles -->

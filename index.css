@@ -1673,3 +1673,190 @@ html[data-print-mode="darkroom"] .magazine-spread::before { opacity: 0.28; }
   font-size: 0.72rem;
 }
 
+
+/* ============================================================================
+ * PART E // GAPLESS SPREADS + ILLUSTRATED SVG PLATES
+ * Every two-column spread now stretches both columns to the same height and lets
+ * an illustrated plate (or flexible list) absorb the leftover space, so no page
+ * ever shows a dead block of empty paper under its shorter column.
+ * ========================================================================= */
+
+/* --- Cover: three columns share one baseline top & bottom ---------------- */
+.cover-body-grid { align-items: stretch; }
+.cover-left-teasers { display: flex; flex-direction: column; }
+.cover-story-list { flex: 1 1 auto; justify-content: space-between; }
+.cover-story-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+.cover-art-frame { display: flex; flex-direction: column; margin: 0; }
+.cover-right-column .department-highlights-box { flex: 1 1 auto; display: flex; flex-direction: column; }
+.cover-right-column .department-highlights-box dl { flex: 1 1 auto; justify-content: space-around; }
+
+.cover-illustration {
+  position: relative;
+  flex: 1 1 auto;
+  aspect-ratio: 760 / 540;
+  min-height: 0;
+  border: 1px solid var(--rule-heavy);
+  background: #0b1226;
+  overflow: hidden;
+}
+.cover-illustration > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* --- TOC: editor column grows a frontispiece plate beside the long index - */
+.editor-letter-col { display: flex; flex-direction: column; }
+.editorial-plate--toc { margin-top: 1.5rem; min-height: 260px; }
+
+/* --- Feature spreads: columns stretch, plate fills the remainder ---------- */
+.article-body-workbench { align-items: stretch; }
+.article-lab-column { min-width: 0; }
+.article-prose-column { min-width: 0; }
+
+.editorial-plate {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 300px;
+  margin: 0;
+  border: 2px solid var(--rule-heavy);
+  background: var(--paper-elevated);
+  padding: 0.75rem;
+}
+
+.editorial-plate-art {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 220px;
+  overflow: hidden;
+  border: 1px solid var(--rule-heavy);
+  background:
+    repeating-linear-gradient(45deg, rgba(20, 19, 17, 0.06) 0 2px, transparent 2px 9px),
+    #0d1222;
+  isolation: isolate;
+}
+
+.editorial-plate-art > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Lithographic paper grain printed over the art (cheap: tiled, pre-rasterised). */
+.editorial-plate-art::before,
+.cover-illustration::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(120% 95% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.5) 100%);
+  z-index: 1;
+}
+.editorial-plate-art::after,
+.cover-illustration::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: var(--grain-fibre);
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  z-index: 2;
+}
+
+.editorial-plate-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: rgba(240, 236, 226, 0.55);
+}
+
+.editorial-plate-caption {
+  margin-top: 0.55rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-secondary);
+}
+
+.editorial-plate-caption em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0;
+  color: var(--article-spot, var(--spot-ink));
+}
+
+/* Lab canvas: keep the drawing's true aspect (no more squashed circles). */
+.lab-canvas-stage { height: auto; aspect-ratio: 540 / 240; }
+
+/* --- Shared plate animation vocabulary (used inside SVG plates) ---------- */
+@keyframes plateTwinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes plateBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0.15; } }
+@keyframes plateDash { to { stroke-dashoffset: -48; } }
+@keyframes platePulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes plateSpin { to { transform: rotate(360deg); } }
+@keyframes plateFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+.plate-svg .plate-twinkle, .cover-svg .plate-twinkle { animation: plateTwinkle 3.6s ease-in-out infinite; }
+.plate-svg .plate-blink, .cover-svg .plate-blink { animation: plateBlink 1.4s steps(1) infinite; }
+.plate-svg .plate-dash, .cover-svg .plate-dash { stroke-dasharray: 6 10; animation: plateDash 1.6s linear infinite; }
+.plate-svg .plate-pulse, .cover-svg .plate-pulse { animation: platePulse 2.4s ease-in-out infinite; }
+.plate-svg .plate-spin, .cover-svg .plate-spin { transform-box: fill-box; transform-origin: center; animation: plateSpin 24s linear infinite; }
+.plate-svg .plate-float, .cover-svg .plate-float { animation: plateFloat 5s ease-in-out infinite; }
+svg.is-paused *, svg.is-paused { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .plate-svg *, .cover-svg * { animation: none !important; }
+}
+
+/* --- Cover plate interaction --------------------------------------------- */
+.cover-svg .cover-node { cursor: pointer; outline: none; }
+.cover-svg .cover-node .node-lift { transition: transform 0.35s var(--ease-spring); }
+.cover-svg .cover-node:hover .node-lift,
+.cover-svg .cover-node:focus-visible .node-lift,
+.cover-svg .cover-node.is-hot .node-lift { transform: translateY(-7px); }
+.cover-svg .cover-node .node-label-plate { transition: fill 0.2s ease; }
+.cover-svg .cover-node:hover .node-label-plate,
+.cover-svg .cover-node:focus-visible .node-label-plate,
+.cover-svg .cover-node.is-hot .node-label-plate { fill: #fff6e3; }
+.cover-svg .cover-node:hover .node-label-text,
+.cover-svg .cover-node:focus-visible .node-label-text,
+.cover-svg .cover-node.is-hot .node-label-text { fill: #141311; }
+.cover-svg .cover-node .node-beam { opacity: 0; transition: opacity 0.25s ease; }
+.cover-svg .cover-node:hover .node-beam,
+.cover-svg .cover-node:focus-visible .node-beam,
+.cover-svg .cover-node.is-hot .node-beam { opacity: 1; }
+.cover-svg .bus-trace { transition: stroke-opacity 0.2s ease, stroke-width 0.2s ease; }
+.cover-svg .bus-trace.is-hot { stroke-opacity: 1; stroke-width: 2.4; }
+
+/* --- Single-column (tablet / phone): plates get an intrinsic shape -------- */
+@media (max-width: 1080px) {
+  .editorial-plate { flex: 0 0 auto; min-height: 0; }
+  .editorial-plate-art { flex: 0 0 auto; aspect-ratio: 4 / 3; min-height: 0; }
+  .editorial-plate--toc .editorial-plate-art { aspect-ratio: 16 / 10; }
+  .cover-story-list { justify-content: flex-start; }
+}
+
+@media (max-width: 720px) {
+  .magazine-issue-folio { padding: 1rem 0.75rem 3rem; }
+  .magazine-spread { padding: 1.25rem 1rem; margin-bottom: 2rem; }
+  .spread-folio-header { flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+  .cover-top-strip, .cover-sub-banner { flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+  .capabilities-tag-grid { grid-template-columns: 1fr; }
+  .bingo-numbers-grid { grid-template-columns: repeat(2, 1fr); }
+  .toc-entry a { grid-template-columns: 60px 1fr; }
+  .toc-entry-service { display: none; }
+  .bingo-input-row { flex-direction: column; }
+}
