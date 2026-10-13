@@ -1474,3 +1474,301 @@ html[data-loupe="on"] .magazine-spread {
     order: unset;
   }
 }
+
+/* ============================================================================
+ * PART A // PRESS PHYSICALITY
+ * Paper fibre grain, sheet thickness, bound-edge gutter, foxing & ink behaviour.
+ * All textures are tiled data-URI SVGs (rasterised once) so they cost ~nothing
+ * after first paint — never a live feTurbulence filter across a large surface.
+ * ========================================================================= */
+
+:root {
+  --grain-fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  --halftone-screen: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='1.1' fill='%23141311' fill-opacity='0.32'/%3E%3Ccircle cx='6' cy='6' r='1.1' fill='%23141311' fill-opacity='0.32'/%3E%3C/svg%3E");
+  --fleuron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='14' viewBox='0 0 26 14'%3E%3Cpath d='M13 1c2.6 0 4.6 1.8 4.6 4S15.6 9 13 9 8.4 7.2 8.4 5 10.4 1 13 1Z' fill='none' stroke='%23141311' stroke-width='1'/%3E%3Cpath d='M13 9v3M6 5H1M25 5h-5' stroke='%23141311' stroke-width='1'/%3E%3C/svg%3E");
+}
+
+/* Sheet grain over every page, blended into the stock (multiply keeps ink crisp). */
+.magazine-spread::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background-image: var(--grain-fibre);
+  background-size: 180px 180px;
+  mix-blend-mode: multiply;
+  opacity: 0.06;
+}
+
+/* Sheet thickness, a bound-edge gutter shadow, and a soft cast shadow. */
+.magazine-spread {
+  box-shadow:
+    inset 18px 0 30px -24px rgba(20, 19, 17, 0.55),
+    2px 2px 0 rgba(20, 19, 17, 0.14),
+    4px 5px 0 rgba(20, 19, 17, 0.08),
+    0 22px 46px -22px rgba(20, 19, 17, 0.55);
+}
+
+/* Foxing (age spots) + a lifted page-corner curl, varied per page. */
+.magazine-spread::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(closest-side, rgba(150, 108, 52, 0.10), transparent 70%),
+    radial-gradient(closest-side, rgba(150, 108, 52, 0.08), transparent 70%),
+    linear-gradient(135deg, transparent 46%, rgba(20, 19, 17, 0.12) 49.4%, rgba(255, 255, 255, 0.55) 56%, transparent 66%);
+  background-repeat: no-repeat;
+  background-size: 240px 200px, 180px 150px, 78px 78px;
+  background-position: 14% 78%, 82% 22%, 100% 100%;
+}
+.article-spread:nth-child(3n+1)::before { background-position: 8% 18%, 76% 82%, 100% 100%; }
+.article-spread:nth-child(3n+2)::before { background-position: 84% 74%, 18% 26%, 0 100%; transform: scaleX(-1); }
+
+/* Letterpress: a debossed double rule under running heads + masthead. */
+.spread-folio-header {
+  border-bottom: 0;
+  position: relative;
+  padding-bottom: 0.7rem;
+}
+.spread-folio-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-top: 2px solid var(--rule-heavy);
+  border-bottom: 1px solid var(--rule-heavy);
+}
+html[data-print-mode="cream-press"] .article-main-headline {
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 -1px 0 rgba(20, 19, 17, 0.10);
+}
+
+/* Halftone screen across light plates (spec cards, capability tiles). */
+html[data-print-mode="cream-press"] .article-spec-card,
+html[data-print-mode="cream-press"] .capability-box {
+  background-image: var(--halftone-screen);
+  background-size: 8px 8px;
+}
+
+/* A printer's fleuron ornament for pull quotes. */
+.editorial-pullquote::before {
+  content: '';
+  display: block;
+  width: 26px;
+  height: 14px;
+  margin: 0 auto 0.55rem;
+  background: var(--fleuron) center / contain no-repeat;
+  opacity: 0.7;
+}
+
+/* ---------------------------------------------------------------------------
+ * Blueprint & Darkroom stock adjustments
+ * ------------------------------------------------------------------------- */
+html[data-print-mode="blueprint"] .magazine-spread::after { mix-blend-mode: screen; opacity: 0.05; }
+html[data-print-mode="darkroom"] .magazine-spread::after { mix-blend-mode: overlay; opacity: 0.12; }
+html[data-print-mode="darkroom"] .magazine-spread::before { opacity: 0.28; }
+
+/* ============================================================================
+ * PART B // TYPOGRAPHIC PRINT SYSTEM
+ * Measure control, even ragging, hairline hierarchy, vertical bylines.
+ * ========================================================================= */
+.article-main-headline { text-wrap: balance; }
+.article-standfirst-deck,
+.article-lead-paragraph,
+.arch-bullet-list li,
+.capability-box { text-wrap: pretty; }
+
+.article-lead-paragraph { max-width: 68ch; }
+
+/* Small-caps, letterspaced kickers & bylines (print running-text look). */
+.article-kicker-badge,
+.article-category-tag,
+.article-byline-strip,
+.arch-section-heading,
+.spread-folio-header { font-variant-caps: all-small-caps; }
+
+/* A ruled folio line with the page number set in tabular figures. */
+.spread-folio-header span:last-child { font-variant-numeric: tabular-nums; }
+
+/* ============================================================================
+ * PART C // SPREAD LAYOUT DIVERSITY
+ * Eleven distinct editorial grids keyed to each project's `spreadType`, using
+ * the same DOM (header-deck, spec-card, body-workbench, prose/lab columns).
+ * Scoped to desktop so the existing single-column mobile flow is preserved.
+ * ========================================================================= */
+@media (min-width: 1081px) {
+
+  /* --- I. literary-folio — centred literary essay, footnote scorecard ------- */
+  .article-spread.spread--literary-folio .article-header-deck {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+  .article-spread.spread--literary-folio .article-kicker-row { justify-content: center; }
+  .article-spread.spread--literary-folio .article-main-headline { max-width: 20ch; }
+  .article-spread.spread--literary-folio .article-standfirst-deck { max-width: 52ch; }
+  .article-spread.spread--literary-folio .article-spec-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .article-spread.spread--literary-folio .spec-metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    flex: 1;
+  }
+  .article-spread.spread--literary-folio .article-body-workbench {
+    grid-template-columns: 1fr;
+  }
+  .article-spread.spread--literary-folio .article-prose-column { max-width: 62ch; margin-inline: auto; order: 1; }
+  .article-spread.spread--literary-folio .article-lab-column { order: 2; }
+  .article-spread.spread--literary-folio .article-lead-paragraph { text-align: left; }
+  .article-spread.spread--literary-folio .editorial-pullquote { text-align: center; font-size: 1.45rem; }
+
+  /* --- II. unix-manpage — narrow mono measure, OPTIONS block ---------------- */
+  .article-spread.spread--unix-manpage { --font-body: var(--font-mono); }
+  .article-spread.spread--unix-manpage .article-header-deck { grid-template-columns: 1fr 360px; }
+  .article-spread.spread--unix-manpage .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--unix-manpage .article-prose-column { max-width: 76ch; }
+  .article-spread.spread--unix-manpage .article-lead-paragraph { text-align: left; font-size: 0.98rem; }
+  .article-spread.spread--unix-manpage .arch-bullet-list li::before { content: '>'; }
+  .article-spread.spread--unix-manpage .article-lab-column { order: -1; }
+
+  /* --- III. oscilloscope-bench — bench-first, two-column prose below -------- */
+  .article-spread.spread--oscilloscope-bench .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--oscilloscope-bench .article-lab-column { order: -1; }
+  .article-spread.spread--oscilloscope-bench .article-prose-column {
+    columns: 2;
+    column-gap: 2.4rem;
+    column-rule: 1px solid var(--rule-hairline);
+  }
+  .article-spread.spread--oscilloscope-bench .article-lead-paragraph { column-span: all; }
+  .article-spread.spread--oscilloscope-bench .editorial-pullquote { break-inside: avoid; }
+
+  /* --- IV. switching-schematic — spec rail on the left ---------------------- */
+  .article-spread.spread--switching-schematic .article-header-deck { grid-template-columns: 320px 1fr; }
+  .article-spread.spread--switching-schematic .article-spec-card { order: -1; }
+  .article-spread.spread--switching-schematic .article-body-workbench { grid-template-columns: 1.25fr 1fr; }
+  .article-spread.spread--switching-schematic .article-prose-column { order: 1; }
+  .article-spread.spread--switching-schematic .article-lab-column { order: 2; }
+
+  /* --- V. arcade-tactical — HUD scorecard, full-bleed bench ----------------- */
+  .article-spread.spread--arcade-tactical .article-header-deck {
+    grid-template-columns: 1fr;
+    position: relative;
+  }
+  .article-spread.spread--arcade-tactical .article-spec-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+  }
+  .article-spread.spread--arcade-tactical .article-headline-col { max-width: 66%; }
+  .article-spread.spread--arcade-tactical .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--arcade-tactical .article-lab-column { order: -1; }
+  .article-spread.spread--arcade-tactical .article-prose-column {
+    columns: 2;
+    column-gap: 2.4rem;
+    column-rule: 1px solid var(--rule-hairline);
+  }
+  .article-spread.spread--arcade-tactical .article-lead-paragraph { column-span: all; }
+
+  /* --- VI. cockpit-annunciator — indicator tiles + annunciator panel -------- */
+  .article-spread.spread--cockpit-annunciator .article-header-deck { grid-template-columns: 1fr 340px; }
+  .article-spread.spread--cockpit-annunciator .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--cockpit-annunciator .capabilities-tag-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .article-spread.spread--cockpit-annunciator .capability-box {
+    text-align: center;
+    border-width: 2px;
+  }
+  .article-spread.spread--cockpit-annunciator .article-lab-column { order: -1; }
+
+  /* --- VII. control-topology — diagram top, three-column notes ------------- */
+  .article-spread.spread--control-topology .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--control-topology .article-lab-column { order: -1; }
+  .article-spread.spread--control-topology .article-prose-column {
+    columns: 3;
+    column-gap: 2rem;
+    column-rule: 1px solid var(--rule-hairline);
+  }
+  .article-spread.spread--control-topology .article-lead-paragraph { column-span: all; }
+  .article-spread.spread--control-topology .editorial-pullquote { break-inside: avoid; }
+
+  /* --- VIII. gatefold-blueprint — four-panel gatefold with fold lines ------- */
+  .article-spread.spread--gatefold-blueprint {
+    background-image:
+      linear-gradient(90deg,
+        transparent calc(25% - 1px), var(--rule-hairline) 25%, transparent calc(25% + 1px),
+        transparent calc(50% - 1px), var(--rule-hairline) 50%, transparent calc(50% + 1px),
+        transparent calc(75% - 1px), var(--rule-hairline) 75%, transparent calc(75% + 1px));
+  }
+  .article-spread.spread--gatefold-blueprint .article-header-deck { grid-template-columns: 1fr 320px; }
+  .article-spread.spread--gatefold-blueprint .article-body-workbench { grid-template-columns: 1fr; }
+  .article-spread.spread--gatefold-blueprint .article-prose-column {
+    columns: 4;
+    column-gap: 2rem;
+    column-rule: 1px solid var(--rule-hairline);
+  }
+  .article-spread.spread--gatefold-blueprint .article-lead-paragraph { column-span: all; }
+
+  /* --- IX. hex-datasheet — dense two-column datasheet ----------------------- */
+  .article-spread.spread--hex-datasheet { --font-body: var(--font-mono); }
+  .article-spread.spread--hex-datasheet .article-header-deck { grid-template-columns: 1fr 400px; }
+  .article-spread.spread--hex-datasheet .spec-metrics-grid { grid-template-columns: 1fr 1fr; }
+  .article-spread.spread--hex-datasheet .article-body-workbench { grid-template-columns: 1fr 1fr; }
+  .article-spread.spread--hex-datasheet .article-lead-paragraph { text-align: left; font-size: 0.94rem; }
+  .article-spread.spread--hex-datasheet .capabilities-tag-grid { grid-template-columns: 1fr 1fr; }
+  .article-spread.spread--hex-datasheet .capability-box { border-style: dashed; }
+
+  /* --- X. shader-diagram — figure-led, wide caption plate ------------------- */
+  .article-spread.spread--shader-diagram .article-header-deck { grid-template-columns: 1fr 1fr; }
+  .article-spread.spread--shader-diagram .article-body-workbench { grid-template-columns: 1.4fr 1fr; }
+  .article-spread.spread--shader-diagram .article-lab-column { order: 2; }
+  .article-spread.spread--shader-diagram .article-prose-column { order: 1; }
+  .article-spread.spread--shader-diagram .interactive-lab-plate { border-width: 3px; }
+  .article-spread.spread--shader-diagram .lab-canvas-stage { height: 320px; }
+
+  /* --- XI. monograph-covenant — formal monograph with marginalia ----------- */
+  .article-spread.spread--monograph-covenant .article-header-deck {
+    grid-template-columns: 1fr;
+    border-bottom-width: 4px;
+  }
+  .article-spread.spread--monograph-covenant .article-spec-card { flex-direction: row; gap: 1.5rem; }
+  .article-spread.spread--monograph-covenant .spec-metrics-grid {
+    grid-template-columns: repeat(4, 1fr);
+    flex: 1;
+  }
+  .article-spread.spread--monograph-covenant .article-body-workbench { grid-template-columns: 1fr 300px; }
+  .article-spread.spread--monograph-covenant .article-prose-column { order: 1; }
+  .article-spread.spread--monograph-covenant .article-lab-column { order: 2; }
+  .article-spread.spread--monograph-covenant .arch-section-heading {
+    border-bottom: 0;
+    border-left: 3px solid var(--article-spot, #d9381e);
+    padding-left: 0.6rem;
+  }
+  .article-spread.spread--monograph-covenant .editorial-pullquote {
+    border-top-width: 4px;
+    border-bottom: 0;
+    font-size: 1.4rem;
+  }
+}
+
+/* Print & accessibility: drop the decorative textures. */
+@media print {
+  .magazine-spread::before,
+  .magazine-spread::after { display: none; }
+}
+@media (forced-colors: active) {
+  .magazine-spread::before,
+  .magazine-spread::after { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .magazine-spread { transition: none; }
+}
