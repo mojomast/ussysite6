@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" data-print-mode="cream-press" data-loupe="off">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE USSY COMPUTING ANNUAL · Vol. 11, No. 10 (October 2026) — Mojomast Press</title>
+  <meta name="description" content="A Living 2D Collector's Computing Magazine & Technical Monograph showcasing eleven autonomous systems, real-time DSP engines, and deterministic software architectures by mojomast." />
+
+  <!-- Editorial & Archival Typography: Fraunces, Newsreader, Space Grotesk, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./index.css" />
+</head>
+<body>
+  <!-- Inline SVG Archival Paper Grain & Lithographic Ink Filters -->
+  <svg class="svg-defs-vault" aria-hidden="true">
+    <defs>
+      <filter id="paper-roughness" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.035 0" in="noise" result="coloredNoise" />
+        <feComposite operator="in" in2="SourceGraphic" />
+      </filter>
+      <pattern id="halftone-dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1.15" fill="currentColor" opacity="0.22" />
+        <circle cx="6" cy="6" r="1.15" fill="currentColor" opacity="0.22" />
+      </pattern>
+      <pattern id="blueprint-grid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+        <path d="M 24 0 L 0 0 0 24" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+      </pattern>
+    </defs>
+  </svg>
+
+  <!-- Top Scroll-Driven CMYK Registration & Page Folio Progress Ribbon -->
+  <header class="press-running-header" aria-label="Magazine Running Header & Press Controls">
+    <div class="scroll-ink-progress" aria-hidden="true"></div>
+
+    <div class="running-header-inner">
+      <div class="header-left-folio">
+        <a href="#issue-cover" class="cmyk-target-mark" title="Return to Front Cover">
+          <span class="reg-crosshair">⊕</span>
+          <span class="cmyk-bars">
+            <i class="c-bar"></i><i class="m-bar"></i><i class="y-bar"></i><i class="k-bar"></i>
+          </span>
+        </a>
+        <div class="running-pub-meta">
+          <span class="running-vol">VOL. 11, NO. 10 · OCT 2026</span>
+          <strong id="running-section-label" class="running-section-label">FRONT COVER // COLLECTOR’S ANNUAL</strong>
+        </div>
+      </div>
+
+      <!-- Center Quick Spread Jumper -->
+      <nav class="running-spread-strip" aria-label="Article Page Numbers">
+        <a href="#toc-spread" class="folio-tab" title="Table of Contents">TOC</a>
+        <div id="folio-page-tabs" class="folio-page-tabs"></div>
+        <a href="#reader-service-spread" class="folio-tab" title="Reader Service Bingo Card">CARD</a>
+      </nav>
+
+      <!-- Right Press Room Controls: Paper Stock, Printers Loupe, Flexi-Disc Synth -->
+      <div class="header-right-press">
+        <div class="stock-switcher" role="group" aria-label="Paper Stock & Ink Mode">
+          <button class="stock-btn is-active" data-mode="cream-press" title="1984 Archival Cream Offset Stock">Cream</button>
+          <button class="stock-btn" data-mode="blueprint" title="Prussian Cyanotype Blueprint Linen">Blueprint</button>
+          <button class="stock-btn" data-mode="darkroom" title="Halftone Photostat Darkroom">Darkroom</button>
+        </div>
+
+        <button id="btn-loupe-toggle" class="press-tool-btn" aria-pressed="false" title="Toggle Printer’s Registration & Grid Overlay">
+          <span>⊹ Loupe</span>
+        </button>
+
+        <button id="btn-flexi-toggle" class="press-tool-btn flexi-btn" aria-pressed="false" title="Play 33⅓ RPM Bound-In Flexi-Disc Audio Program">
+          <span class="flexi-disc-icon" aria-hidden="true">◎</span>
+          <span id="flexi-btn-label">33⅓ Flexi-Disc</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Printable Magazine Issue Container -->
+  <main class="magazine-issue-folio">
+
+    <!-- =====================================================================
+         SPREAD 00 // FRONT COVER (ROBERT TINNEY / BYTE / WIRED HOMAGE)
+         ===================================================================== -->
+    <section id="issue-cover" class="magazine-spread spread--cover" data-section-label="FRONT COVER // COLLECTOR’S ANNUAL">
+      <div class="crop-mark crop-tl" aria-hidden="true"></div>
+      <div class="crop-mark crop-tr" aria-hidden="true"></div>
+      <div class="crop-mark crop-bl" aria-hidden="true"></div>
+      <div class="crop-mark crop-br" aria-hidden="true"></div>
+
+      <!-- Top Issue Banner -->
+      <div class="cover-top-strip">
+        <span>SMALL SYSTEMS JOURNAL OF THE USSYVERSE</span>
+        <span>OCTOBER 2026 · VOLUME 11, NUMBER 10</span>
+        <span>$6.50 US · £4.95 UK · ¥1,200 JP</span>
+      </div>
+
+      <!-- Monumental Masthead -->
+      <div class="cover-masthead-box">
+        <h1 class="cover-masthead-title">
+          <span class="masthead-the">THE</span>
+          <span class="masthead-ussy">USSY</span>
+          <span class="masthead-computing">COMPUTING ANNUAL</span>
+        </h1>
+        <div class="cover-sub-banner">
+          <span>SPECIAL COLLECTOR’S EDITION: ELEVEN AUTONOMOUS &amp; DETERMINISTIC ARCHITECTURES BY MOJOMAST</span>
+          <span class="cover-issn">ISSN 2026-8779</span>
+        </div>
+      </div>
+
+      <!-- Cover Centerpiece Grid: Left Cover Lines + Interactive 2D Airbrush/Isometric Illustration + Right Cover Lines + Barcode -->
+      <div class="cover-body-grid">
+        <div class="cover-left- teasers">
+          <div class="cover-feature-tag">IN THIS ISSUE</div>
+          <ul class="cover-story-list">
+            <li>
+              <a href="#spread-orbitdesktop">
+                <span class="cover-page-num">p. 08</span>
+                <strong>ORBITAL DESKTOPS</strong>
+                <em>Breaking the flat Xerox PARC blotter with a 3-ring Hermes agent shell</em>
+              </a>
+            </li>
+            <li>
+              <a href="#spread-jammate">
+                <span class="cover-page-num">p. 28</span>
+                <strong>SUB-3MS REAL-TIME DSP</strong>
+                <em>Wait-free C++20 &amp; JUCE neural amplifier pipelines without a single mutex</em>
+              </a>
+            </li>
+            <li>
+              <a href="#spread-cocs">
+                <span class="cover-page-num">p. 38</span>
+                <strong>60HZ ARENA NETCODE</strong>
+                <em>Historical hitbox rewind &amp; live browser combat at cocs.ussyco.de</em>
+              </a>
+            </li>
+            <li>
+              <a href="#spread-becomussy">
+                <span class="cover-page-num">p. 100</span>
+                <strong>THE 5-LAYER MIND</strong>
+                <em>Becomussy’s geological memory stratigraphy &amp; cryptographic Steward Gate</em>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Interactive 2D Cover Illustration Plate (Isometric Computing Pyramid & Optical Bus) -->
+        <figure class="cover-art-frame">
+          <canvas id="cover-illustration-canvas" width="760" height="540" aria-label="Interactive 1984-style isometric vector illustration of the 11 Ussyverse systems"></canvas>
+          <figcaption class="cover-art-caption">
+            <span>PLATE I — “THE ELEVEN-BUS ARCHIPELAGO” (INTERACTIVE VECTOR LITHOGRAPH · MOVE CURSOR OR CLICK NODES TO PROBE BUS)</span>
+            <span id="cover-probe-readout" class="cover-probe-readout">BUS CLOCK: 60.0 HZ // NOMINAL</span>
+          </figcaption>
+        </figure>
+
+        <!-- Right Column: Bound-in Flexi-Disc Callout + UPC Barcode -->
+        <div class="cover-right-column">
+          <div class="flexi-callout-stamp">
+            <span class="stamp-eyebrow">BOUND-IN SOUND SHEET</span>
+            <h3>33⅓ RPM FLEXI-DISC</h3>
+            <p>Includes 11 procedural acoustic tone-programs &amp; bell-relay modem handshakes. Click any article’s sound-sheet button to audition.</p>
+            <button id="btn-cover-audition" class="stamp-action-btn">▶ Audition Disc Side A</button>
+          </div>
+
+          <div class="department-highlights-box">
+            <h4>DEPARTMENTS &amp; LABS</h4>
+            <dl>
+              <div><dt>pp. 18</dt><dd><a href="#spread-velvetrp">VelvetRP Literary Folio</a></dd></div>
+              <div><dt>pp. 48</dt><dd><a href="#spread-cocs-godot">Godot 4 Vulkan Forward+</a></dd></div>
+              <div><dt>pp. 56</dt><dd><a href="#spread-routetok">RouteTok Bell Relay FSM</a></dd></div>
+              <div><dt>pp. 66</dt><dd><a href="#spread-rgbagentflightindicator">60Hz HID Caution Matrix</a></dd></div>
+              <div><dt>pp. 74</dt><dd><a href="#spread-mothbake">MothBake 64B Binary Codec</a></dd></div>
+              <div><dt>pp. 82</dt><dd><a href="#spread-warpi">Warpi Rust PTY &amp; Pi Helper</a></dd></div>
+              <div><dt>pp. 90</dt><dd><a href="#spread-hermesdashboard">Hermes SSE Fleet DAG</a></dd></div>
+            </dl>
+          </div>
+
+          <!-- Authentic Period UPC Barcode Box -->
+          <div class="upc-barcode-box" aria-label="Issue Barcode">
+            <div class="upc-bars" aria-hidden="true"></div>
+            <div class="upc-digits">
+              <span>0</span><span>74470</span><span>20261</span><span>10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         SPREAD 01 // TABLE OF CONTENTS, MASTHEAD & EDITOR'S LETTER
+         ===================================================================== -->
+    <section id="toc-spread" class="magazine-spread spread--toc" data-section-label="pp. 04–07 // TABLE OF CONTENTS &amp; EDITORIAL">
+      <div class="spread-folio-header">
+        <span>THE USSY COMPUTING ANNUAL · OCTOBER 2026</span>
+        <span>TABLE OF CONTENTS &amp; MASTHEAD</span>
+        <span>PAGES 04–07</span>
+      </div>
+
+      <div class="toc-spread-grid">
+        <!-- Left Column: Editor's Note + Masthead Staff Box -->
+        <div class="editor-letter-col">
+          <div class="section-rubric">FROM THE EDITOR’S DESK</div>
+          <h2 class="editor-headline">Why We Still Care About the Machine Beneath the Glass</h2>
+          <p class="editor-dropcap-para">
+            Open almost any software showcase in late 2026 and you are greeted by the same weightless vapor: purple gradients, vague promises of “agentic synergy,” and zero explanation of how bytes actually cross a socket or how a frame hits a 16.6-millisecond deadline. We have forgotten the tactile joy of opening an October 350-page collector’s issue of <em>BYTE</em> or <em>Whole Earth Software Review</em>—where schematics, C listings, oscilloscope traces, and fiercely opinionated prose lived side by side on archival paper.
+          </p>
+          <p class="editor-body-para">
+            This Annual gathers eleven real, working open-source architectures engineered by <strong>mojomast</strong>. Every spread in this issue includes a live interactive 2D laboratory bench—so you can trip RouteTok’s circuit breaker relays, scrub CoCS’s 250ms lag-compensation rewind buffer, inspect MothBake’s 64-byte aligned hex headers, and verify Becomussy’s cryptographic Steward Gate right on the page.
+          </p>
+          <div class="editor-sig-row">
+            <span class="editor-sig">Mojomast Press Syndicate</span>
+            <span class="editor-place">Sanctuary Press Room · October 2026</span>
+          </div>
+
+          <div class="masthead-staff-box">
+            <h3>PUBLICATION MASTHEAD</h3>
+            <dl>
+              <div><dt>FOUNDING ARCHITECT</dt><dd>mojomast (<a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast</a>)</dd></div>
+              <div><dt>TYPESETTING &amp; LITHOGRAPHY</dt><dd>Fraunces · Newsreader · Space Grotesk · IBM Plex Mono</dd></div>
+              <div><dt>INTERACTIVE 2D ENGINE</dt><dd>HTML5 2D Canvas · Inline SVG · CSS Scroll-Driven Timelines</dd></div>
+              <div><dt>READER SERVICE BUREAU</dt><dd>Cards #101–#111 (See Perforated Insert on Page 112)</dd></div>
+            </dl>
+          </div>
+        </div>
+
+        <!-- Right Column: Annotated Index of All 11 Feature Articles -->
+        <div class="toc-index-col">
+          <div class="toc-index-header">
+            <h2>INDEX OF FEATURE MONOGRAPHS</h2>
+            <span>11 VERIFIED SYSTEMS · 112 PAGES</span>
+          </div>
+          <ol id="toc-article-list" class="toc-article-list"></ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- =====================================================================
+         DYNAMIC CONTAINER FOR ALL 11 BESPOKE EDITORIAL SPREADS
+         ===================================================================== -->
+    <div id="editorial-spreads-container" class="editorial-spreads-container"></div>
+
+    <!-- =====================================================================
+         BACK MATTER // PERFORATED READER SERVICE "BINGO CARD" & COLOPHON
+         ===================================================================== -->
+    <section id="reader-service-spread" class="magazine-spread spread--reader-card" data-section-label="p. 112 // READER SERVICE INQUIRY CARD">
+      <div class="spread-folio-header">
+        <span>THE USSY COMPUTING ANNUAL · READER SERVICE DEPARTMENT</span>
+        <span>DETACHABLE POSTPAID INQUIRY CARD</span>
+        <span>PAGE 112</span>
+      </div>
+
+      <div class="bingo-card-wrapper">
+        <div class="perforation-line" aria-hidden="true">
+          <span>✂ DETACH ALONG PERFORATED LINE · POSTAGE WILL BE PAID BY MOJOMAST PRESS SYNDICATE ✂</span>
+        </div>
+
+        <div class="bingo-card-grid">
+          <div class="bingo-left-instructions">
+            <span class="bingo-eyebrow">FREE TECHNICAL LITERATURE &amp; SOURCE ARCHIVES</span>
+            <h2>READER SERVICE “BINGO” CARD</h2>
+            <p>
+              To receive instant technical dispatches, architecture manifests, and direct GitHub repository links for any system featured in this issue, <strong>circle the corresponding Reader Service Numbers (#101–#111)</strong> on the grid at right.
+            </p>
+
+            <div id="bingo-selection-summary" class="bingo-selection-summary"></div>
+
+            <form id="bingo-note-form" class="bingo-note-form">
+              <label for="bingo-reader-note">LETTERS TO THE EDITOR / MARGIN DISPATCH:</label>
+              <div class="bingo-input-row">
+                <input
+                  id="bingo-reader-note"
+                  type="text"
+                  maxlength="160"
+                  placeholder="Log an engineering note or favorite spread onto the Press Ledger..."
+                  required
+                />
+                <button type="submit" class="bingo-submit-btn">STAMP DISPATCH ↵</button>
+              </div>
+            </form>
+
+            <div id="bingo-recent-dispatches" class="bingo-recent-dispatches"></div>
+          </div>
+
+          <div class="bingo-right-numbers">
+            <div class="postage-indicia-box">
+              <span>BUSINESS REPLY MAIL</span>
+              <strong>FIRST-CLASS PERMIT NO. 2026 · USSYVERSE</strong>
+            </div>
+
+            <div class="bingo-number-header">
+              <span>CIRCLE NUMBERS BELOW (#101–#111)</span>
+              <button id="btn-circle-all" type="button" class="bingo-mini-btn">Circle All 11</button>
+            </div>
+
+            <div id="bingo-numbers-grid" class="bingo-numbers-grid" role="group" aria-label="Reader Service Numbers 101 to 111"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
