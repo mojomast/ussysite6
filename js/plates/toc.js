@@ -60,7 +60,7 @@ export default function tocPlate(meta) {
     <rect x="400" y="118" width="280" height="226" rx="20" fill="${id.url('crt-bezel')}" stroke="#fff5df" stroke-width="1.5" stroke-opacity="0.6"/>
     <rect x="400" y="322" width="280" height="22" fill="#9b8a6a" opacity="0.45"/>
     <rect x="420" y="328" width="56" height="10" rx="1" fill="#75674c"/>
-    <text x="448" y="335.5" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="7" fill="#fff5df" text-anchor="middle" letter-spacing="0.1em">MOJOMAST</text>
+    <text x="448" y="335.5" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="6" fill="#fff5df" text-anchor="middle" letter-spacing="0" textLength="52" lengthAdjust="spacingAndGlyphs">SLOPTIMUS PRIME</text>
     <circle cx="654" cy="333" r="3.5" fill="#22c55e" filter="${id.url('glow')}"/>
     <circle cx="636" cy="333" r="3" fill="#ea580c"/>
 
