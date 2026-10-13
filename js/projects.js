@@ -174,8 +174,8 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     byline: 'By the Real-Time Audio Laboratory · Test Bench #03',
     category: 'Audio Engineering / Real-Time DSP',
     repoUrl: 'https://github.com/mojomast/jammate',
-    screenshot: 'assets/screenshots/jammate.jpg',
-    screenshotCaption: 'Guitar rig with neural amp captures and cabinet controls',
+    screenshot: 'assets/screenshots/jammate.png',
+    screenshotCaption: 'Live jam interface: jam controls at the production window size, in a playing state',
     liveUrl: null,
     spotInkHex: '#0f766e', // Oscilloscope Teal
     secondaryInkHex: '#d97706', // Amber Phosphor
