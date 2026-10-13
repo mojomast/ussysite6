@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
  * MASTER EDITORIAL LAYOUT, SCROLL OBSERVER, BINGO CARD & INTERACTIVE CONTROLLER
  */
 
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="spread-folio-header">
           <span>${proj.issueSection}</span>
-          <span>THE USSY COMPUTING ANNUAL · VOL. 11, NO. 10</span>
+          <span>THE SLOP COMPUTING ANNUAL · VOL. 11, NO. 10</span>
           <span>${proj.pageRange.toUpperCase()} · SERVICE NO. #${proj.readerServiceNo}</span>
         </div>
 
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
               ${
                 proj.liveUrl
                   ? `<a href="${proj.liveUrl}" target="_blank" rel="noopener noreferrer" class="live-arena-link">
-                      <span>LIVE MULTIPLAYER ARENA (cocs.ussyco.de)</span>
+                      <span>LIVE ARENA (arena.ussyco.de)</span>
                       <span aria-hidden="true">⚡</span>
                     </a>`
                   : ''
@@ -159,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="article-prose-column">
             <p class="article-lead-paragraph">${proj.editorialLead}</p>
 
+            <p class="article-body-para">${proj.bodyCopy}</p>
+
             <blockquote class="editorial-pullquote">
               ${proj.pullQuote}
             </blockquote>
@@ -176,6 +178,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="tech-stack-strip">
               ${proj.techStack.map((t) => `<span class="tech-badge">${t}</span>`).join('')}
             </div>
+
+            <aside class="article-field-notes" aria-label="Field notes and marginalia">
+              <h3 class="field-notes-heading">FIELD NOTES &amp; MARGINALIA</h3>
+              <ul>
+                ${(proj.fieldNotes || []).map((n) => `<li>${n}</li>`).join('')}
+              </ul>
+            </aside>
           </div>
 
           <!-- Interactive 2D Lab Plate + Green-Bar Type-In Listing Column -->

@@ -1,6 +1,6 @@
-# THE USSY COMPUTING ANNUAL · Vol. 11, No. 10 (`ussysite6`)
+# THE SLOP COMPUTING ANNUAL · Vol. 11, No. 10 (`ussysite6`)
 
-**A Living 2D Collector’s Computing Magazine & Technical Monograph for the Ussyverse**
+**A Living 2D Collector’s Computing Magazine & Technical Monograph for the Slopverse**
 
 `ussysite6` is a 100% 2D editorial computing magazine inspired by the golden age of print computer journals (*BYTE Magazine* ca. 1984 illustrated by Robert Tinney, *Whole Earth Software Review*, *Creative Computing*, and *Datamation*) fused with bleeding-edge October 2026 web standards (CSS Scroll-Driven Animations `animation-timeline: scroll()`, View Transitions API, `@property` spot-ink variables, `linear()` spring physics, inline SVG lithographic grain filters, and interactive 2D HTML5 Canvas laboratory benches).
 
@@ -17,7 +17,7 @@
      - **pp. 08–17 (`#101`) — `orbitdesktop`**: Interactive 3-ring orbital window compositor bench.
      - **pp. 18–27 (`#102`) — `velvetrp`**: Deterministic `2d12` dice oracle & 6-segment world progress clock.
      - **pp. 28–37 (`#103`) — `jammate`**: Dual-trace Tektronix oscilloscope & tube harmonic overdrive bench.
-     - **pp. 38–47 (`#104`) — `cocs` ([`cocs.ussyco.de`](https://cocs.ussyco.de))**: 60Hz server hitbox vs. 250ms historical lag-rewind visualizer.
+     - **pp. 38–47 (`#104`) — `cocs` ([`arena.ussyco.de`](https://arena.ussyco.de))**: 60Hz server hitbox vs. 250ms historical lag-rewind visualizer.
      - **pp. 48–55 (`#105`) — `cocs-godot`**: Vulkan Forward+ procedural recoil spring & 32K GPU particle emitter plate.
      - **pp. 56–65 (`#106`) — `routetok`**: Bell-Labs-style 3-state Circuit Breaker (`CLOSED` / `OPEN` / `HALF-OPEN`) relay schematic.
      - **pp. 66–73 (`#107`) — `rgbagentflightindicator`**: 60Hz per-key QMK / USB HID cockpit caution matrix.

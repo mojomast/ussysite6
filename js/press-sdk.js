@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL
  * PRESS ROOM & READER SERVICE CARD ("BINGO CARD") SDK
  *
  * Exposes `window.PressSDK` (and `window.AnomalySDK` compatibility alias)

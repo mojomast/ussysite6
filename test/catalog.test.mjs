@@ -16,7 +16,7 @@ const CANONICAL_IDS = [
   'becomussy'
 ];
 
-test('THE USSY COMPUTING ANNUAL catalog contains all 11 canonical mojomast repositories with editorial metadata & code listings', () => {
+test('THE SLOP COMPUTING ANNUAL catalog contains all 11 canonical mojomast repositories with editorial metadata & code listings', () => {
   assert.equal(USSY_PROJECTS.length, 11);
   assert.deepEqual(
     USSY_PROJECTS.map((p) => p.id),
@@ -32,6 +32,6 @@ test('THE USSY COMPUTING ANNUAL catalog contains all 11 canonical mojomast repos
     assert.equal(getProjectById(proj.id)?.id, proj.id);
   }
 
-  assert.equal(getProjectById('cocs')?.liveUrl, 'https://cocs.ussyco.de');
+  assert.equal(getProjectById('cocs')?.liveUrl, 'https://arena.ussyco.de');
   assert.equal(MAGAZINE_ISSUE_META.printModes.length, 3);
 });

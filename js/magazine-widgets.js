@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL
  * INTERACTIVE 2D VECTOR & CANVAS LABORATORY WORKBENCH ENGINE
  *
  * Pure 2D HTML5 Canvas + SVG technical plates inspired by Robert Tinney's
@@ -125,7 +125,7 @@ export function initCoverIllustrationCanvas(canvas, readoutEl, onSelectNode) {
       ctx.stroke();
     }
 
-    // 3. Central Isometric Stepped Ziggurat ("The Ussyverse Bus Core")
+    // 3. Central Isometric Stepped Ziggurat ("The Slopverse Bus Core")
     const cx = w * 0.5;
     const cy = h * 0.56;
     for (let step = 4; step >= 0; step--) {

@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
  * EDITORIAL LITHOGRAPHY, SWISS MULTI-COLUMN GRIDS, SCROLL-DRIVEN TIMELINES
  * & BESPOKE SPREAD ARCHITECTURE
  */
@@ -1772,3 +1772,74 @@ html[data-print-mode="darkroom"] .magazine-spread::before { opacity: 0.28; }
 @media (prefers-reduced-motion: reduce) {
   .magazine-spread { transition: none; }
 }
+
+/* ============================================================================
+ * PART D // SLOP REBRAND + EXPANDED COPY + FULL-BLEED FILL
+ * ========================================================================= */
+
+/* Masthead acronym line on the cover. */
+.masthead-acronym {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 0.55rem;
+}
+.masthead-acronym strong { color: var(--spot-ink); }
+
+/* Second body paragraph added to every feature spread. */
+.article-body-para {
+  font-size: 1rem;
+  line-height: 1.66;
+  color: var(--ink-secondary);
+  margin-bottom: 1.15rem;
+  text-align: justify;
+  max-width: 68ch;
+}
+
+/* Field notes / marginalia block. */
+.article-field-notes {
+  margin-top: 1.25rem;
+  border: 1px solid var(--rule-hairline);
+  border-left: 3px solid var(--article-spot, #d9381e);
+  background: var(--paper-elevated);
+  padding: 0.75rem 0.9rem;
+  break-inside: avoid;
+}
+.field-notes-heading {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--article-spot, #d9381e);
+  margin-bottom: 0.5rem;
+}
+.article-field-notes ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.article-field-notes li {
+  position: relative;
+  padding-left: 1rem;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-secondary);
+}
+.article-field-notes li::before {
+  content: '§';
+  position: absolute;
+  left: 0;
+  color: var(--article-spot, #d9381e);
+  font-size: 0.72rem;
+}
+
+/* Fill: equal-height columns so the richer copy leaves no dead space, and the
+   code listing pins to the foot of its column. */
+.article-body-workbench { align-items: stretch; }
+.article-prose-column { display: flex; flex-direction: column; }
+.article-prose-column > .article-field-notes { margin-top: auto; }
+.article-lab-column { justify-content: space-between; }

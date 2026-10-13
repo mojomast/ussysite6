@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
  * EDITORIAL CATALOG & TECHNICAL MONOGRAPH SOURCE OF TRUTH
  *
  * Canonical verified metadata for all 11 mojomast repositories, structured as
@@ -8,7 +8,9 @@
  */
 
 export const MAGAZINE_ISSUE_META = {
-  publicationTitle: 'THE USSY COMPUTING ANNUAL',
+  publicationTitle: 'THE SLOP COMPUTING ANNUAL',
+  publicationAcronym: 'SLOP',
+  publicationExpansion: 'Serious Literature on Open Programs',
   subtitle: 'A Small Systems Journal of Autonomous Software, Real-Time Craft & Deterministic Machines',
   volume: 'Vol. 11, No. 10',
   coverDate: 'October 2026',
@@ -55,6 +57,9 @@ export const USSY_PROJECTS = [
     spotInkHex: '#d9381e', // Vermilion Red
     secondaryInkHex: '#0047ab', // Cobalt Blue
     pullQuote: '“The desktop was never meant to be a pile of paper; it is an observatory where active work orbits at arm’s reach and background Daemons circle the horizon.”',
+    bodyCopy:
+      'Under the hood, OrbitDesktop treats the workspace as a scene graph rather than a window list. Each pane carries an orbital coordinate, a focus weight and an IPC binding to a named Hermes agent; promoting a pane to Ring I smoothly damps every other surface outward, so attention becomes a physical quantity you can steer with Alt+Ring. Because the compositor is WebGL2, transitions are GPU-timed and never block the agent bridge, and a workspace serializes to declarative JSON that restores to the exact same orbital pose on the next cold boot.',
+    fieldNotes: ['Ring I — Primary Focus: the surface you are actively editing.', 'Ring II — Active Context: terminals, diffs and agent tool-calls at arm’s reach.', 'Ring III — Peripheral Telemetry: background daemons circling the horizon.'],
     editorialLead:
       'For forty years since Xerox PARC, personal computing has remained trapped on a two-dimensional blotter. OrbitDesktop breaks the glass by pairing an Electron/WebGL2 spatial compositor with a direct Unix-domain IPC bridge to local Hermes autonomous agents. Windows are promoted or recessed across three concentric orbital rings—Primary Focus, Active Context, and Peripheral Telemetry—so the engineer never loses sight of what the machine is thinking.',
     architecture: [
@@ -112,6 +117,9 @@ export function computeRingPose(slotIdx, totalSlots, ringDepth, focusAlpha) {
     spotInkHex: '#9b1b30', // Crimson Bordeaux
     secondaryInkHex: '#b45309', // Warm Ochre
     pullQuote: '“When the rules engine is 100% deterministic and auditable, the authors are freed to care only about voice, tension, and consequence.”',
+    bodyCopy:
+      'VelvetRP’s dual-column composer borrows the grammar of a printed play: left column for staging and stage directions, right column for spoken prose, with whispered asides routed only to their recipient. Every beat is appended to an immutable SQLite ledger, so a session can be replayed, forked or typeset into an anthology months later. The dice oracle is seeded from a published hex value, letting any reader re-derive each roll and confirm that the drama was earned rather than narrated.',
+    fieldNotes: ['Every roll is seeded and re-derivable — trust without a referee.', 'World clocks advance on consequence, never on wall time.', 'Whispers are delivered to their recipient, never persisted.'],
     editorialLead:
       'Most virtual tabletops look like tax-preparation software bolted onto a chatbox. VelvetRP treats collaborative fiction as a first-class literary medium. Built around a dual-column theatrical script layout and an immutable SQLite event ledger, every prose beat, whispered aside, character poise modifier, and polyhedral roll is recorded in a replayable anthology.',
     architecture: [
@@ -166,6 +174,9 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spotInkHex: '#0f766e', // Oscilloscope Teal
     secondaryInkHex: '#d97706', // Amber Phosphor
     pullQuote: '“A single mutex lock or heap allocation inside an audio callback is a broken promise to the musician’s fingertips.”',
+    bodyCopy:
+      'The discipline is total: the audio callback owns no locks, performs no allocation and issues no syscalls, so a garbage-collection pause on the interface thread can never crackle a held chord. Telemetry leaves the DSP thread through a single-producer/single-consumer ring buffer that the UI drains at 120Hz for its oscilloscope and spectrum traces. The result is a workstation that behaves like hardware — string, amplifier and speaker collapsing into one continuous physical gesture.',
+    fieldNotes: ['Zero locks and zero allocations on the real-time thread.', '2.6 ms round-trip at 48kHz / 64-sample buffers.', 'Cabinet IRs, tube overdrive and a 6-band EQ in one VST3.'],
     editorialLead:
       'When a guitarist strikes a string, any round-trip latency above 6 milliseconds disconnects physical touch from perceived sound. JamMate is engineered in strict C++20 and JUCE 8 around Single-Producer Single-Consumer (SPSC) lock-free ring buffers. The real-time audio thread never allocates memory, never touches a mutex, and streams 120Hz FFT spectrum telemetry to the UI without dropping a single sample.',
     architecture: [
@@ -208,19 +219,22 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spreadType: 'arcade-tactical',
     pageRange: 'pp. 38–47',
     readerServiceNo: 104,
-    title: 'CoCS // Call of Cringe Studios',
-    kicker: 'Live Browser Multiplayer at cocs.ussyco.de',
+    title: 'CoCS // Colosseum of Competitive Slop',
+    kicker: 'Live Browser Multiplayer at arena.ussyco.de',
     headline: 'Deterministic 60Hz Arena Physics & Historical Hitbox Rewind',
     deck: 'How a compact binary WebSocket protocol, 250ms historical AABB rewind buffer, and utility-scored AI operators deliver crisp arena combat directly in the browser.',
     byline: 'By the Simulation & Netcode Bureau · Live Dispatch',
     category: 'Multiplayer Game Server / Netcode',
     repoUrl: 'https://github.com/mojomast/cocs',
-    liveUrl: 'https://cocs.ussyco.de',
+    liveUrl: 'https://arena.ussyco.de',
     spotInkHex: '#e11d48', // Signal Magenta-Red
     secondaryInkHex: '#1d4ed8', // Blueprint Cobalt
     pullQuote: '“Fairness in a fast arena shooter is a math problem: rewind the world to the exact millisecond the player pulled the trigger.”',
+    bodyCopy:
+      'The illusion of a fair fight is manufactured sixty times a second. When a shot is fired, the server rewinds its historical bounding boxes to the exact client timestamp, tests the ray against the world as it was, then snaps forward — so a player on a 48 ms connection and one on 4 ms resolve the same hit. Nine parody operators, each with distinct loadouts and utility-scored behaviour trees, backfill any empty slot, and the whole match ships as a binary WebSocket stream that rarely exceeds a dial-up’s worth of bandwidth.',
+    fieldNotes: ['Fixed 60Hz authoritative loop — 16.66 ms per tick.', 'A 250 ms rewind window reconciles latency fairly.', 'Nine parody operators backfill empty slots automatically.'],
     editorialLead:
-      'Deployed live at cocs.ussyco.de, Call of Cringe Studios (CoCS) is a love letter to high-tickrate arena shooters and a satirical colosseum where human players battle parody AI operators. Beneath the humor lies serious netcode: a fixed 60Hz (16.66ms) authoritative simulation loop with client-side prediction, delta-compressed binary snapshots, and server-side lag compensation.',
+      'Deployed live at arena.ussyco.de, Colosseum of Competitive Slop (CoCS) is a love letter to high-tickrate arena shooters and a satirical colosseum where human players battle parody AI operators. Beneath the humor lies serious netcode: a fixed 60Hz (16.66ms) authoritative simulation loop with client-side prediction, delta-compressed binary snapshots, and server-side lag compensation.',
     architecture: [
       'Fixed-timestep 60Hz (16.66ms) authoritative server simulation loop with client prediction and snapshot reconciliation.',
       '250ms historical bounding-box rewind ring buffer verifying lag-compensated hitscan rays against past world states.',
@@ -228,7 +242,7 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
       'Compact binary delta-compressed WebSocket wire format keeping per-client bandwidth under 28 KB/s.'
     ],
     verifiedCapabilities: [
-      'Instant browser-playable 60Hz multiplayer matches at cocs.ussyco.de',
+      'Instant browser-playable 60Hz multiplayer matches at arena.ussyco.de',
       'Sub-tick lag compensation with server-side AABB hitbox rewind',
       'Dynamic bot backfill with distinct operator personalities & loadouts',
       'Real-time killfeed, accuracy telemetry, and match state scoreboard'
@@ -237,7 +251,7 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     metrics: [
       { label: 'Server Tick', value: '60 Hz Fixed (16.6ms)' },
       { label: 'Rewind Window', value: '250 ms Historical' },
-      { label: 'Live Endpoint', value: 'cocs.ussyco.de' }
+      { label: 'Live Endpoint', value: 'arena.ussyco.de' }
     ],
     flexiFreqs: [349.23, 440.00, 523.25, 659.25],
     codeListingTitle: 'LISTING 4.1 // SERVER-SIDE LAG-COMPENSATED RAYCAST',
@@ -273,8 +287,11 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spotInkHex: '#2563eb', // Process Ultramarine
     secondaryInkHex: '#7c3aed', // Violet Halftone
     pullQuote: '“Decoupling the simulation protocol from the presentation layer lets the same 192-byte packet drive both an instant HTML5 canvas and a full Vulkan Forward+ cathedral.”',
+    bodyCopy:
+      'Because the wire protocol is presentation-agnostic, the same 192-byte snapshot that drives a browser canvas can drive a Vulkan Forward+ scene tree. CoCS-Godot interpolates those snapshots into Godot’s node graph, lights the arena with Signed Distance Field Global Illumination, and renders muzzle refraction and holographic shields through custom spatial shaders. An analytical second-order spring solver drives recoil and FOV kick, and the same build doubles as an offline campaign client and a 32,000-particle GPU laboratory.',
+    fieldNotes: ['Wire-compatible with the canonical CoCS server.', 'SDFGI real-time global illumination — no baked probes.', '32,000 GPU compute particles at zero CPU cost.'],
     editorialLead:
-      'CoCS-Godot demonstrates clean protocol separation by bringing the Call of Cringe Studios arena into a native Godot 4.x 3D client. Using Vulkan Forward+ rendering, SDFGI real-time global illumination, and procedural weapon recoil springs, it also serves as an offline single-player campaign client and GPU shader laboratory.',
+      'CoCS-Godot demonstrates clean protocol separation by bringing the Colosseum of Competitive Slop arena into a native Godot 4.x 3D client. Using Vulkan Forward+ rendering, SDFGI real-time global illumination, and procedural weapon recoil springs, it also serves as an offline single-player campaign client and GPU shader laboratory.',
     architecture: [
       'Godot 4.x scene tree architecture with decoupled network snapshot interpolators and local campaign state machines.',
       'Custom GDScript + GLSL spatial shaders for holographic shields, muzzle refraction, and procedural skyboxes.',
@@ -325,6 +342,9 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spotInkHex: '#047857', // Emerald Relay Ink
     secondaryInkHex: '#0369a1', // Technical Cyan
     pullQuote: '“Infrastructure that depends on fifty npm packages is a liability; a router should be as small, cold, and deterministic as a brass telegraph relay.”',
+    bodyCopy:
+      'RouteTok is deliberately boring infrastructure. A latency- and cost-weighted bandit scores every candidate model on time-to-first-token, tool-call reliability and context headroom, then commits the stream to the winner. If an upstream returns HTTP 429 or stalls mid-sentence, the breaker trips to OPEN, the request re-channels to the next healthy model, and — because tokens are proxied rather than buffered — the reader never sees the seam. The whole core is zero-dependency Node, small enough to audit in an afternoon.',
+    fieldNotes: ['CLOSED / OPEN / HALF-OPEN breaker with jittered backoff.', 'Mid-stream failover under 15 ms with zero dropped tokens.', 'Model Fieldbook: pricing, context limits, capability matrix.'],
     editorialLead:
       'Production AI systems routinely fail not because prompts are bad, but because a single upstream provider returns HTTP 429 or stalls mid-stream. Written in pure, zero-dependency Node.js/TypeScript, RouteTok combines a curated Model Capability Fieldbook with a latency-weighted multi-armed bandit router and an automatic three-state Circuit Breaker (`CLOSED` / `OPEN` / `HALF-OPEN`).',
     architecture: [
@@ -381,6 +401,9 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spotInkHex: '#d97706', // Caution Amber
     secondaryInkHex: '#0284c7', // Avionics Cyan
     pullQuote: '“An airline pilot never greps a log file to check if the landing gear is down; peripheral light and color grammar speak faster than text.”',
+    bodyCopy:
+      'The interface is peripheral by design. Slot keys F1–F12 breathe amber while an agent is streaming, strobe cyan the instant a tool call needs human consent, and settle to slate when idle, while the number row renders live token throughput as a travelling wave. Colour choices follow flight-deck master-caution grammar and are validated for the common colour-vision deficiencies, so the state of a dozen agents is legible in a single glance without ever stealing focus from your editor.',
+    fieldNotes: ['Per-key 60 Hz HID compositor; event-to-LED under 6 ms.', 'Up to 24 concurrent agent slots on one keyboard.', 'Colourblind-safe Airbus/Boeing caution palette.'],
     editorialLead:
       'When orchestrating six or twelve autonomous coding agents simultaneously, cognitive bottleneck shifts from writing code to monitoring which agent is thinking, which is streaming tokens, and which is blocked awaiting human permission. RGBAgentFlightIndicator speaks directly to USB HID, OpenRGB, and QMK raw-HID keyboards at 60Hz—mapping `F1–F12` to individual agent slots and the number row to live token-per-second wave bars.',
     architecture: [
@@ -435,6 +458,9 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     spotInkHex: '#ea580c', // Rust Orange
     secondaryInkHex: '#334155', // Graphite Ink
     pullQuote: '“If compiling the same asset tree twice produces two different SHA-256 hashes, your build pipeline is lying to you.”',
+    bodyCopy:
+      'Determinism is treated as a testable property, not a hope. Every input asset, compiler flag and schema revision is hashed into a Merkle leaf; the baker rebuilds only the sub-tree whose leaves changed, and every emitted chunk is zero-filled and aligned to a 64-byte cache line so engines can mmap it without a copy. Two engineers on two operating systems can compile the same source tree and compare a single SHA-256 digest to prove the artifacts are identical, byte for byte.',
+    fieldNotes: ['100% bit-exact bundles across Linux, macOS and Windows.', 'Merkle DAG cache gives sub-second incremental re-bakes.', '64-byte aligned chunks load with zero-copy mmap.'],
     editorialLead:
       'Game engines and multimedia pipelines routinely suffer from “phantom rebuilds” caused by floating-point endianness differences, OS directory traversal order, or unzeroed C-struct padding bytes. MothBake is a clean-room deterministic asset baker that plans builds over a content-addressed Merkle DAG and emits 64-byte cache-line-aligned binary bundles ready for zero-copy `mmap` ingestion.',
     architecture: [
@@ -490,6 +516,9 @@ pub fn pad_chunk_zeroes(buf: &mut Vec<u8>) {
     spotInkHex: '#15803d', // Phosphor Green
     secondaryInkHex: '#1e293b', // Terminal Charcoal
     pullQuote: '“Your terminal sees your SSH keys, your production credentials, and your mistakes; it should never require a cloud login to open a shell.”',
+    bodyCopy:
+      'Warpi restores the terminal as a tool you own. A Rust POSIX PTY multiplexer structures each command into a foldable block carrying its stdout, stderr, elapsed time and exit code; a zero-copy VT100 parser feeds a WGPU glyph atlas that scrolls megabytes of log at 120Hz without a dropped frame. The Pi coding helper is invoked only on Ctrl+Space and reads only the blocks you select, and the binary opens no outbound sockets — your keys and your history never leave the machine.',
+    fieldNotes: ['14 ms cold start, single native Rust binary.', '120 Hz WGPU glyph rendering with ligature support.', 'Air-gapped: zero telemetry, zero cloud accounts.'],
     editorialLead:
       'Developers love the ergonomics of block-based terminals—where each command’s stdout, stderr, duration, and exit code are isolated into foldable cards—but recoil at mandatory cloud sign-ins and telemetry daemons. Warpi delivers the best of both worlds in a 14ms cold-start Rust binary with an air-gapped Pi coding helper invoked only when you press `Ctrl+Space`.',
     architecture: [
@@ -520,7 +549,7 @@ pub fn pad_chunk_zeroes(buf: &mut Vec<u8>) {
     pub elapsed_us: u64,
 }`,
     terminalStream: [
-      '[warpi:pty] Spawned zsh session in Block #42 (cwd: ~/ussyverse)',
+      '[warpi:pty] Spawned zsh session in Block #42 (cwd: ~/slopverse)',
       '[pi:helper] Synthesized ripgrep + jq pipeline from last stderr block (19 ms)',
       '[wgpu:atlas] Rendered 4,096 glyphs in 0.42 ms (0 frame drops)',
       '[privacy:seal] Outbound telemetry sockets: 0 (Air-gapped local mode)'
@@ -544,6 +573,9 @@ pub fn pad_chunk_zeroes(buf: &mut Vec<u8>) {
     spotInkHex: '#6d28d9', // Royal Violet Ink
     secondaryInkHex: '#be185d', // Magenta Trace
     pullQuote: '“Autonomy without observability is just hope; an operator needs a live schematic of every subagent branch, file lock, and tool call as it happens.”',
+    bodyCopy:
+      'A fleet of agents is illegible as a log and obvious as a diagram. HermesDashboard multiplexes Server-Sent Events from dozens of concurrent sessions into one live directed acyclic graph: nodes are agents, edges are tool calls, and colour encodes health. An operator can pause a branch, fork it to try an alternative, roll it back to a checkpoint or inject a steward prompt mid-flight — and every frame of that reasoning is retained in a JSONL transcript for the post-mortem.',
+    fieldNotes: ['Under 8 ms end-to-end SSE reasoning stream.', '64+ concurrent agent sessions on one topology map.', 'Pause, fork, rollback and steward override in one click.'],
     editorialLead:
       'As autonomous software agents spawn specialized subagents to explore repositories, run test suites, and verify builds, flat log files become unreadable. HermesDashboard ingests multiplexed Server-Sent Events (SSE) from up to 64 concurrent Hermes sessions, rendering a live interactive Directed Acyclic Graph (DAG) with one-click pause, fork, rollback, and steward prompt injection.',
     architecture: [
@@ -598,8 +630,11 @@ pub fn pad_chunk_zeroes(buf: &mut Vec<u8>) {
     spotInkHex: '#b45309', // Archival Gold-Ochre
     secondaryInkHex: '#0f766e', // Deep Verdigris
     pullQuote: '“Continuity is not raw context-window hoarding; it is the disciplined distillation of experience through a governed moral covenant.”',
+    bodyCopy:
+      'Becomussy separates what a mind senses from what it remembers and what it will never surrender. Sensory buffers expire by design; episodic journals are distilled during a reflective sleep cycle into a semantic graph; verified procedures accrue into a skill vault; and the Core Covenant — the layer that says who this agent is — can only be changed behind an Ed25519 Steward Gate. A hash-chained ledger makes the whole autobiography portable across model upgrades without persona drift.',
+    fieldNotes: ['L1 sensory · L2 episodic · L3 semantic · L4 skills · L5 covenant.', 'Layers 4–5 mutate only with a cryptographic steward seal.', 'Portable identity capsule survives model migrations.'],
     editorialLead:
-      'Closing our October 2026 Annual is Becomussy—the philosophical and architectural cornerstone of the Ussyverse. When an AI agent wakes up in a fresh process or migrates to a new model backbone, how does it retain genuine autobiographical continuity without suffering persona drift or unauthorized self-modification? Becomussy solves this with a five-layer geological memory stratigraphy guarded by a cryptographic Steward Gate.',
+      'Closing our October 2026 Annual is Becomussy—the philosophical and architectural cornerstone of the Slopverse. When an AI agent wakes up in a fresh process or migrates to a new model backbone, how does it retain genuine autobiographical continuity without suffering persona drift or unauthorized self-modification? Becomussy solves this with a five-layer geological memory stratigraphy guarded by a cryptographic Steward Gate.',
     architecture: [
       'Five-Layer Memory Stratigraphy: (L1) Ephemeral Sensory Buffer, (L2) Episodic Journal, (L3) Semantic Knowledge Graph, (L4) Procedural Skill Vault, and (L5) Core Identity Covenant.',
       'Steward Gate governance protocol requiring explicit cryptographic sign-off before any mutation to Layer-4 skills or Layer-5 identity axioms.',
