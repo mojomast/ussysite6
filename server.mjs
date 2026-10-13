@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE USSY COMPUTING ANNUAL (VOL. 11, NO. 10)
+ * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10)
  * HARDENED NODE HTTP SERVER & EDITORIAL API GATEWAY
  *
  * Zero external runtime dependencies.
@@ -402,6 +402,6 @@ const isMainEntry =
 if (isMainEntry) {
   const server = createAppServer();
   server.listen(defaultPort, defaultHost, () => {
-    console.log(`[ussysite6] THE USSY COMPUTING ANNUAL listening on http://${defaultHost}:${defaultPort}`);
+    console.log(`[ussysite6] THE SLOP COMPUTING ANNUAL listening on http://${defaultHost}:${defaultPort}`);
   });
 }
