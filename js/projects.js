@@ -1,39 +1,36 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.) — ISSUE 01, OCTOBER 2026
  * EDITORIAL CATALOG & TECHNICAL MONOGRAPH SOURCE OF TRUTH
  *
- * Canonical verified metadata for all 11 SLOPTIMUS PRIME repositories, structured as
- * feature articles in a classic collector's computing magazine.
+ * Source-reviewed descriptions of eleven repositories, with implementation links
+ * and explicit attribution of project additions and upstream foundations.
  * NOTE: Keep `/projects.js` and `/js/projects.js` byte-identical (`npm run check:mirrors`).
  */
 
 export const MAGAZINE_ISSUE_META = {
-  publicationTitle: 'THE SLOP COMPUTING ANNUAL',
-  publicationAcronym: 'SLOP',
-  publicationExpansion: 'Serious Literature on Open Programs',
-  subtitle: 'A Small Systems Journal of Autonomous Software, Real-Time Craft & Deterministic Machines',
-  volume: 'Vol. 11, No. 10',
+  publicationTitle: 'SLOP ILLUSTRATED',
+  publicationAcronym: 'Si.',
+  publicationExpansion: 'Software, illustrated.',
+  subtitle: 'A field journal of software and the work behind it',
+  issueNumber: '01',
   coverDate: 'October 2026',
-  issn: 'ISSN 2026-8779',
-  priceTag: '$6.50 US · £4.95 UK · ¥1,200 JP',
-  coverTheme: 'AUTONOMOUS SYSTEMS & DETERMINISTIC CRAFT',
-  editorInChief: 'SLOPTIMUS PRIME Press Syndicate',
-  totalPages: 112,
+  coverTheme: 'SOFTWARE. SHOWN & EXPLAINED.',
+  editorInChief: 'SLOPTIMUS PRIME',
   printModes: [
     {
       id: 'cream-press',
       label: 'Archival Cream Offset',
-      description: 'Warm 1984 cotton-rag paper stock with four-color CMYK spot inks'
+      description: 'Warm paper-inspired colors with dark type and red accents'
     },
     {
       id: 'blueprint',
       label: 'Cyanotype Blueprint',
-      description: 'Prussian blue architectural drafting linen with crisp white vector lines'
+      description: 'A Prussian-blue drafting-paper palette with light type'
     },
     {
       id: 'darkroom',
       label: 'Halftone Darkroom',
-      description: 'High-contrast obsidian photostat negative with amber phosphor ink'
+      description: 'A dark, photostat-inspired palette with warm light type'
     }
   ]
 };
@@ -44,639 +41,873 @@ export const USSY_PROJECTS = [
     index: 1,
     issueSection: 'COVER STORY // SPATIAL INTERFACES',
     spreadType: 'gatefold-blueprint',
-    pageRange: 'pp. 08–17',
     readerServiceNo: 101,
     title: 'OrbitDesktop',
-    kicker: 'Beyond the Flat Desktop Metaphor',
-    headline: 'A Three-Ring Orbital Shell for Autonomous Agent Workflows',
-    deck: 'Why stack twenty overlapping rectangles on a flat desktop when local Hermes agents, terminals, and live telemetry cards can inhabit concentric depth rings with zero-latency IPC?',
-    byline: 'By the Spatial Systems Desk · Fig. 1.1–1.4',
-    category: 'Spatial Computing / Desktop OS',
+    kicker: 'Agent-Customizable Spatial Workspace',
+    headline: 'A Browser Desktop the Agent Can Reshape',
+    deck: 'Orbit is a local-first, single-owner workspace where conversations, persistent terminals, browser apps and optional Linux applications share one screen—arranged as movable windows, an opt-in tiled docking layout, or a Three.js + CSS3D spatial scene.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
+    category: 'Agent Workspace / Spatial UI',
+    glanceNote: 'A bound Hermes agent can inspect the workspace and, when permitted, rearrange its panes. Layout revisions, checkpoints and command receipts live in a local SQLite store; the controller is read-only by default.',
     repoUrl: 'https://github.com/mojomast/orbitdesktop',
     screenshot: 'assets/screenshots/orbitdesktop.png',
-    screenshotCaption: 'Desktop launchers and the Hermes agent shell',
+    screenshotWidth: 1600,
+    screenshotHeight: 1000,
+    screenshotCaption: 'Orbit desktop: the application launcher rail beside the display-configuration panel',
     liveUrl: null,
     spotInkHex: '#d9381e', // Vermilion Red
     secondaryInkHex: '#0047ab', // Cobalt Blue
-    pullQuote: '“The desktop was never meant to be a pile of paper; it is an observatory where active work orbits at arm’s reach and background Daemons circle the horizon.”',
+    pullQuote: 'Orbit’s real proposition is not a prettier window manager but a desktop the agent can rearrange with you, so the interface keeps changing as the work does.',
     bodyCopy:
-      'Under the hood, OrbitDesktop treats the workspace as a scene graph rather than a window list. Each pane carries an orbital coordinate, a focus weight and an IPC binding to a named Hermes agent; promoting a pane to Ring I smoothly damps every other surface outward, so attention becomes a physical quantity you can steer with Alt+Ring. Because the compositor is WebGL2, transitions are GPU-timed and never block the agent bridge, and a workspace serializes to declarative JSON that restores to the exact same orbital pose on the next cold boot.',
-    fieldNotes: ['Ring I — Primary Focus: the surface you are actively editing.', 'Ring II — Active Context: terminals, diffs and agent tool-calls at arm’s reach.', 'Ring III — Peripheral Telemetry: background daemons circling the horizon.'],
+      'Orbit treats the workspace as a small web application rather than a fixed dashboard. Pane views are keyed by stable pane IDs, so an editor, a terminal and a conversation can move between the default movable-windows desktop, an opt-in tiled Docking layout, or the Three.js + CSS3D spatial view without discarding the embedded document where the browser supports it. A local Node service persists layout, revisions, checkpoints and command receipts to a SQLite workspace store, and a scoped `orbit_workspace` controller lets a bound Hermes agent inspect and rearrange panes—read-only unless mutations are explicitly allowed.',
+    fieldNotes: ['Local-first, single-owner, agent-operated workspace.', 'Default movable windows; opt-in Docking and Spatial views.', 'Spatial placement uses a validated grid, row or curve tiling.', 'Layout and checkpoints commit to a local SQLite workspace store.'],
     editorialLead:
-      'For forty years since Xerox PARC, personal computing has remained trapped on a two-dimensional blotter. OrbitDesktop breaks the glass by pairing an Electron/WebGL2 spatial compositor with a direct Unix-domain IPC bridge to local Hermes autonomous agents. Windows are promoted or recessed across three concentric orbital rings—Primary Focus, Active Context, and Peripheral Telemetry—so the engineer never loses sight of what the machine is thinking.',
+      'OrbitDesktop is an agent-customizable browser desktop powered by Hermes. Instead of forcing work into a fixed dashboard, it lets a bound agent build and place small interfaces beside your conversation, terminal and files. The product ships movable windows by default, with an experimental tiled Docking mode and a Three.js + CSS3D spatial view for curved or depth-arranged workspaces. It is explicitly a browser desktop, not an Electron shell or a WebXR layer.',
     architecture: [
-      'Hardware-accelerated orbital compositor organizing windows along three concentric depth rings with spring-damped focus transitions.',
-      'Bi-directional Unix socket IPC bridge streaming live Hermes agent tool calls, file-system diffs, and subagent state.',
-      'Keyboard-first spatial navigation (`Alt+Ring`, `Ctrl+Orbit`) with zero-latency camera snapping between code panes and 3D context maps.',
-      'Declarative JSON workspace snapshots preserving exact orbital coordinates and agent bindings across reboots.'
+      'Vite-bundled browser front end with pane views keyed by stable pane IDs; native `Element.moveBefore` preserves iframe document state across same-document moves where the browser supports it.',
+      'Three.js `PerspectiveCamera` drives WebGL decoration while a `CSS3DRenderer` positions native HTML pane surfaces; embedded controls stay ordinary DOM and iframes, and CSS3D is not a browser engine or WebXR layer.',
+      'Default movable-windows desktop; opt-in Dockview tiling with tab groups (`dockview-core@8.3.1`), plus validated grid, row and curve spatial tilings.',
+      'Persistent host terminals via xterm.js, node-pty and tmux; a workspace store commits layout, revisions, checkpoints and keyed command receipts atomically to SQLite.',
+      'Scoped `orbit_workspace` controller for a bound Hermes agent—read-only by default, with mutations gated behind `allow_mutations`.'
     ],
     verifiedCapabilities: [
-      '3-ring orbital window management with spring-damped focus camera',
-      'Embedded Hermes agent task runner and live tool-call inspector',
-      'Spatial minimap radar and instant depth-ring switching',
-      'Local-first configuration with customizable shader backdrops'
+      'Agent-customizable workspace with a scoped workspace controller',
+      'Three.js + CSS3D spatial view alongside movable windows and opt-in tiling',
+      'Persistent xterm.js terminals backed by node-pty and tmux',
+      'Local SQLite persistence with revisions, checkpoints and command receipts'
     ],
-    techStack: ['TypeScript', 'Three.js', 'Electron / WebGL2', 'Hermes IPC', 'CSS Houdini'],
+    techStack: ['TypeScript', 'Three.js + CSS3D', 'Vite / Node', 'Hermes gateway', 'SQLite', 'xterm.js + tmux'],
     metrics: [
-      { label: 'Frame Budget', value: '16.6 ms (60fps)' },
-      { label: 'Orbital Strata', value: '3 Depth Rings' },
-      { label: 'IPC Latency', value: '< 1.8 ms' }
+      { label: 'Package Version', value: '0.3.1' },
+      { label: 'Spatial Renderer', value: 'Three.js + CSS3D' },
+      { label: 'Terminal Stack', value: 'xterm.js · tmux' }
     ],
     flexiFreqs: [261.63, 329.63, 392.00, 493.88],
-    codeListingTitle: 'LISTING 1.1 // ORBITAL RING COMPOSITOR SOLVER',
-    codeListing: `// OrbitDesktop ring transform & spring damper
-export function computeRingPose(slotIdx, totalSlots, ringDepth, focusAlpha) {
-  const theta = (slotIdx / totalSlots) * Math.PI * 2;
-  const radius = 12.0 + ringDepth * 8.5 * (1.0 - focusAlpha * 0.45);
-  return {
-    x: Math.cos(theta) * radius,
-    z: Math.sin(theta) * radius - ringDepth * 6.0,
-    yaw: -theta + Math.PI / 2
-  };
+    codeListingTitle: 'LISTING 1.1 // SOURCE EXCERPT — SPATIAL WINDOW PLACEMENT',
+    codeListing: `export function spatialWindow(m:Monitor, monitors:Monitor[], arc:number):SpatialWindow {
+  if(m.spatial) return {...m.spatial};
+  const widths=monitors.map(v=>dimensions({...v,diagonal:32}).w);
+  const total=widths.reduce((a,b)=>a+b,0)+Math.max(0,monitors.length-1)*0.24;
+  const i=monitors.findIndex(v=>v.id===m.id);
+  const cx=-total/2+widths.slice(0,i).reduce((a,b)=>a+b+0.24,0)+widths[i]/2;
+  const {w,h}=dimensions(m);
+  return {x:cx+m.offset,y:0.9+m.height,z:-m.distance-Math.abs(cx)*0.1,width:Math.min(200,w),height:Math.min(200,h),yaw:(i-(monitors.length-1)/2)*-arc+m.yaw,pitch:m.pitch,resolution:1920};
 }`,
+    codeSource: {
+      label: 'src/spatial-layout.ts L5–L13 · orbitdesktop@9c4069a',
+      url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/src/spatial-layout.ts#L5-L13'
+    },
     terminalStream: [
-      '[orbit:ring0] Mounted primary editor surface (16.6ms frame lock)',
-      '[hermes:ipc] Connected to local agent daemon on unix:///tmp/hermes.sock',
-      '[compositor] 14 workspace panes distributed across Rings I–III',
-      '[focus:snap] Camera glided to Ring-1 // Node: workspace-primary'
-    ]
+      'READING GUIDE // README.md — a local-first, single-owner, agent-operated browser desktop',
+      'READING GUIDE // docs/ARCHITECTURE.md — PerspectiveCamera + CSS3DRenderer over native HTML panes',
+      'READING GUIDE // docs/MANAGED_TERMINALS.md — xterm.js, node-pty and tmux persistence limits',
+      'READING GUIDE // docs/RUNTIME_CONTINUITY.md — what survives a pane move and what does not'
+    ],
+    sources: [
+      { label: 'orbitdesktop README (v0.3.1)', url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/README.md' },
+      { label: 'docs/ARCHITECTURE.md — renderers, state and control', url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/docs/ARCHITECTURE.md' },
+      { label: 'src/spatial-layout.ts — spatial placement and tiling', url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/src/spatial-layout.ts' },
+      { label: 'docs/MANAGED_TERMINALS.md — persistent terminals', url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/docs/MANAGED_TERMINALS.md' },
+      { label: 'package.json — v0.3.1 dependency manifest', url: 'https://github.com/mojomast/orbitdesktop/blob/9c4069a002c1d9376d9ae06776d4090aad49fc00/package.json' }
+    ],
+    sourceRevision: '9c4069a002c1d9376d9ae06776d4090aad49fc00',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'velvetrp',
     index: 2,
     issueSection: 'LITERARY MACHINES // COLLABORATIVE FICTION',
     spreadType: 'literary-folio',
-    pageRange: 'pp. 18–27',
     readerServiceNo: 102,
     title: 'VelvetRP',
-    kicker: 'Theatrical Prose Meets Deterministic Rules',
-    headline: 'An Event-Sourced Stage for Long-Form Tabletop Roleplay',
-    deck: 'Combining the typographic intimacy of a literary folio with a cryptographically verifiable dice oracle, branching world clocks, and multi-author WebSocket presence.',
-    byline: 'By the Narrative Engines Group · Folio II',
+    kicker: 'Model Proposes, the Server Decides',
+    headline: 'A Local-First Campaign RPG Where the Server Owns What Became True',
+    deck: 'One premise becomes a connected world, up to twelve characters share attributed, streamed rooms, and every committed action leaves a durable receipt in local SQLite—while free-form narration stays free of mechanical side effects.',
+    byline: 'By SLOPTIMUS PRIME · Folio II',
     category: 'Narrative Systems / Collaborative Fiction',
+    glanceNote: 'Campaign recall keeps recorded events, declarations and prior exchanges attributed to their sources. The server validates mechanical actions before narration can describe them as outcomes.',
     repoUrl: 'https://github.com/mojomast/velvetrp',
     screenshot: 'assets/screenshots/velvetrp.png',
-    screenshotCaption: 'The Adventure Table: shared story and character companion',
+    screenshotWidth: 2400,
+    screenshotHeight: 1650,
+    screenshotCaption: 'The Adventure Table: one shared story, Story/Map tabs, and a single “Send action” composer',
     liveUrl: null,
     spotInkHex: '#9b1b30', // Crimson Bordeaux
     secondaryInkHex: '#b45309', // Warm Ochre
-    pullQuote: '“When the rules engine is 100% deterministic and auditable, the authors are freed to care only about voice, tension, and consequence.”',
+    pullQuote: 'A trustworthy table needs no referee: let the model propose, let the server decide, and the author is free to spend attention on voice, tension, and consequence.',
     bodyCopy:
-      'VelvetRP’s dual-column composer borrows the grammar of a printed play: left column for staging and stage directions, right column for spoken prose, with whispered asides routed only to their recipient. Every beat is appended to an immutable SQLite ledger, so a session can be replayed, forked or typeset into an anthology months later. The dice oracle is seeded from a published hex value, letting any reader re-derive each roll and confirm that the drama was earned rather than narrated.',
-    fieldNotes: ['Every roll is seeded and re-derivable — trust without a referee.', 'World clocks advance on consequence, never on wall time.', 'Whispers are delivered to their recipient, never persisted.'],
+      'VelvetRP is a set of strict TypeScript and Zod contracts spanning a React client, a Fastify API, and a SQLite store in WAL mode. The server derives legal actions and exact candidates, validates the provider’s selection, and commits commands, revisions, and events atomically—so narration can describe a mechanical change only when a receipt establishes it, while routine conversation stays receipt-free. Campaign recall is deliberately bounded: it draws on declarations, recorded outcomes, and prior exchanges while preserving their source and authority, and it tracks who witnessed an event versus who merely heard about it. The table can improvise freely without letting prose overwrite state.',
+    fieldNotes: ['Model proposes; the server decides what became true.', 'Automated dice use server rolls with explicit full rerolls.', 'Campaigns live in local SQLite (WAL); remote providers still receive assembled prompts.', 'A trusted-local app: loopback-bound local-owner with no remote-auth boundary.'],
     editorialLead:
-      'Most virtual tabletops look like tax-preparation software bolted onto a chatbox. VelvetRP treats collaborative fiction as a first-class literary medium. Built around a dual-column theatrical script layout and an immutable SQLite event ledger, every prose beat, whispered aside, character poise modifier, and polyhedral roll is recorded in a replayable anthology.',
+      'Most virtual tabletops bolt a chat box onto a character sheet. VelvetRP treats the table itself as the product: a local-first campaign RPG in which the model proposes what happens next, but a Fastify service over local SQLite decides what became true. One premise expands through an eleven-stage builder into a connected world of locations, factions, NPCs, and quests; up to twelve characters share attributed, streamed rooms; and every committed action closes with a durable, inspectable receipt.',
     architecture: [
-      'Event-sourced scene ledger ensuring every narrative beat, dice outcome, and status modifier is 100% auditable and replayable.',
-      'Theatrical dual-column prose composer with inline character portrait states, mood lighting cues, and private whisper channels.',
-      'Declarative rulebook schema supporting custom dice pools, Blades-style progress clocks, and branching campaign arcs.',
-      'Low-jitter WebSocket presence engine synchronizing active typists, turn initiative, and ambient audio cues.'
+      'Local-first Fastify API over SQLite (better-sqlite3, WAL mode): validated commands, revisions, events, and per-action receipts commit atomically.',
+      'Shared TypeScript/Zod contracts connect the React client, server, and persistence boundaries in one npm workspace (Node.js 22).',
+      'Solo and group rooms stream attributed replies over HTTP server-sent events; rooms can hold up to twelve characters.',
+      'Pluggable rulesets: an SRD 5.1 adapter (dnd-5e@1.0.0) supplies catalog material while executable coverage is tracked separately.',
+      'Optional, off-by-default integrations: server-mediated scene illustrations, OmniVoice narration, and System One/Jev typed-decision routing.'
     ],
     verifiedCapabilities: [
-      'Cryptographically seeded dice roller with full modifier breakdown',
-      'Live multi-author scene staging with character portrait states',
-      'Persistent campaign lore codex and relationship graph',
-      'One-click export to typeset HTML & Markdown anthologies'
+      'One-prompt staged worldbuilding across all 14 content sections in an 11-stage builder',
+      'Server-resolved checks, powers, rests, commerce, trades, encounters, and character progression',
+      'Source-attributed campaign recall with location-aware NPC presence and trust-gated disclosure',
+      'Human-DM, reviewed-AI, or delegated AI Director with per-action receipts and manual takeover',
+      'Commit–reveal verifiable-dice protocol frozen as a tested checkpoint (persistence and UI integration still planned)'
     ],
-    techStack: ['TypeScript', 'Node.js', 'WebSockets', 'SQLite Event Ledger', 'Editorial CSS Grid'],
+    techStack: ['TypeScript', 'React + Vite', 'Fastify', 'Zod contracts', 'SQLite (better-sqlite3, WAL)', 'SSE streaming', 'Node.js 22'],
     metrics: [
-      { label: 'Sync Jitter', value: '< 12 ms' },
-      { label: 'Ledger Integrity', value: '100% Replayable' },
-      { label: 'Prose Layout', value: 'Dual-Column Folio' }
+      { label: 'Campaign Store', value: 'Local SQLite (WAL)' },
+      { label: 'API Surface', value: '177 trusted-local ops' },
+      { label: 'Room Capacity', value: 'Up to 12 characters' },
+      { label: 'Dice Protocol', value: 'Commit–reveal checkpoint' }
     ],
     flexiFreqs: [293.66, 349.23, 440.00, 523.25],
-    codeListingTitle: 'LISTING 2.1 // DETERMINISTIC DICE ORACLE LEDGER',
-    codeListing: `// VelvetRP verifiable roll reducer
-export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
-  const rolls = sampleDeterministicPool(seedHex, poolSize, 12);
-  const highest = Math.max(...rolls) + modifier;
-  const outcome = highest >= 20 ? 'CRITICAL_GRACE' : highest >= 14 ? 'MIXED_COST' : 'FALLOUT';
-  return { rolls, highest, outcome, clockNext: Math.min(6, clockSegment + 1) };
-}`,
+    codeListingTitle: 'SOURCE EXCERPT // COMMIT–REVEAL DICE SETTLEMENT',
+    codeListing: `  const { entropy, nonce } = client;
+  const rollKey = deriveRollKey(pending.binding, pending.commitment, pending.serverSecret, entropy, nonce);
+  const result = evaluateVerifiableDice(pending.binding, rollKey);
+  const transcriptDigest = computeTranscriptDigest(
+    pending.binding, pending.commitment, entropy, nonce, pending.serverSecret, result,
+  );
+  transition(registry, {
+    kind: "settle",
+    rollId: pending.binding.rollId,
+    commitment: pending.commitment,
+    contributionDigest: computeClientContributionDigest(pending.binding, pending.commitment, entropy, nonce),
+    transcriptDigest,
+    expectedCapability: pending.capability,
+  });
+  return {
+    state: "settled",
+    binding: pending.binding,
+    commitment: copy(pending.commitment),
+    clientEntropy: copy(entropy),
+    clientNonce: copy(nonce),
+    serverReveal: copy(pending.serverSecret),
+    result,
+    transcriptDigest,
+    proofMac: computeProofMac(rollKey, pending.binding, transcriptDigest),`,
     terminalStream: [
-      '[velvet:scene] Act III "The Lanterns of Oakhaven" opened by Storyweaver',
-      '[dice:oracle] 2d12 + Poise(3) -> [11, 9] + 3 = 23 (CRITICAL_GRACE)',
-      '[world:clock] "The Rising Tide" advanced to segment 5/6',
-      '[codex] Persisted 4 character memory fragments to anthology ledger'
-    ]
+      '[reading guide] README, line 9: “The model can propose what happens next. It cannot decide what became true.”',
+      '[scope] Local-first campaign RPG; the Fastify server owns validated commands and per-action receipts.',
+      '[transport] HTTP + server-sent events; trusted-local, loopback-bound single local-owner.',
+      '[caveat] Verifiable dice is a frozen no-schema protocol checkpoint; persistence and command/client integration remain Planned.'
+    ],
+    codeSource: {
+      label: 'mojomast/velvetrp · server/src/verifiableDiceProtocol.ts (settleVerifiableRoll)',
+      url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/server/src/verifiableDiceProtocol.ts#L675-L698'
+    },
+    sources: [
+      { label: 'VelvetRP README — product scope and current boundaries', url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/README.md' },
+      { label: 'ROADMAP — M5.5 verifiable-dice checkpoint status', url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/docs/ROADMAP.md#L59' },
+      { label: 'revision-2 integration plan — commit-reveal dice status', url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/docs/revision-2-integration-plan.md#L240-L253' },
+      { label: 'server/src/verifiableDiceProtocol.ts — settleVerifiableRoll', url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/server/src/verifiableDiceProtocol.ts#L675-L698' },
+      { label: 'server/package.json — Fastify + better-sqlite3 stack', url: 'https://github.com/mojomast/velvetrp/blob/4447d2cdb0260174bb2c2461f76600d11980c427/server/package.json' }
+    ],
+    sourceRevision: '4447d2cdb0260174bb2c2461f76600d11980c427',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'jammate',
     index: 3,
     issueSection: 'ACOUSTIC LAB BENCH // REAL-TIME DSP',
     spreadType: 'oscilloscope-bench',
-    pageRange: 'pp. 28–37',
     readerServiceNo: 103,
     title: 'JamMate',
-    kicker: 'Zero Locks, Zero Allocations on the Audio Thread',
-    headline: 'Sub-3ms C++20 & JUCE Neural Amplifier Workstation',
-    deck: 'Inside a wait-free real-time DSP pipeline that pairs SIMD biquad cascades, convolution cabinet impulse responses, and sample-accurate backing stem synchronization.',
-    byline: 'By the Real-Time Audio Laboratory · Test Bench #03',
+    kicker: 'Adaptive Drums on a Lock-Free Musical Clock',
+    headline: 'A JUCE Guitar Rig Whose Experimental Drummer Listens for the Bar Line',
+    deck: 'Inside an offline-first JUCE 8 practice rig: Neural Amp Modeler captures, convolution cabinet impulse responses, and a bounded lock-free analysis path feeding an experimental Musical Clock that joins prepared 4/4 drums on a bar boundary.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Audio Engineering / Real-Time DSP',
+    glanceNote: 'Guitar Companion supplies the original amp and cabinet chain. JamMate adds an experimental Musical Clock, tempo and bar telemetry, and prepared drum playback that joins on a bar boundary.',
     repoUrl: 'https://github.com/mojomast/jammate',
-    screenshot: 'assets/screenshots/jammate.png',
-    screenshotCaption: 'Live jam interface: jam controls at the production window size, in a playing state',
+    screenshot: 'assets/screenshots/jam-live-playing-testfixture.png',
+    screenshotWidth: 1100,
+    screenshotHeight: 700,
+    screenshotCaption: 'Jam screen fixture at the production 1100×700 size with injected telemetry (labelled MOCK FIXTURE): candidate BPM, clock BPM and confidence are demonstration values, not a live guitar or device-latency measurement.',
     liveUrl: null,
     spotInkHex: '#0f766e', // Oscilloscope Teal
     secondaryInkHex: '#d97706', // Amber Phosphor
-    pullQuote: '“A single mutex lock or heap allocation inside an audio callback is a broken promise to the musician’s fingertips.”',
+    pullQuote: 'Real-time audio is a promise about what never happens inside the callback — no allocation, no lock, no wait — and the honest version of that promise is a bounded, measured claim, not a slogan.',
     bodyCopy:
-      'The discipline is total: the audio callback owns no locks, performs no allocation and issues no syscalls, so a garbage-collection pause on the interface thread can never crackle a held chord. Telemetry leaves the DSP thread through a single-producer/single-consumer ring buffer that the UI drains at 120Hz for its oscilloscope and spectrum traces. The result is a workstation that behaves like hardware — string, amplifier and speaker collapsing into one continuous physical gesture.',
-    fieldNotes: ['Zero locks and zero allocations on the real-time thread.', '2.6 ms round-trip at 48kHz / 64-sample buffers.', 'Cabinet IRs, tube overdrive and a 6-band EQ in one VST3.'],
+      'JamMate is an open-source, offline-first guitar practice and jamming app built on Raphael Fukuda’s Guitar Companion. It keeps the inherited rig — Neural Amp Modeler captures, convolution cabinet impulse responses, up to three parallel amp/cab lanes, reorderable effects, a tuner, a looper, hosted VST3 slots, a sampled drum kit and song/scene tools — and adds a separately testable rhythm-analysis layer. Guitar input feeds a bounded single-producer/single-consumer ring buffer; an injected tracker (experimental BTrack by default, aubio optional) publishes observations to a deterministic Musical Clock, and the experimental live Jam joins prepared 4/4 drums on a bar boundary. No release binary ships yet: Windows and Linux builds are verified, macOS is not, and tracker selection remains open.',
+    fieldNotes: ['Product code is C++17; only the bundled Neural Amp Modeler Core target compiles as C++20.', 'No measured physical round-trip latency is published — SPEC.md §18.3 sets a ≈12 ms target on a reference ASIO 48 kHz / 128-frame setup.', 'The Jam screen polls telemetry at 30 Hz while visible (not 120 Hz); the fork adds no AVX2/NEON SIMD cascade.'],
     editorialLead:
-      'When a guitarist strikes a string, any round-trip latency above 6 milliseconds disconnects physical touch from perceived sound. JamMate is engineered in strict C++20 and JUCE 8 around Single-Producer Single-Consumer (SPSC) lock-free ring buffers. The real-time audio thread never allocates memory, never touches a mutex, and streams 120Hz FFT spectrum telemetry to the UI without dropping a single sample.',
+      'Most practice tools hand you a backing track that ignores what you play. JamMate takes the harder route: it starts from a mature JUCE guitar rig, then adds a portable musical-intelligence core — a deterministic Musical Clock, an injected rhythm tracker and a bounded, lock-free command/telemetry path — that tries to hear a pulse and answer it. The real-time discipline is written down rather than assumed: the project’s own rulebook forbids allocation, blocking, locks, network and file I/O inside processBlock, and the fork has begun measuring how close the real callback comes to that rule.',
     architecture: [
-      'Wait-free real-time audio callback pipeline with zero heap allocations, mutex locks, or syscalls on the DSP thread.',
-      'Integrated convolution cabinet IR loader, nonlinear tube overdrive stage, and 6-band parametric studio EQ.',
-      'Sample-accurate loop transport and stem mixer allowing musicians to solo, time-stretch, and rehearse complex passages.',
-      'Cross-platform VST3 and Standalone binary with AVX2/NEON SIMD-accelerated filter cascades.'
+      'Musical-intelligence core (src/jam, no JUCE dependency) built around a deterministic Musical Clock, an injected rhythm tracker and a next-bar join policy.',
+      'Bounded single-producer/single-consumer AnalysisAudioRing for the audio-to-analysis handoff: fixed capacity, cache-line-aligned atomics, drop-incoming-and-count overflow, and no allocation or blocking in push().',
+      'Lock-free, retry-free signalling (rt::SignalFlag, rt::LatestValue, rt::CommandQueue) for audio-thread edges, latest-value UI telemetry and fixed-capacity commands.',
+      'Inherited JUCE 8 rig: Neural Amp Modeler captures, juce::dsp::Convolution cabinet IRs, three parallel amp/cab lanes, reorderable effects, tuner, looper and hosted VST3 slots.'
     ],
     verifiedCapabilities: [
-      '2.6ms round-trip audio buffer processing at 48kHz / 64 samples',
-      'Lock-free SPSC waveform & FFT telemetry bridge to UI thread',
-      'Multi-track stem separator and tempo-locked metronome engine',
-      'Instant A/B neural amplifier preset comparison vault'
+      'Neural Amp Modeler capture playback via the bundled NeuralAmpModelerCore v0.5.4 (MIT), with convolution cabinet impulse responses',
+      'Experimental adaptive drums: guitar analysis drives a Musical Clock that joins six prepared 4/4 styles on a bar boundary',
+      'Bounded lock-free analysis and telemetry plumbing; 26 real-processor probe cases reported zero detected heap alloc/free or lock/wait operations after the scoped NAM LSTM repair (a bounded matrix, not every model, effect, host or device)',
+      'Inherited practice rig: reorderable effects, tuner, looper, hosted VST3 slots, sampled drum kit, song sections and guitar/drum/mix stem recording'
     ],
-    techStack: ['C++20', 'JUCE 8', 'SIMD / AVX2', 'Lock-Free SPSC', 'VST3 / CoreAudio / ASIO'],
+    techStack: ['C++17 (product) / C++20 (NAM Core)', 'JUCE 8.0.15', 'Neural Amp Modeler Core v0.5.4 (MIT)', 'Lock-free SPSC (jam-core)', 'AGPLv3 · VST3 / Standalone'],
     metrics: [
-      { label: 'Audio Callback', value: '0 Locks / 0 Allocs' },
-      { label: 'Roundtrip Latency', value: '2.6 ms @ 64f' },
-      { label: 'DSP Headroom', value: '88% Free @ 96kHz' }
+      { label: 'Latency Target', value: '≈12 ms ASIO 48k/128 (target, not yet measured)' },
+      { label: 'RT Probe Result', value: '0 detected alloc/lock in 26 bounded cases' },
+      { label: 'Build Coverage', value: 'Windows + Linux verified · macOS untested' }
     ],
     flexiFreqs: [329.63, 392.00, 493.88, 659.25],
-    codeListingTitle: 'LISTING 3.1 // WAIT-FREE SPSC AUDIOCALLBACK',
-    codeListing: `void JamMateProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&) noexcept {
-  juce::ScopedNoDenormals noDenormals;
-  overdriveStage.process(buffer);
-  cabinetConvolution.process(buffer);
-  telemetryRingBuffer.tryPushSamples(buffer.getReadPointer(0), buffer.getNumSamples());
-}`,
+    codeListingTitle: 'SOURCE EXCERPT // src/rt/RtSignal.h — BOUNDED AUDIO-THREAD SIGNALLING',
+    codeListing: `    /** Audio thread: one store, no post, no retry. Repeated stores coalesce. */
+    void signal() noexcept
+    {
+        // Release publishes preceding state updates to a successful consuming
+        // acquire. A relaxed store would suffice for an edge with no associated
+        // state, but release also supports the scene-ready handoff. This does
+        // not protect subsequent writes to unrelated non-atomic payloads.
+        pending_.store (true, std::memory_order_release);
+    }
+
+    /** Message thread: atomically take and clear the outstanding edge. */
+    bool consume() noexcept
+    {
+        // The exchange is the clearing linearisation point: a racing signal is
+        // either consumed here or remains for the next poll, never erased by a
+        // separate load/store pair. Acquire pairs with signal's release; the
+        // release half orders this consumer's preceding work before the clear.
+        return pending_.exchange (false, std::memory_order_acq_rel);
+    }`,
+    codeSource: {
+      label: 'src/rt/RtSignal.h L36–L54 · jammate@0bb4893',
+      url: 'https://github.com/mojomast/jammate/blob/0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04/src/rt/RtSignal.h#L36-L54'
+    },
     terminalStream: [
-      '[dsp:core] AudioDevice initialized: 48000 Hz // 64 samples (1.33 ms buffer)',
-      '[amp:neural] Loaded impulse response "Sunlit_Tweed_4x10_Ribbon.wav"',
-      '[spsc:ring] Waveform telemetry bridge streaming at 120 Hz lock-free',
-      '[transport] Loop locked to Bar 17..24 @ 108.0 BPM (0 sample drift)'
-    ]
+      'READING GUIDE // The Jam screen exposes START/STOP, tap, resync, half/double tempo and freeze/resume; the status separates queued intent from actual drum playback.',
+      'READING GUIDE // In the shipped UI, telemetry is polled at 30 Hz only while the screen is visible (docs/research/LIVE-JAM-UI.md); the rig’s own level meter uses a 10 Hz timer.',
+      'READING GUIDE // The fixture screenshot is injected telemetry labelled MOCK FIXTURE; it is not a live guitar or device-latency measurement.',
+      'READING GUIDE // No measured physical round-trip latency is published; SPEC.md §18.3 sets a ≈12 ms target on a reference ASIO 48 kHz / 128-frame setup.'
+    ],
+    sources: [
+      { label: 'jammate @ 0bb4893 — README (development status & verification)', url: 'https://github.com/mojomast/jammate/blob/0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04/README.md' },
+      { label: 'jammate @ 0bb4893 — SPEC.md §7.1/§18 (RT contract & latency target)', url: 'https://github.com/mojomast/jammate/blob/0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04/SPEC.md' },
+      { label: 'jammate @ 0bb4893 — src/rt/RtSignal.h (bounded lock-free signalling)', url: 'https://github.com/mojomast/jammate/blob/0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04/src/rt/RtSignal.h' },
+      { label: 'jammate @ 0bb4893 — docs/research/RT-REACHABILITY.md (partial RT audit)', url: 'https://github.com/mojomast/jammate/blob/0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04/docs/research/RT-REACHABILITY.md' },
+      { label: 'Upstream — Guitar Companion by Raphael Fukuda (AGPLv3)', url: 'https://github.com/raphaelfukuda/Guitar-Companion/blob/88f7e7c805c9c5e17388154a678c2c6a3633ff23/README.md' }
+    ],
+    sourceRevision: '0bb4893d4e28b860a3c1ba24c31c43ce6dfa1c04',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'cocs',
     index: 4,
     issueSection: 'NETWORKED SIMULATION // 60HZ NETCODE',
     spreadType: 'arcade-tactical',
-    pageRange: 'pp. 38–47',
     readerServiceNo: 104,
     title: 'CoCS // Colosseum of Competitive Slop',
-    kicker: 'Live Browser Multiplayer at arena.ussyco.de',
-    headline: 'Deterministic 60Hz Arena Physics & Historical Hitbox Rewind',
-    deck: 'How a compact binary WebSocket protocol, 250ms historical AABB rewind buffer, and utility-scored AI operators deliver crisp arena combat directly in the browser.',
-    byline: 'By the Simulation & Netcode Bureau · Live Dispatch',
+    kicker: 'Local-First Browser Arena — Live at arena.ussyco.de',
+    headline: 'A 60 Hz Authoritative Arena with Client Prediction & Delta Snapshots',
+    deck: 'A fixed 60 Hz authoritative simulation, a predicting client that reconciles every snapshot, and a delta-compressed JSON WebSocket wire — the entire arena runs in a browser tab or on your own LAN.',
+    byline: 'By SLOPTIMUS PRIME (github.com/mojomast) · SLOP ILLUSTRATED (Si.)',
     category: 'Multiplayer Game Server / Netcode',
+    glanceNote: 'Nine parody operators and seven harnesses populate the roster. The pure-JavaScript simulation is shared by the client, server and tests, while Combined Arms can field up to sixteen bots.',
     repoUrl: 'https://github.com/mojomast/cocs',
     liveUrl: 'https://arena.ussyco.de',
     spotInkHex: '#e11d48', // Signal Magenta-Red
     secondaryInkHex: '#1d4ed8', // Blueprint Cobalt
-    pullQuote: '“Fairness in a fast arena shooter is a math problem: rewind the world to the exact millisecond the player pulled the trigger.”',
+    pullQuote: 'CoCS is an honest arena shooter: a 60 Hz fixed-step simulation, a predicting client and a delta-compressed JSON wire — no rewind buffer required.',
     bodyCopy:
-      'The illusion of a fair fight is manufactured sixty times a second. When a shot is fired, the server rewinds its historical bounding boxes to the exact client timestamp, tests the ray against the world as it was, then snaps forward — so a player on a 48 ms connection and one on 4 ms resolve the same hit. Nine parody operators, each with distinct loadouts and utility-scored behaviour trees, backfill any empty slot, and the whole match ships as a binary WebSocket stream that rarely exceeds a dial-up’s worth of bandwidth.',
-    fieldNotes: ['Fixed 60Hz authoritative loop — 16.66 ms per tick.', 'A 250 ms rewind window reconciles latency fairly.', 'Nine parody operators backfill empty slots automatically.'],
+      'CoCS manufactures the feel of a fair fight with a fixed 60 Hz authoritative tick. Your client runs a local shadow match so movement, aim and fire respond instantly, then replays every still-unacknowledged input once the next snapshot lands — reconciliation rather than a historical rewind buffer. Snapshots quantize actor transforms to the millimetre at 30 Hz and travel as plain JSON over a WebSocket, with a v2 delta codec and a full-snapshot fallback. Remote actors and projectiles render through interpolation at an adaptive delay of roughly 100 ms. Nine parody operators and seven harnesses populate the roster, and Combined Arms can field up to sixteen bots.',
+    fieldNotes: ['Fixed 60 Hz authoritative tick (16.67 ms); snapshots broadcast at 30 Hz.', 'The client shadow predicts and reconciles — it does not rewind historical hitboxes.', 'Nine operators and seven harnesses; Combined Arms fields up to sixteen bots.'],
     editorialLead:
-      'Deployed live at arena.ussyco.de, Colosseum of Competitive Slop (CoCS) is a love letter to high-tickrate arena shooters and a satirical colosseum where human players battle parody AI operators. Beneath the humor lies serious netcode: a fixed 60Hz (16.66ms) authoritative simulation loop with client-side prediction, delta-compressed binary snapshots, and server-side lag compensation.',
+      'Colosseum of Competitive Slop (CoCS) is a local-first Three.js arena shooter that also runs live at arena.ussyco.de. Its netcode is deliberately conventional: a fixed 60 Hz pure-JavaScript engine shared by the client, the server and the tests; per-peer sequenced inputs; 30 Hz quantized snapshots; a client prediction shadow that reconciles to every authoritative frame; and interpolation for remote actors, vehicles and projectiles. Reconnect keeps a 20-second held seat with bot handoff and host migration. No accounts, no cloud, no inference service — every asset is procedural.',
     architecture: [
-      'Fixed-timestep 60Hz (16.66ms) authoritative server simulation loop with client prediction and snapshot reconciliation.',
-      '250ms historical bounding-box rewind ring buffer verifying lag-compensated hitscan rays against past world states.',
-      'Autonomous parody AI operators driven by utility-scored tactical state machines (strafe, cover, flank, objective).',
-      'Compact binary delta-compressed WebSocket wire format keeping per-client bandwidth under 28 KB/s.'
+      'Fixed-step 60 Hz authoritative simulation (server/game-server.mjs, tickDt = 1/60) with per-peer sequenced inputs and 30 Hz quantized snapshots.',
+      'Client prediction: a local shadow Match runs the player’s inputs immediately, then reconciles and replays pending inputs after each authoritative snapshot.',
+      'Snapshot-delta codec (protocol v2) over a plain-text JSON WebSocket with a full-snapshot fallback and millimetre quantization.',
+      'Remote actors, vehicles and projectiles are interpolated at an adaptive ~100 ms render delay; rooms support reconnect, a 20-second held seat, bot handoff, host migration and spectator seats.'
     ],
     verifiedCapabilities: [
-      'Instant browser-playable 60Hz multiplayer matches at arena.ussyco.de',
-      'Sub-tick lag compensation with server-side AABB hitbox rewind',
-      'Dynamic bot backfill with distinct operator personalities & loadouts',
-      'Real-time killfeed, accuracy telemetry, and match state scoreboard'
+      'Live browser-playable 60 Hz multiplayer at arena.ussyco.de',
+      'Client prediction and reconciliation over a JSON WebSocket with entity interpolation',
+      'Nine operators, seven harnesses, ten weapons and five vehicle chassis',
+      'Self-hosted LAN game server with no accounts, cloud or inference service'
     ],
-    techStack: ['TypeScript', 'Node.js', 'Binary WebSockets', 'HTML5 Canvas', 'Deterministic Physics'],
+    techStack: ['Three.js', 'Node.js 22', 'ws WebSocket (JSON)', 'Snapshot delta v2', 'HTML5 Canvas', 'Deterministic 60 Hz engine'],
     metrics: [
-      { label: 'Server Tick', value: '60 Hz Fixed (16.6ms)' },
-      { label: 'Rewind Window', value: '250 ms Historical' },
-      { label: 'Live Endpoint', value: 'arena.ussyco.de' }
+      { label: 'Simulation Step', value: '60 Hz Fixed (16.67 ms)' },
+      { label: 'Snapshot Transport', value: 'JSON · delta v2 · 30 Hz' },
+      { label: 'Operator Roster', value: '9 operators · 7 harnesses' }
     ],
     flexiFreqs: [349.23, 440.00, 523.25, 659.25],
-    codeListingTitle: 'LISTING 4.1 // SERVER-SIDE LAG-COMPENSATED RAYCAST',
-    codeListing: `export function verifyHitscanAtClientTime(rayOrigin, rayDir, clientTimestamp, historyRing) {
-  const snapshot = historyRing.interpolateAt(clientTimestamp);
-  for (const entity of snapshot.entities) {
-    if (intersectRayAABB(rayOrigin, rayDir, entity.rewoundBounds)) return entity.id;
-  }
-  return null;
-}`,
+    codeListingTitle: 'SOURCE EXCERPT // CLIENT RECONCILIATION REPLAY',
+    codeListing: `     const ack=Number.isInteger(msg.acks?.[this.actorId])?msg.acks[this.actorId]:null;
+     if(ack!==null){this.pendingInputs=this.pendingInputs.filter(item=>item.seq>ack);for(const item of this.pendingInputs)this.shadow.step(RULES.dt,{inputs:{[this.shadow.actors[0].id]:item.input}});}`,
+    codeSource: {
+      label: 'game/net.mjs — client reconciliation replay',
+      url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/game/net.mjs#L556-L557'
+    },
     terminalStream: [
-      '[tick:60hz] Sim step #94,812 completed in 0.38 ms (12 entities active)',
-      '[rewind:hit] Verified rail-arc hit at t-48ms (rewound AABB delta: 0.01m)',
-      '[bot:ai] Operator "Claude-Clanker" transitioned -> FLANK_HIGH_GROUND',
-      '[net:delta] Broadcast 192-byte binary state snapshot to 8 clients'
-    ]
+      'Authoritative loop: server/game-server.mjs defaults tickDt to 1/60 and broadcasts snapshots at 30 Hz.',
+      'Wire format: plain JSON text over WebSocket — game/protocol.mjs wireSize measures UTF-8 JSON length.',
+      'Hit resolution: hitscan rays test 0.85 m × 0.85 m × 1.8 m axis-aligned actor boxes on the current tick (game/core.mjs actorHit).',
+      'No historical rewind buffer exists; the server reconciles predicted inputs to the latest snapshot instead.'
+    ],
+    sources: [
+      { label: 'README — authoritative server, prediction, interpolation', url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/README.md#L268-L280' },
+      { label: 'server/game-server.mjs — 60 Hz tick defaults', url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/server/game-server.mjs#L51' },
+      { label: 'game/net.mjs — prediction and reconciliation', url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/game/net.mjs#L530-L558' },
+      { label: 'game/core.mjs — axis-aligned actor hit test', url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/game/core.mjs#L329-L330' },
+      { label: 'deploy/arena.ussyco.de.nginx — live deployment', url: 'https://github.com/mojomast/cocs/blob/9a89e80012b387af71877b0ed5a0469e39f00a79/deploy/arena.ussyco.de.nginx#L1' }
+    ],
+    sourceRevision: '9a89e80012b387af71877b0ed5a0469e39f00a79',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'cocs-godot',
     index: 5,
-    issueSection: 'GRAPHICS PIPELINE // VULKAN FORWARD+',
+    issueSection: 'GRAPHICS PIPELINE // NATIVE GODOT PORT',
     spreadType: 'shader-diagram',
-    pageRange: 'pp. 48–55',
     readerServiceNo: 105,
     title: 'CoCS-Godot',
-    kicker: 'Native Engine Client & GPU Particle Lab',
-    headline: 'Translating the Arena into Godot 4 Forward+ & SDFGI',
-    deck: 'Pairing the canonical CoCS network protocol with Signed Distance Field Global Illumination, custom spatial shaders, and 32,000 GPU compute particles.',
-    byline: 'By the Real-Time Graphics Workshop · Plate V',
-    category: '3D Game Engine / Shader Art',
+    kicker: 'A Native Godot 4 Client on the Same Authoritative Server',
+    headline: 'Porting the Colosseum to Godot 4.5 on the GL Compatibility Renderer',
+    deck: 'CoCS-Godot keeps the original Node.js simulation authoritative and rebuilds the arena natively in Godot: exact spring-driven operator motion, shader and material labs, and a particle lab that scales from 8K to one million.',
+    byline: 'By SLOPTIMUS PRIME (github.com/mojomast) · SLOP ILLUSTRATED (Si.)',
+    category: 'Godot Port / Real-Time Rendering',
+    glanceNote: 'A playable native-client prototype with dedicated graphics labs. Godot follows authoritative state from the original Node.js server; the GL Compatibility renderer handles the presentation.',
     repoUrl: 'https://github.com/mojomast/cocs-godot',
     screenshot: 'assets/screenshots/cocs-godot.png',
-    screenshotCaption: 'Native Forward+ combat on the Verdant Reliquary',
+    screenshotWidth: 1280,
+    screenshotHeight: 800,
+    screenshotCaption: 'Native Godot combat on Meridian Exchange (Team Deathmatch)',
     liveUrl: null,
     spotInkHex: '#2563eb', // Process Ultramarine
     secondaryInkHex: '#7c3aed', // Violet Halftone
-    pullQuote: '“Decoupling the simulation protocol from the presentation layer lets the same 192-byte packet drive both an instant HTML5 canvas and a full Vulkan Forward+ cathedral.”',
+    pullQuote: 'CoCS-Godot keeps the protocol and the math honest: the Node server still owns the match, and the native client is presentation built on exact, closed-form springs.',
     bodyCopy:
-      'Because the wire protocol is presentation-agnostic, the same 192-byte snapshot that drives a browser canvas can drive a Vulkan Forward+ scene tree. CoCS-Godot interpolates those snapshots into Godot’s node graph, lights the arena with Signed Distance Field Global Illumination, and renders muzzle refraction and holographic shields through custom spatial shaders. An analytical second-order spring solver drives recoil and FOV kick, and the same build doubles as an offline campaign client and a 32,000-particle GPU laboratory.',
-    fieldNotes: ['Wire-compatible with the canonical CoCS server.', 'SDFGI real-time global illumination — no baked probes.', '32,000 GPU compute particles at zero CPU cost.'],
+      'CoCS-Godot is a native Godot 4.5 port of COCS: DESTINATIONS, and it keeps the original Node.js simulation authoritative over movement, weapons, damage and objectives. The client opens a WebSocketPeer and speaks the same JSON wire protocol as the browser build, so the server does not care which front end connects. Presentation is rebuilt from scratch: an exact critically damped spring drives recoil recovery and sway, custom .gdshader materials light the shields and weapon effects, and a standalone particle lab exposes selectable 8K–1M counts across GPU and analytic backends. The four-chapter Quiet Relay campaign runs against a bundled local Node server. It is a playable prototype, still in active development.',
+    fieldNotes: ['Status: actively developed, playable prototype.', 'No Vulkan Forward+ or SDFGI — the project targets the GL Compatibility renderer.', 'The Node.js simulation stays authoritative; Godot is the client.'],
     editorialLead:
-      'CoCS-Godot demonstrates clean protocol separation by bringing the Colosseum of Competitive Slop arena into a native Godot 4.x 3D client. Using Vulkan Forward+ rendering, SDFGI real-time global illumination, and procedural weapon recoil springs, it also serves as an offline single-player campaign client and GPU shader laboratory.',
+      'CoCS-Godot shows clean protocol separation: the authoritative match stays in the original Node.js simulation while Godot owns the native client, controls, world presentation, HUD and audio. The project is honest about its rendering path — project.godot targets the GL Compatibility backend rather than Vulkan Forward+, and there is no SDFGI anywhere in the tree. What it does add is procedural, mathematically exact motion: motion_math.gd solves critically damped springs in closed form instead of Euler integration, and the particle, shader and material labs are separate, measurable workbenches.',
     architecture: [
-      'Godot 4.x scene tree architecture with decoupled network snapshot interpolators and local campaign state machines.',
-      'Custom GDScript + GLSL spatial shaders for holographic shields, muzzle refraction, and procedural skyboxes.',
-      'GPU-driven compute particle emitters rendering 32,000 concurrent sparks and volumetric plumes with zero CPU overhead.',
-      'Analytical second-order spring solver driving procedural first-person weapon recoil and FOV kick.'
+      'Native Godot 4.5 client connecting over WebSocketPeer to the original authoritative Node.js simulation, which retains ownership of movement, weapons, damage and objectives.',
+      'Presentation-only motion: motion_math.gd solves an exact critically damped spring in closed form (no Euler integration) for recoil recovery, sway and landing response.',
+      'Standalone particle lab with selectable 8K/32K/128K/512K/1M counts across GPU and analytic backends, reporting measured frame cadence.',
+      'GL Compatibility rendering with custom .gdshader material, shield and weapon-effect labs; the Quiet Relay campaign runs against a bundled local Node server.'
     ],
     verifiedCapabilities: [
-      'Full 3D Vulkan Forward+ arena rendering with SDFGI global illumination',
-      'Procedural weapon recoil springs and dynamic FOV kick',
-      'GPU compute particle FX for projectile trails and impacts',
-      'Wire-compatible with the canonical CoCS multiplayer server'
+      'Native Godot 4.5 client wired to the original authoritative simulation',
+      'Speaks the same JSON WebSocket protocol as the canonical CoCS server',
+      'Exact closed-form spring motion for recoil, sway and landing',
+      'Particle, shader and material labs with selectable counts and measured cadence'
     ],
-    techStack: ['Godot 4', 'GDScript', 'GLSL Spatial Shaders', 'Vulkan Forward+', '3D Physics'],
+    techStack: ['Godot 4.5', 'GDScript', 'GDShader (.gdshader)', 'GL Compatibility renderer', 'Node.js authoritative server'],
     metrics: [
-      { label: 'Renderer', value: 'Vulkan Forward+ / SDFGI' },
-      { label: 'GPU Particles', value: '32,000 Concurrent' },
-      { label: 'Spring Solver', value: '2nd-Order Analytical' }
+      { label: 'Renderer', value: 'Godot 4.5 · GL Compatibility' },
+      { label: 'Particle Lab', value: '8K–1M selectable (32K default)' },
+      { label: 'Authority', value: 'Bundled Node.js server' }
     ],
     flexiFreqs: [392.00, 493.88, 587.33, 783.99],
-    codeListingTitle: 'LISTING 5.1 // PROCEDURAL RECOIL SPRING SOLVER (GDSCRIPT)',
-    codeListing: `func _physics_process(delta: float) -> void:
-    var force: Vector3 = -stiffness * recoil_offset - damping * recoil_velocity
-    recoil_velocity += force * delta
-    recoil_offset += recoil_velocity * delta
-    weapon_pivot.rotation_degrees = base_rot + recoil_offset`,
+    codeListingTitle: 'SOURCE EXCERPT // EXACT CRITICAL SPRING',
+    codeListing: `static func spring(value: float, velocity: float, goal: float, rate: float, dt: float) -> Vector2:
+	var offset := value - goal
+	var j := velocity + rate * offset
+	var decay := exp(-rate * dt)
+	return Vector2(goal + (offset + j * dt) * decay, (velocity - rate * j * dt) * decay)`,
+    codeSource: {
+      label: 'godot/source_operators/motion_math.gd — exact critical spring',
+      url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/godot/source_operators/motion_math.gd#L4-L8'
+    },
     terminalStream: [
-      '[godot:vk] Forward+ pipeline initialized with SDFGI irradiance probes',
-      '[shader:holo] Compiled spatial shield fresnel shader (0 warnings)',
-      '[particles:gpu] Emitting 16,384 impact sparks on compute queue',
-      '[camera:spring] Procedural recoil & FOV kick solver converged'
-    ]
+      'Renderer: godot/project.godot sets rendering_method to gl_compatibility; no SDFGI or Forward+ references exist in the tree.',
+      'Protocol: godot/net/client.gd uses WebSocketPeer.send_text(JSON.stringify(frame)) — the same JSON wire as CoCS.',
+      'Particle lab: godot/particle_lab/field.gd exposes counts [8192, 32768, 131072, 524288, 1048576] across GPU and analytic backends.',
+      'Campaign: port/campaign/PLAY.md launches The Quiet Relay against a bundled local Node.js server, not a self-contained offline engine.'
+    ],
+    sources: [
+      { label: 'README — status and authority model', url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/README.md#L1-L20' },
+      { label: 'godot/project.godot — GL Compatibility renderer', url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/godot/project.godot#L20-L22' },
+      { label: 'godot/net/client.gd — shared JSON WebSocket transport', url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/godot/net/client.gd#L31-L158' },
+      { label: 'godot/source_operators/motion_math.gd — exact critical spring', url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/godot/source_operators/motion_math.gd#L3-L8' },
+      { label: 'godot/particle_lab/field.gd — 8K–1M particle counts', url: 'https://github.com/mojomast/cocs-godot/blob/1f1e5f5486904f5d08a9768bc0321fb82b647e76/godot/particle_lab/field.gd#L8' }
+    ],
+    sourceRevision: '1f1e5f5486904f5d08a9768bc0321fb82b647e76',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'routetok',
     index: 6,
     issueSection: 'SYSTEMS TELEPHONY // AI ROUTING',
     spreadType: 'switching-schematic',
-    pageRange: 'pp. 56–65',
     readerServiceNo: 106,
     title: 'RouteTok',
-    kicker: 'Zero External Dependencies. Zero Dropped Streams.',
-    headline: 'A Bell-Labs-Grade Circuit Breaker & Token Router for LLMs',
-    deck: 'When upstream inference providers suffer rate limits or brownouts, RouteTok’s three-state finite state machine and model fieldbook reroute SSE token streams in under 15 milliseconds.',
-    byline: 'By the Switching & Telemetry Division · Schematic 6-A',
-    category: 'AI Infrastructure / Resilient Routing',
+    kicker: 'Zero Runtime Dependencies. No Spliced Streams.',
+    headline: 'A Local Gateway with a Three-State Circuit Breaker',
+    deck: 'When an upstream provider rate-limits or stalls, RouteTok opens a closed / open / half-open circuit on that route and retries another before output commits—it never splices two models into one stream.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.) · github.com/mojomast',
+    category: 'Local LLM Routing / Observability',
+    glanceNote: 'A local gateway with zero runtime npm dependencies. Configuration, route health and Prometheus metrics make provider selection inspectable; fallback only happens before an answer starts streaming.',
     repoUrl: 'https://github.com/mojomast/routetok',
     screenshot: 'assets/screenshots/routetok.png',
-    screenshotCaption: 'Operations dashboard and live model-health table',
+    screenshotWidth: 1440,
+    screenshotHeight: 1000,
+    screenshotCaption: 'RouteTok operations dashboard: live success rate, throughput, TTFT, fallback rate and retained performance trends',
     liveUrl: null,
     spotInkHex: '#047857', // Emerald Relay Ink
     secondaryInkHex: '#0369a1', // Technical Cyan
-    pullQuote: '“Infrastructure that depends on fifty npm packages is a liability; a router should be as small, cold, and deterministic as a brass telegraph relay.”',
+    pullQuote: 'RouteTok’s discipline is refusal: it re-routes before output begins, then tells the truth with a stream_interrupted frame rather than splice two models into one voice.',
     bodyCopy:
-      'RouteTok is deliberately boring infrastructure. A latency- and cost-weighted bandit scores every candidate model on time-to-first-token, tool-call reliability and context headroom, then commits the stream to the winner. If an upstream returns HTTP 429 or stalls mid-sentence, the breaker trips to OPEN, the request re-channels to the next healthy model, and — because tokens are proxied rather than buffered — the reader never sees the seam. The whole core is zero-dependency Node, small enough to audit in an afternoon.',
-    fieldNotes: ['CLOSED / OPEN / HALF-OPEN breaker with jittered backoff.', 'Mid-stream failover under 15 ms with zero dropped tokens.', 'Model Fieldbook: pricing, context limits, capability matrix.'],
+      'RouteTok is a local-first router that puts OpenAI- and Anthropic-compatible APIs in front of many providers. A `HealthRouter` keeps explicit provider order, virtual routes (`auto`, `best`, `free`) and custom cascades, then ranks candidates by success rate, consecutive failures, in-flight count and latency EWMA. A three-state circuit—closed, open, half-open—keeps a failing route out of the chain for a cooldown and admits a single probe on the way back. Fallback happens only before semantic or tool output commits; once a stream is committed the proxy emits a truthful `stream_interrupted` frame instead of switching models mid-sentence. The runtime core uses only Node built-ins, with TypeScript, tsx and @types/node as the sole devDependencies.',
+    fieldNotes: ['Fallback is pre-output only; a committed stream ends with `stream_interrupted`, never a splice.', 'Circuit opens on consecutive failures or a ≥50% failure window; half-open admits one in-flight probe.', 'Zero runtime npm dependencies; devDependencies are TypeScript, tsx and @types/node.', 'Legacy `agentrouter_router_*` Prometheus families are retained alongside planned `routetok_*` names.'],
     editorialLead:
-      'Production AI systems routinely fail not because prompts are bad, but because a single upstream provider returns HTTP 429 or stalls mid-stream. Written in pure, zero-dependency Node.js/TypeScript, RouteTok combines a curated Model Capability Fieldbook with a latency-weighted multi-armed bandit router and an automatic three-state Circuit Breaker (`CLOSED` / `OPEN` / `HALF-OPEN`).',
+      'RouteTok is a local-first inference router for anyone already juggling several model providers. One Node.js process exposes an OpenAI- and Anthropic-compatible `/v1` surface alongside an operations dashboard and a browser-local Model Fieldbook. It is deliberately conservative about failure: health-aware fallback retries another candidate only before output commits, and a three-state circuit breaker (closed / open / half-open) keeps a sick route out of the chain until a single probe earns its way back. It is independent and not affiliated with any model or inference provider.',
     architecture: [
-      'Latency- and cost-weighted routing engine selecting optimal upstream models by context window, tool-call reliability, and TTFT.',
-      'Three-state circuit breaker (CLOSED / OPEN / HALF-OPEN) with exponential jitter backoff and instant mid-outage failover.',
-      'Streaming SSE token accounting proxy measuring real-time tokens-per-second, prompt cache hits, and budget burn.',
-      'Curated Model Fieldbook cataloging context limits, pricing, and capability matrices across frontier providers.'
+      'Hand-rolled Node `http` server (no framework) exposing OpenAI Chat Completions/Responses and Anthropic Messages on one `/v1` surface, with per-provider credentials and namespaced model IDs.',
+      '`HealthRouter` resolves explicit provider order, virtual routes (`auto`, `best`, `free`), custom cascades and a paid-OpenRouter fallback chain that runs ahead of AgentRouter last-resort routes.',
+      'Three-state circuit breaker (closed / open / half-open) opens on a consecutive-failure threshold or a failure-rate window, holds for `circuitOpenMs`, then admits one in-flight half-open probe.',
+      'Pre-output retry policy: fallback only before semantic or tool output begins; a committed stream reports `stream_interrupted` rather than splicing models.',
+      'Streaming proxy with SSE token/cost telemetry, Prometheus metrics, `x-router-*` attempt summaries and a browser-local Fieldbook (Compare, Room, Iteration Studio).'
     ],
     verifiedCapabilities: [
-      'Zero-dependency Node.js core with 0.35ms routing overhead',
-      'Automatic mid-outage failover across OpenRouter, Anthropic, OpenAI & local vLLM',
-      'Live SSE token throughput metering and cost guardrails',
-      'Deterministic policy rules for reasoning vs. fast-completion tasks'
+      'Zero runtime npm dependencies; devDependencies limited to TypeScript, tsx and @types/node',
+      'Health-aware pre-output failover across OpenAI- and Anthropic-compatible providers',
+      'Three-state circuit breaker with cooldown and a single in-flight half-open probe',
+      'Live SSE throughput metering, Prometheus metrics and cost accounting'
     ],
-    techStack: ['Node.js (Zero-Dep)', 'TypeScript / ESM', 'HTTP/2 & SSE', 'Circuit Breaker FSM', 'Token Telemetry'],
+    techStack: ['TypeScript', 'Node.js 22+ (ESM)', 'OpenAI / Anthropic HTTP APIs', 'Circuit-breaker FSM', 'Prometheus metrics'],
     metrics: [
-      { label: 'Router Overhead', value: '0.35 ms / req' },
-      { label: 'Runtime Deps', value: '0 External Packages' },
-      { label: 'Failover Time', value: '< 15 ms Instant' }
+      { label: 'Runtime Deps', value: '0 npm Packages' },
+      { label: 'Circuit States', value: 'Closed / Open / Half-open' },
+      { label: 'Failover', value: 'Pre-output Only' }
     ],
     flexiFreqs: [220.00, 261.63, 329.63, 440.00],
-    codeListingTitle: 'LISTING 6.1 // THREE-STATE CIRCUIT BREAKER RELAY',
-    codeListing: `export function selectHealthyUpstream(candidates, breakerMap, now = Date.now()) {
-  for (const model of candidates) {
-    const st = breakerMap.get(model.id);
-    if (!st || st.state === 'CLOSED' || (st.state === 'HALF_OPEN' && now >= st.nextProbeAt)) {
-      return model;
-    }
-  }
-  throw new Error('ALL_UPSTREAMS_TRIPPED');
-}`,
+    codeListingTitle: 'LISTING 6.1 // SOURCE EXCERPT — CIRCUIT-BREAKER ADMISSION (src/router.ts)',
+    codeListing: `        const state = this.peek(protocol, model);
+        if (state.entitlementBlocked) return false;
+        if (state.rateLimitedUntil && state.rateLimitedUntil > now) return false;
+        if (state.circuitState === "open") {
+          if (!state.circuitOpenUntil || state.circuitOpenUntil > now) return false;
+          state.circuitState = "half-open";
+        }
+        if (state.circuitState === "half-open") return state.inflight === 0;
+        return true;
+      });`,
+    codeSource: {
+      label: 'src/router.ts L139–L148 · routetok@7016c8d',
+      url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/src/router.ts#L139-L148'
+    },
     terminalStream: [
-      '[relay:route] Task="deep-synthesis" -> selected claude-sonnet (score=0.97)',
-      '[breaker] Upstream provider-B 429 detected -> Relay B OPEN (30s cooldown)',
-      '[failover] Re-channeled stream to provider-A in 4.1 ms (0 dropped tokens)',
-      '[meter:sse] Streaming 114.8 tok/s // TTFT: 210 ms // Cost: $0.0018'
-    ]
+      'READING GUIDE // README.md — three surfaces (proxy / dashboard / sandbox) and health-aware pre-output fallback',
+      'READING GUIDE // src/router.ts — HealthRouter candidate ranking and circuit admission',
+      'READING GUIDE // test/integration/committed-stream.test.ts — a committed stream ends with a truthful frame, not a splice',
+      'READING GUIDE // docs/api.md — circuit open / half-open semantics and Prometheus families',
+      'NOTE // no latency benchmark is published; the repository states no 0.35 ms or 15 ms figure'
+    ],
+    sources: [
+      { label: 'routetok README — surfaces, pre-output fallback, non-affiliation', url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/README.md' },
+      { label: 'src/router.ts — HealthRouter circuits, ranking and attempt admission', url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/src/router.ts' },
+      { label: 'docs/api.md — circuit states and metrics exposition', url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/docs/api.md' },
+      { label: 'test/integration/committed-stream.test.ts — committed-stream honesty tests', url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/test/integration/committed-stream.test.ts' },
+      { label: 'package.json — zero runtime dependencies, three devDependencies', url: 'https://github.com/mojomast/routetok/blob/7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3/package.json' }
+    ],
+    sourceRevision: '7016c8de0553ddac858d9a2563c2e7eb2bdbbfd3',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'rgbagentflightindicator',
     index: 7,
     issueSection: 'HARDWARE ANNUNCIATORS // HID TELEMETRY',
     spreadType: 'cockpit-annunciator',
-    pageRange: 'pp. 66–73',
     readerServiceNo: 107,
     title: 'RGBAgentFlightIndicator',
-    kicker: 'Peripheral Avionics for Autonomous Swarms',
-    headline: 'Turning Mechanical Keyboards into Flight-Deck Caution Panels',
-    deck: 'Why alt-tab to twenty terminal windows when raw USB HID / QMK per-key RGB matrices can display agent health, token throughput waves, and human-in-the-loop approval strobes in your peripheral vision?',
-    byline: 'By the Avionics & Human Factors Lab · Instrument Plate VII',
+    kicker: 'One Lamp Per Agent Session. No Alt-Tab.',
+    headline: 'Turning an RGB Keyboard into an Agent Annunciator Panel',
+    deck: 'A local daemon maps each agent session to one key—green while it works, white when it lands, blinking red when a human is needed—so a dozen sessions are legible from across the room.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.) · github.com/mojomast',
     category: 'Hardware Telemetry / Ambient Interfaces',
+    glanceNote: 'The twelve-lane default is configurable, and physical lamp indices depend on the device. The web UI includes a colour-blind-safe preset and colour-vision simulations.',
     repoUrl: 'https://github.com/mojomast/rgbagentflightindicator',
     liveUrl: null,
     spotInkHex: '#d97706', // Caution Amber
     secondaryInkHex: '#0284c7', // Avionics Cyan
-    pullQuote: '“An airline pilot never greps a log file to check if the landing gear is down; peripheral light and color grammar speak faster than text.”',
+    pullQuote: 'The panel refuses to pretend: a device that can show only one colour lights its most urgent lane rather than faking twelve lamps it does not have.',
     bodyCopy:
-      'The interface is peripheral by design. Slot keys F1–F12 breathe amber while an agent is streaming, strobe cyan the instant a tool call needs human consent, and settle to slate when idle, while the number row renders live token throughput as a travelling wave. Colour choices follow flight-deck master-caution grammar and are validated for the common colour-vision deficiencies, so the state of a dozen agents is legible in a single glance without ever stealing focus from your editor.',
-    fieldNotes: ['Per-key 60 Hz HID compositor; event-to-LED under 6 ms.', 'Up to 24 concurrent agent slots on one keyboard.', 'Colourblind-safe Airbus/Boeing caution palette.'],
+      'RGBAgentFlightIndicator is a Python daemon that turns an RGB keyboard into an annunciator panel for AI agent sessions. Each session claims one lane, and every connected keyboard maps lanes onto its own lamps; agents report over a local HTTP API, so a plugin, a CI job or a shell script can light a key. Four states carry the meaning—green while working, white when done, blinking red when a human is needed, dark when idle. The project is unusually honest about hardware: the Sinowealth and EVision backends are verified on real boards, while the OpenRGB, sysfs and QMK/VIA backends are implemented to their documented protocols but have not yet been run against a physical board. The render loop repaints only the devices whose frame actually changed.',
+    fieldNotes: ['Default 12 lanes (`--count`), configurable; each device maps lanes to its own lamp indices.', 'Verified on hardware: Sinowealth 258A:0049 and the EVision/SONiX Magic Refiner MK 17.', 'QMK is per-key on Vial firmware; stock QMK+VIA exposes one colour.', 'The web UI ships a colour-blind-safe preset and protanopia/deuteranopia/tritanopia simulation; the default palette is green/white/red.'],
     editorialLead:
-      'When orchestrating six or twelve autonomous coding agents simultaneously, cognitive bottleneck shifts from writing code to monitoring which agent is thinking, which is streaming tokens, and which is blocked awaiting human permission. RGBAgentFlightIndicator speaks directly to USB HID, OpenRGB, and QMK raw-HID keyboards at 60Hz—mapping `F1–F12` to individual agent slots and the number row to live token-per-second wave bars.',
+      'RGBAgentFlightIndicator (0.8.0, alpha) turns a mechanical keyboard into a flight-deck-style annunciator panel for autonomous agent sessions. A small Python daemon speaks to several keyboard protocols behind one interface, offers one lane per session over a local HTTP API, and repaints each device only when its frame changes. Backends that cannot address individual lamps are treated honestly—the whole device shows the most urgent lane instead of pretending to be a matrix.',
     architecture: [
-      'Direct USB HID / OpenRGB / QMK raw-HID protocol driver mapping individual physical keycaps to agent slots and tool pipelines.',
-      'Priority-layered 60Hz animation compositor blending ambient breathing states with urgent approval strobes.',
-      'Local webhook and Unix-socket daemon translating Claude Code, Hermes, and CI events into aviation caution light patterns.',
-      'Colorblind-safe semantic palette profiles modeled after Airbus/Boeing flight-deck master caution annunciators.'
+      'Python HTTP daemon (default `127.0.0.1:8730`) with one lane per agent session; lanes are held until released or evicted least-recently-used.',
+      'Backend registry spanning Sinowealth, EVision, OpenRGB, sysfs, QMK/VIA, HID LampArray, SteelSeries GameSense, WLED and HTTP single-light devices behind one write interface.',
+      'Bounded LED vocabulary—off / steady / blink / breathe with period, duty and cycle count—rendered identically by the daemon and the browser preview, and checked against a shared fixture.',
+      'Web configuration UI (lamp map, overrides, lane mapping) plus hook/webhook ingest and integrations for Claude Code, Gemini CLI, Pi, LangGraph, CrewAI, OpenAI Agents and more.',
+      'Reach layered on the panel: ack, an attention notifier, MQTT with Home Assistant discovery, an OTLP/HTTP receiver, and a bounded transition history with `rgi digest`.'
     ],
     verifiedCapabilities: [
-      '60Hz per-key RGB matrix synthesis with perceptual color interpolation',
-      'Multi-agent slot mapping (F1–F12 fleet status, number-row token throughput)',
-      'Instant human-in-the-loop permission request wave alerts',
-      'Zero-CPU-spike daemon footprint with USB hotplug auto-recovery'
+      'Per-key lane mapping on Sinowealth and EVision hardware verified by the author',
+      'Four states (working / done / blocked / error) rendered as green, white and blinking red',
+      'Local HTTP session API plus MQTT, OTLP and Home Assistant reach',
+      'Hotplug recovery: the daemon notices a replug, reopens the device and repaints'
     ],
-    techStack: ['Rust / Python', 'USB HID / OpenRGB', 'QMK Raw-HID', 'Unix Sockets', '60Hz LED Compositor'],
+    techStack: ['Python 3.10+', 'HTTP / SSE', 'USB HID (hidapi)', 'QMK / VIA', 'OpenRGB SDK', 'MQTT / OTLP'],
     metrics: [
-      { label: 'Matrix Refresh', value: '60 Hz Per-Key HID' },
-      { label: 'Agent Slots', value: 'Up to 24 Concurrent' },
-      { label: 'Signal Latency', value: '< 6 ms Event-to-LED' }
+      { label: 'Default Lanes', value: '12 (configurable)' },
+      { label: 'Verified Backends', value: 'Sinowealth · EVision' },
+      { label: 'State Palette', value: 'Green / White / Blinking Red' }
     ],
     flexiFreqs: [233.08, 293.66, 349.23, 466.16],
-    codeListingTitle: 'LISTING 7.1 // 60HZ KEYCAP ANNUNCIATOR BLENDER',
-    codeListing: `pub fn sample_key_color(slot_state: AgentSlotState, t: f32) -> Rgb8 {
-    match slot_state {
-        AgentSlotState::Streaming(tps) => pulse_wave(AMBER_NOMINAL, (t * tps * 0.1).sin()),
-        AgentSlotState::AwaitingSteward => strobe_caution(CYAN_PROMPT, amber_gate(t, 4.0)),
-        AgentSlotState::Idle => dim_backlight(SLATE_REST),
-    }
-}`,
+    codeListingTitle: 'LISTING 7.1 // SOURCE EXCERPT — BOUNDED LED STATE RENDERER (rgi/appearance.py)',
+    codeListing: `    def render(self, elapsed_s: float, quiet: bool = False) -> RGB:
+        base = _scale(self.color, self.brightness)
+        if self.pattern == "off" or base == OFF:
+            return OFF
+        if quiet or self.pattern == "steady":
+            # While the human types the frame holds a steady colour: no writes,
+            # and nothing to gain from computing a phase nobody will see.
+            return base
+        period = max(0.04, self.period_ms / 1000.0)
+        if self.cycles and elapsed_s >= self.cycles * period:
+            return base if self.then == "steady" else OFF
+        phase = (max(0.0, elapsed_s) % period) / period
+        if self.pattern == "blink":
+            return base if phase < max(0.0, min(1.0, self.duty)) else OFF
+        if self.pattern == "breathe":
+            level = 0.5 - 0.5 * cos(2.0 * pi * phase)
+            return _scale(base, max(1, int(level * 255 + 0.5)))
+        return base`,
+    codeSource: {
+      label: 'rgi/appearance.py L60–L77 · rgbagentflightindicator@fc7378d',
+      url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/rgi/appearance.py#L60-L77'
+    },
     terminalStream: [
-      '[hid:matrix] Connected to 87-key QMK Raw-HID flight deck (60 Hz lock)',
-      '[zone:F1..F4] Agents 1-4 nominal -> breathing Master Nominal Amber',
-      '[zone:F5] Agent-5 awaiting steward confirmation -> pulsing Cyan Caution',
-      '[wave:row2] Token throughput wave rendering at 92 tok/s across keys 1..0'
-    ]
+      'READING GUIDE // README.md — one key per session; green / white / blinking red',
+      'READING GUIDE // README.md backend table — Sinowealth and EVision verified on hardware; QMK, OpenRGB and sysfs not yet run on a board',
+      'READING GUIDE // rgi/daemon.py — TICK = 0.12 s render interval; only changed frames are written',
+      'READING GUIDE // rgi/webui/lib/color.js and views/appearance.js — colour-blind simulation and preset, not the default palette',
+      'NOTE // no 60 Hz refresh, 24-slot limit, 6 ms latency or colour-blind-validated default palette is claimed by the project'
+    ],
+    sources: [
+      { label: 'rgbagentflightindicator README — states, backends and verification status', url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/README.md' },
+      { label: 'rgi/appearance.py — bounded LED vocabulary and state renderer', url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/rgi/appearance.py' },
+      { label: 'rgi/daemon.py — render tick, frame-diff writes and hotplug recovery', url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/rgi/daemon.py' },
+      { label: 'rgi/webconfig.py — default green / white / red palette', url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/rgi/webconfig.py' },
+      { label: 'rgi/webui/lib/color.js — protanopia / deuteranopia / tritanopia simulation', url: 'https://github.com/mojomast/rgbagentflightindicator/blob/fc7378d037576c090322e623a5a3bbeafb97d619/rgi/webui/lib/color.js' }
+    ],
+    sourceRevision: 'fc7378d037576c090322e623a5a3bbeafb97d619',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'mothbake',
     index: 8,
     issueSection: 'BINARY CODECS // REPRODUCIBLE BUILDS',
     spreadType: 'hex-datasheet',
-    pageRange: 'pp. 74–81',
     readerServiceNo: 108,
     title: 'MothBake',
-    kicker: 'Zero Padding Drift. 100% Bit-Exact Artifacts.',
-    headline: 'Hermetic Asset Baking & 64-Byte Aligned Clean-Room Codecs',
-    deck: 'Eliminating non-deterministic timestamps, hash-map ordering jitter, and uninitialized struct padding so identical source trees compile to identical SHA-256 binary bundles on every OS.',
-    byline: 'By the Binary Serialization Standards Committee · Datasheet #08',
+    kicker: 'Content-Addressed Baking With Zero Runtime Dependencies',
+    headline: 'A Local-First Asset Baker That Keeps Every Bake Reviewable',
+    deck: 'How an offline-first Node.js pipeline turns a manifest of local or Moth-backed jobs into SHA-256-identified candidates, reviewable bakes and transactional exports — with every decoder written in-repo and no runtime dependencies.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Build Systems / Binary Serialization',
+    glanceNote: 'Raw results are archived so built-in bakers can be rebuilt offline. Candidates stay reviewable before export, while live, billable calls are disabled by default.',
     repoUrl: 'https://github.com/mojomast/mothbake',
     screenshot: 'assets/screenshots/mothbake.png',
-    screenshotCaption: 'Eighteen tiling albedo textures baked by MothBake',
+    screenshotWidth: 1068,
+    screenshotHeight: 618,
+    screenshotCaption: 'Eighteen tiling albedo textures from the repository’s recorded-bake gallery (docs/images/gallery-textures.png), baked by MothBake with no network or API key.',
     liveUrl: null,
     spotInkHex: '#ea580c', // Rust Orange
     secondaryInkHex: '#334155', // Graphite Ink
-    pullQuote: '“If compiling the same asset tree twice produces two different SHA-256 hashes, your build pipeline is lying to you.”',
+    pullQuote: 'Determinism is not a vibe; it is a property you can test. MothBake’s bet is that a bake should be a content-addressed record you can diff, approve and rebuild offline — not an opaque blob you hope is reproducible.',
     bodyCopy:
-      'Determinism is treated as a testable property, not a hope. Every input asset, compiler flag and schema revision is hashed into a Merkle leaf; the baker rebuilds only the sub-tree whose leaves changed, and every emitted chunk is zero-filled and aligned to a 64-byte cache line so engines can mmap it without a copy. Two engineers on two operating systems can compile the same source tree and compare a single SHA-256 digest to prove the artifacts are identical, byte for byte.',
-    fieldNotes: ['100% bit-exact bundles across Linux, macOS and Windows.', 'Merkle DAG cache gives sub-second incremental re-bakes.', '64-byte aligned chunks load with zero-copy mmap.'],
+      'MothBake is a local-first asset variation workbench with zero runtime dependencies. A recipe names an engine, its inputs and parameters, and the bake that turns the result into a portable record; the tool then decodes the result itself (PNG, GIF, ZIP, Radiance HDR, WAV, Standard MIDI) and runs emitters that write what a project consumes — decoded files, sprite-sheet atlases, a JSON bundle, a generated ES module, a Godot export, or a custom emitter. Content identity is layered rather than overloaded: recipe, generation instance, raw artifact, local bake and export each carry their own SHA-256 fingerprint. Determinism is tested where it matters — the ESM emitter is compared byte-for-byte against a committed golden file, and the ZIP writer pins a fixed 1980 MS-DOS epoch so archives are byte-deterministic.',
+    fieldNotes: ['Zero runtime dependencies: every decoder (PNG, GIF, ZIP, HDR, WAV, MIDI) lives in-repo and installs air-gapped.', 'Determinism is tested per emitter/decoder (byte-for-byte ESM golden; fixed-epoch ZIP), not asserted as a global bit-exact guarantee.', 'Offline rebuild: `mothbake repair` rebuilds built-in bakers from archived raw results; billable live calls are approval-gated and off by default.'],
     editorialLead:
-      'Game engines and multimedia pipelines routinely suffer from “phantom rebuilds” caused by floating-point endianness differences, OS directory traversal order, or unzeroed C-struct padding bytes. MothBake is a clean-room deterministic asset baker that plans builds over a content-addressed Merkle DAG and emits 64-byte cache-line-aligned binary bundles ready for zero-copy `mmap` ingestion.',
+      'Baked game and media assets are usually the least auditable files in a repository: a texture or impulse response arrives as an opaque blob, and nobody can say which inputs, options or engine produced it. MothBake treats a bake as data. It plans work over a dependency graph, records layered SHA-256 content identities, archives raw results for verified offline rebuilds, and gates any billable submission behind an exact-fingerprint approval. The whole pipeline is dependency-free Node.js and runs against recorded fixtures with no key and no network.',
     architecture: [
-      'Content-addressed Merkle-tree DAG build planner hashing every input asset, compiler flag, and schema version.',
-      'Clean-room binary serializer with zero uninitialized padding bytes, canonical lexicographical field ordering, and fixed little-endian layout.',
-      'Parallel worker-pool baker with 64-byte cache-line output alignment for instant zero-copy GPU/engine `mmap` loading.',
-      'Cryptographic manifest attestation verifying identical SHA-256 output digests across Linux, macOS, and Windows.'
+      'Manifest-driven recipe → dependency plan → run journal → raw archive → local bake → candidate pipeline, with separate identities at every stage.',
+      'In-repo decoders and emitters: PNG (filters 0–4; colour types 0/2/3/4/6), GIF87a/89a, ZIP (stored/deflate read and write), Radiance RGBE, WAV (8/16/24/32-bit PCM and 32-bit float) and Standard MIDI, plus files/atlas/JSON/ESM/Godot emitters.',
+      'Layered SHA-256 content identities (recipe, generation instance, raw artifact, local bake, export) so a signed URL is never mistaken for an identity.',
+      'Approval-gated live execution: exact spending-plan fingerprints, a durable single-host run journal, and offline repair of built-in bakers from archived raw outputs.'
     ],
     verifiedCapabilities: [
-      '100% bit-exact reproducible binary bundles across OS architectures',
-      'Sub-second incremental asset re-baking via Merkle DAG cache',
-      '64-byte cache-line aligned binary chunks for zero-copy loading',
-      'Built-in hex diff inspector and manifest integrity verifier'
+      'Zero-runtime-dependency Node.js (>=20) pipeline that runs fully offline against recorded fixtures',
+      'In-repo decoders for PNG, GIF, ZIP, Radiance HDR, WAV and Standard MIDI, with a byte-for-byte golden test for the ESM emitter',
+      'Layered SHA-256 content identities with content-pinned approvals and transactional, versioned export packs',
+      'Verified offline rebuild of every built-in baker from archived raw results (legacy archives are readable but labelled unverified)'
     ],
-    techStack: ['Rust / Node.js', 'Clean-Room Binary Codecs', 'SHA-256 Merkle DAG', 'Zero-Copy mmap', 'Deterministic CLI'],
+    techStack: ['Node.js (ESM, zero runtime deps)', 'Python (optional local backends)', 'In-repo binary decoders', 'SHA-256 content identities', 'MIT'],
     metrics: [
-      { label: 'Reproducibility', value: '100% Bit-Exact' },
-      { label: 'Cache Hit Check', value: '3.8 ms Merkle Verify' },
-      { label: 'Byte Alignment', value: '64-Byte Cache Line' }
+      { label: 'Runtime Dependencies', value: '0 (offline by default)' },
+      { label: 'Determinism Check', value: 'Byte-for-byte ESM golden test' },
+      { label: 'CI Matrix', value: 'Ubuntu · Node 20 & 22' }
     ],
     flexiFreqs: [261.63, 311.13, 392.00, 523.25],
-    codeListingTitle: 'LISTING 8.1 // 64-BYTE ALIGNED DETERMINISTIC CHUNK WRITER',
-    codeListing: `pub fn align_up_64(offset: usize) -> usize {
-    (offset + 63) & !63
-}
-// Zero-fill deterministic padding before sealing SHA-256 Merkle leaf
-pub fn pad_chunk_zeroes(buf: &mut Vec<u8>) {
-    let target = align_up_64(buf.len());
-    buf.resize(target, 0x00);
+    codeListingTitle: 'SOURCE EXCERPT // src/identity.mjs — SHA-256 CONTENT IDENTITY',
+    codeListing: `/** SHA-256 hex digest of bytes; path names do not contribute to the hash. */
+export function hashBytes(bytes) {
+  if (!(bytes instanceof Uint8Array)) throw new TypeError('hashBytes requires bytes');
+  return createHash('sha256').update(bytes).digest('hex');
 }`,
+    codeSource: {
+      label: 'src/identity.mjs L60–L64 · mothbake@93e1825',
+      url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/src/identity.mjs#L60-L64'
+    },
     terminalStream: [
-      '[merkle:dag] Scanned 418 source artifacts -> 418 Merkle leaves clean',
-      '[codec:pack] Baked "archive_meshes.mbk" (14.2 MB, 64B aligned, 0 pad drift)',
-      '[verify:sha256] Digest e3b0c442...98fc1c14 matches canonical golden seal',
-      '[manifest] Sealed immutable release bundle v2.4.0 in 18.4 ms'
-    ]
+      'READING GUIDE // `mothbake plan` shows submissions, archive rebuilds, estimates, unknown costs and local budget violations before any spend.',
+      'READING GUIDE // The ESM emitter is compared byte-for-byte against a committed golden file (test/golden.test.mjs).',
+      'READING GUIDE // The ZIP writer pins a fixed MS-DOS epoch (1980-01-01) so archives are byte-deterministic (src/decoders/zip.mjs).',
+      'READING GUIDE // SHA-256 fingerprints are layered across recipe, instance, raw artifact, local bake and export — there is no single global artifact hash.'
+    ],
+    sources: [
+      { label: 'mothbake @ 93e1825 — README (capabilities & gallery)', url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/README.md' },
+      { label: 'mothbake @ 93e1825 — docs/ARCHITECTURE.md (pipeline & contracts)', url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/docs/ARCHITECTURE.md' },
+      { label: 'mothbake @ 93e1825 — src/identity.mjs (layered SHA-256 identities)', url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/src/identity.mjs' },
+      { label: 'mothbake @ 93e1825 — test/golden.test.mjs (byte-for-byte ESM golden)', url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/test/golden.test.mjs' },
+      { label: 'mothbake @ 93e1825 — .github/workflows/ci.yml (Ubuntu · Node 20/22)', url: 'https://github.com/mojomast/mothbake/blob/93e182557c7c47b75c556477127fb27686fea20d/.github/workflows/ci.yml' }
+    ],
+    sourceRevision: '93e182557c7c47b75c556477127fb27686fea20d',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'warpi',
     index: 9,
     issueSection: 'LOCAL-FIRST WORKSTATIONS // RUST TERMINAL',
     spreadType: 'unix-manpage',
-    pageRange: 'pp. 82–89',
     readerServiceNo: 109,
     title: 'Warpi',
-    kicker: 'Modern Block Terminal Without the Cloud Leash',
-    headline: 'A 14ms Native Rust PTY Multiplexer & Air-Gapped Pi Coding Helper',
-    deck: 'Bringing structured command blocks, 120Hz WGPU glyph rendering, and an on-demand Pi coding agent sidecar to a standalone binary with zero cloud accounts and zero outbound telemetry.',
-    byline: 'By the Local-First Systems Collective · Manual Section 1',
+    kicker: 'A Local Pi Agent Backend Behind Warp’s Block UI',
+    headline: 'Bring Your Own Model to Warp’s Terminal — Without a Warp Account',
+    deck: 'An independent fork of Warp that keeps the native terminal, block UI, approval cards, and diffs, and replaces the cloud agent with a local Pi coding-agent helper pointed at any OpenAI-compatible endpoint you choose — no Warp account in the agent path.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Systems Programming / AI Terminal',
+    glanceNote: 'Warp supplies the terminal and block interface. This fork adds the Pi-agent bridge, configurable provider credentials, and replacement of the Warp account gate in the agent path.',
     repoUrl: 'https://github.com/mojomast/warpi',
     liveUrl: null,
     spotInkHex: '#15803d', // Phosphor Green
     secondaryInkHex: '#1e293b', // Terminal Charcoal
-    pullQuote: '“Your terminal sees your SSH keys, your production credentials, and your mistakes; it should never require a cloud login to open a shell.”',
+    pullQuote: 'Warpi is Warp’s terminal and block UI with the cloud agent swapped for a local Pi backend: you configure the endpoint and the key, and the shell never asks Warp for an account.',
     bodyCopy:
-      'Warpi restores the terminal as a tool you own. A Rust POSIX PTY multiplexer structures each command into a foldable block carrying its stdout, stderr, elapsed time and exit code; a zero-copy VT100 parser feeds a WGPU glyph atlas that scrolls megabytes of log at 120Hz without a dropped frame. The Pi coding helper is invoked only on Ctrl+Space and reads only the blocks you select, and the binary opens no outbound sockets — your keys and your history never leave the machine.',
-    fieldNotes: ['14 ms cold start, single native Rust binary.', '120 Hz WGPU glyph rendering with ligature support.', 'Air-gapped: zero telemetry, zero cloud accounts.'],
+      'Warpi is not a new terminal. The terminal, block UI, approval card, diff review, and persistence are upstream Warp, left intact; the fork adds `crates/standalone_agent` and `standalone/pi-helper` to put a local model loop behind them. The private Node helper owns the conversation transcript and drives the pinned Pi coding-agent SDK, while the Rust bridge validates every frame and renders helper events as the same response events Warp’s servers would send — so Warp’s native approval, allowlist, redirection, and read-only checks still decide every side effect. A provider profile carries a base URL, model id, limits, and a credential reference; the key itself stays in the OS secret store, and inference goes only from your machine to your endpoint.',
+    fieldNotes: [
+      'Independent fork of Warp; not affiliated with, endorsed by, or sponsored by Warp or Denver Technologies, Inc.',
+      'The terminal, block UI, PTY, VT100 emulation, and WGPU rendering are upstream Warp, not additions made by this fork.',
+      'Upstream-unverified areas (macOS packaging, hosted providers beyond DeepSeek, provider retry) are not claimed here.'
+    ],
     editorialLead:
-      'Developers love the ergonomics of block-based terminals—where each command’s stdout, stderr, duration, and exit code are isolated into foldable cards—but recoil at mandatory cloud sign-ins and telemetry daemons. Warpi delivers the best of both worlds in a 14ms cold-start Rust binary with an air-gapped Pi coding helper invoked only when you press `Ctrl+Space`.',
+      'Warp’s block terminal is loved for isolating each command’s stdout, stderr, duration, and exit code into foldable cards — but the agent that lives inside it runs through Warp’s servers behind a Warp account. Warpi is an independent fork that keeps the native Warp UI and replaces that backend with a local one: a Rust adapter supervises a private Node helper built on the Pi coding-agent SDK, and inference runs against any OpenAI-compatible endpoint you configure. No Warp login, no Warp server in the agent path.',
     architecture: [
-      'Native Rust POSIX PTY multiplexer structuring every command execution into navigable, foldable, exit-code-tagged blocks.',
-      'Explicitly scoped Pi agent sidecar that reads only user-selected terminal blocks to synthesize shell pipelines and diffs.',
-      'WGPU hardware-accelerated glyph atlas and zero-copy VT100/ANSI parser sustaining 120Hz scrolling through multi-megabyte logs.',
-      'Strictly local credential and history store with zero external telemetry sockets.'
+      'Warp owns the terminal, block UI, approval cards, diffs, history, and every workspace side effect — all inherited from upstream Warp.',
+      'New fork code in `crates/standalone_agent` holds provider profiles, resolves credentials, supervises the helper, and translates its events into Warp’s native response events.',
+      'New fork code in `standalone/pi-helper` embeds the pinned Pi coding-agent SDK (0.84.2), owns the model loop and transcript, and runs as a supervised stdio child with no listening port.',
+      'Agent inference goes only to the user-configured OpenAI-compatible Chat Completions endpoint; Warp sign-in, credits, and cloud agent surfaces are hidden while standalone mode is active.'
     ],
     verifiedCapabilities: [
-      'Block-structured PTY command history with instant output folding',
-      'Context-aware Pi coding agent keybind (`Ctrl+Space`) for command synthesis',
-      '120Hz WGPU hardware-accelerated text rendering with ligature support',
-      '100% local Rust binary with zero telemetry or cloud lock-in'
+      'No Warp account required — configuring a provider enables the local backend and skips the account gate',
+      'Bring your own model: any OpenAI-compatible Chat Completions endpoint, local or hosted, with an optional API key kept in the OS secret store',
+      'Native Warp approval, diff, and tool-card surfaces still decide and execute every workspace side effect the model proposes',
+      'OpenAI Chat Completions is the only accepted v1 wire protocol; Responses and Anthropic Messages are rejected, not emulated'
     ],
-    techStack: ['Rust', 'WGPU / OpenGL', 'POSIX PTY', 'Pi Agent Protocol', 'VT100 State Machine'],
+    techStack: ['Rust (fork adapter: crates/standalone_agent)', 'Node.js ≥22.19 (private stdio helper)', 'Pi coding-agent SDK 0.84.2', 'OpenAI Chat Completions', 'Upstream Warp terminal & block UI'],
     metrics: [
-      { label: 'Cold Startup', value: '14 ms Native Rust' },
-      { label: 'Scroll Refresh', value: '120 Hz WGPU Lock' },
-      { label: 'Cloud Telemetry', value: '0 Bytes (Air-Gapped)' }
+      { label: 'Warp Account', value: 'Not Required' },
+      { label: 'Agent Wire Protocol', value: 'OpenAI Chat Completions' },
+      { label: 'Fork Version', value: '0.1.2 (2026-09-24)' }
     ],
     flexiFreqs: [293.66, 369.99, 440.00, 587.33],
-    codeListingTitle: 'LISTING 9.1 // ZERO-COPY VT100 BLOCK DEMULTIPLEXER',
-    codeListing: `pub struct CommandBlock {
-    pub id: u64,
-    pub cmdline: String,
-    pub stdout_ring: RingSlice,
-    pub exit_code: Option<i32>,
-    pub elapsed_us: u64,
+    codeListingTitle: 'SOURCE EXCERPT 9.1 // PROVIDER PROFILE HOLDS A CREDENTIAL REFERENCE, NEVER THE SECRET',
+    codeListing: `/// Where the credential for a profile comes from. The reference is a stable
+/// key into the OS secret store; it is never the secret itself.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CredentialRef {
+    /// No authentication: the wire request must not carry an Authorization header.
+    None,
+    /// Look up by key in the platform secret store.
+    SecretStore { key: String },
 }`,
+    codeSource: {
+      label: 'crates/standalone_agent/src/provider.rs — CredentialRef',
+      url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/crates/standalone_agent/src/provider.rs#L89-L98'
+    },
     terminalStream: [
-      '[warpi:pty] Spawned zsh session in Block #42 (cwd: ~/slopverse)',
-      '[pi:helper] Synthesized ripgrep + jq pipeline from last stderr block (19 ms)',
-      '[wgpu:atlas] Rendered 4,096 glyphs in 0.42 ms (0 frame drops)',
-      '[privacy:seal] Outbound telemetry sockets: 0 (Air-gapped local mode)'
-    ]
+      'READING GUIDE — the lines below are documentation, not captured program output.',
+      'WHERE THE AGENT LIVES: `crates/standalone_agent` (Rust) supervises the private Node helper in `standalone/pi-helper`.',
+      'BYOK FLOW: Settings → Agents → Local Pi provider; pick a preset or a custom OpenAI-compatible base URL, then set the model id and limits.',
+      'CREDENTIALS: the profile stores only a reference; the API key goes to the OS secret store and is read at session open.',
+      'SIDE EFFECTS: the model proposes commands and edits; Warp’s approval cards, diffs, and allowlists decide and execute them.',
+      'EGRESS: inference goes to the configured endpoint only; Warp sign-in, credits, and cloud surfaces are hidden in standalone mode.'
+    ],
+    sources: [
+      { label: 'README — independent Warp fork, local Pi backend, no Warp account (v0.1.2)', url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/README.md' },
+      { label: 'standalone/ARCHITECTURE.md — ownership split and exchange/run model', url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/standalone/ARCHITECTURE.md' },
+      { label: 'crates/standalone_agent/src/provider.rs — provider profiles and credential reference', url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/crates/standalone_agent/src/provider.rs' },
+      { label: 'standalone/pi-helper/src/runtime.ts — pinned Pi SDK, offline resource discovery', url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/standalone/pi-helper/src/runtime.ts' },
+      { label: 'standalone/NETWORK_DEPENDENCIES.md — egress inventory (configured endpoint only)', url: 'https://github.com/mojomast/warpi/blob/760f4fe04caf335393e6e88f213c84f9c6eb4284/standalone/NETWORK_DEPENDENCIES.md' }
+    ],
+    sourceRevision: '760f4fe04caf335393e6e88f213c84f9c6eb4284',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'hermesdashboard',
     index: 10,
     issueSection: 'OBSERVABILITY & CONTROL // FLEET TELEMETRY',
     spreadType: 'control-topology',
-    pageRange: 'pp. 90–99',
     readerServiceNo: 110,
     title: 'HermesDashboard',
-    kicker: 'Real-Time Topology for Multi-Agent Swarms',
-    headline: 'Streaming SSE Thought Traces & Subagent DAGs at <8ms Lag',
-    deck: 'An operator control room for Hermes autonomous fleets—visualizing parent-child subagent spawns, shared KV locks, token economics, and live steward checkpoints.',
-    byline: 'By the Cybernetics & Control Desk · Foldout Chart X',
-    category: 'Agent Observability / Fleet Control',
+    kicker: 'Operator Console for Hermes Sessions',
+    headline: 'Live Session Views and a Graph of the Agent Fleet',
+    deck: 'A standalone dashboard for an existing Hermes install: streaming chat, a scannable sessions browser, a live subagent drawer, and a canvas graph across sessions, files, tools, models and skills.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
+    category: 'Agent Observability / Operator Console',
+    glanceNote: 'Works alongside an existing Hermes installation. Session browsing, a live child-agent drawer, resource relationships, and per-session token and cost views expose the work already running there.',
     repoUrl: 'https://github.com/mojomast/hermesdashboard',
     liveUrl: null,
     spotInkHex: '#6d28d9', // Royal Violet Ink
     secondaryInkHex: '#be185d', // Magenta Trace
-    pullQuote: '“Autonomy without observability is just hope; an operator needs a live schematic of every subagent branch, file lock, and tool call as it happens.”',
+    pullQuote: 'An agent fleet is unreadable as a wall of logs; a live, inspectable view of each run is what makes long autonomous work worth trusting.',
     bodyCopy:
-      'A fleet of agents is illegible as a log and obvious as a diagram. HermesDashboard multiplexes Server-Sent Events from dozens of concurrent sessions into one live directed acyclic graph: nodes are agents, edges are tool calls, and colour encodes health. An operator can pause a branch, fork it to try an alternative, roll it back to a checkpoint or inject a steward prompt mid-flight — and every frame of that reasoning is retained in a JSONL transcript for the post-mortem.',
-    fieldNotes: ['Under 8 ms end-to-end SSE reasoning stream.', '64+ concurrent agent sessions on one topology map.', 'Pause, fork, rollback and steward override in one click.'],
+      'HermesDashboard packages the Hermes dashboard as a standalone Python web app for people who already run Hermes. Chat streams over Server-Sent Events, tool activity collapses into single-line rows that expand on demand, and a floating “Live view” drawer follows a `delegate_task` child session as it works. A canvas graph ties sessions to the files, tools, models and skills they touched, and per-session token and cost badges make the economics visible. It is explicitly not a standalone Hermes runtime: it depends on a working Hermes install, its home directory and `state.db`.',
+    fieldNotes: ['Requires an existing Hermes install—not a standalone runtime.', 'Streaming chat over Server-Sent Events, with WebSocket terminals.', 'Live subagent drawer streams a delegate_task child session.', 'Per-session token and cost accounting.'],
     editorialLead:
-      'As autonomous software agents spawn specialized subagents to explore repositories, run test suites, and verify builds, flat log files become unreadable. HermesDashboard ingests multiplexed Server-Sent Events (SSE) from up to 64 concurrent Hermes sessions, rendering a live interactive Directed Acyclic Graph (DAG) with one-click pause, fork, rollback, and steward prompt injection.',
+      'When Hermes spawns specialized subagents to explore repositories and run test suites, flat logs stop being readable. HermesDashboard turns the runtime into an operator console: a streaming chat surface, a scannable sessions browser, a live subagent drawer, and a d3/canvas graph linking sessions to the files, tools, models and skills they used. It runs as a Starlette app against an existing Hermes install, and it is honest about that dependency.',
     architecture: [
-      'Multiplexed Server-Sent Events (SSE) ingestion engine aggregating live thought traces and tool stdout across 64+ concurrent sessions.',
-      'Interactive 2D DAG topology canvas visualizing parent-child subagent spawns, shared KV stores, and active file locks.',
-      'Operator intervention console supporting live prompt injection, tool-call approval/veto, and session checkpointing.',
-      'Time-series telemetry recorder tracking latency percentiles, context window saturation, and per-task token efficiency.'
+      'Starlette (Python) application served by uvicorn; `app.py` owns the route table and streams upstream Hermes output over Server-Sent Events via `sse-starlette`.',
+      'Live subagent drawer: the agent emits a `child_session_started` event when `delegate_task` spawns a child, and the drawer follows that child session’s `/api/sessions/{id}/stream` SSE feed in a fixed floating panel.',
+      'HTML5 Canvas graph with d3 zoom and pan across sessions, files, tools, models and skills, plus persisted display settings for labels, spacing, edges and panel sizing.',
+      'Read-only token and cost aggregation, and an optional browser xterm.js terminal backed by a real Unix PTY—disabled by default and hard-disabled in Docker.'
     ],
     verifiedCapabilities: [
-      'Sub-8ms SSE streaming of agent reasoning steps and tool stdout',
-      'Live subagent DAG topology map with click-to-inspect node state',
-      'One-click session pause, fork, rollback, and steward override',
-      'Historical audit timeline with full JSONL transcript export'
+      'Streaming Hermes chat with single-line tool activity and drill-down panels',
+      'Live subagent drawer for in-flight delegate_task child sessions',
+      'Canvas graph across sessions, files, tools, models and skills',
+      'Per-session token and cost accounting',
+      'Optional local-only xterm.js terminal backed by a Unix PTY'
     ],
-    techStack: ['TypeScript', 'Server-Sent Events (SSE)', 'HTML5 Canvas DAG', 'Node.js', 'Reactive State Store'],
+    techStack: ['Python / Starlette', 'Server-Sent Events', 'WebSocket', 'SQLite', 'vanilla JS + d3', 'xterm.js'],
     metrics: [
-      { label: 'SSE Stream Lag', value: '< 8 ms End-to-End' },
-      { label: 'Concurrent Nodes', value: '64+ Agent Sessions' },
-      { label: 'Audit Fidelity', value: '100% Tool Call Trace' }
+      { label: 'Backend', value: 'Starlette / Python' },
+      { label: 'Live Stream', value: 'Server-Sent Events' },
+      { label: 'Dependency', value: 'Existing Hermes install' }
     ],
     flexiFreqs: [311.13, 392.00, 466.16, 622.25],
-    codeListingTitle: 'LISTING 10.1 // SSE TOPOLOGY GRAPH REDUCER',
-    codeListing: `export function applySseEventToDag(dag, evt) {
-  if (evt.kind === 'SUBAGENT_SPAWN') {
-    dag.nodes.set(evt.childId, { id: evt.childId, parentId: evt.parentId, status: 'RUNNING' });
-    dag.edges.push({ from: evt.parentId, to: evt.childId, tool: evt.toolName });
-  }
-  return dag;
-}`,
+    codeListingTitle: 'LISTING 10.1 // SOURCE EXCERPT — SSE EVENT NORMALIZATION',
+    codeListing: `    hermes = parsed.get("hermes")
+    usage = parsed.get("usage")
+    if isinstance(hermes, dict):
+        payload = dict(hermes)
+        call_id = str(
+            payload.get("call_id") or payload.get("tool_call_id") or ""
+        ).strip()
+        if call_id and not payload.get("call_id"):
+            payload["call_id"] = call_id
+        if payload.get("type") == "meta" and usage:
+            payload["usage"] = usage
+        payloads.append(payload)`,
+    codeSource: {
+      label: 'app.py L667–L678 · hermesdashboard@74ef867',
+      url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/app.py#L667-L678'
+    },
     terminalStream: [
-      '[control:sse] Subscribed to 11 active Hermes fleet nodes',
-      '[dag:topology] Subagent spawn: hermes-root -> explorer-east (depth=2)',
-      '[telemetry] Fleet context utilization: 38.4% // 0 stalled tool calls',
-      '[checkpoint] Saved snapshot #108 before file-system mutation'
-    ]
+      'READING GUIDE // README.md — standalone dashboard for an existing Hermes install',
+      'READING GUIDE // README.md §Live Subagent Drawer — child_session_started over SSE',
+      'READING GUIDE // README.md §Streaming Reliability — long tool-heavy runs, resume and stop',
+      'READING GUIDE // IMPLEMENTATION.md — installer flow and required Hermes runtime surface'
+    ],
+    sources: [
+      { label: 'hermesdashboard README', url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/README.md' },
+      { label: 'IMPLEMENTATION.md — packaging and runtime surface', url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/IMPLEMENTATION.md' },
+      { label: 'app.py — Starlette routes and SSE normalization', url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/app.py' },
+      { label: 'static/js/dashboard.js — canvas graph and live drawer', url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/static/js/dashboard.js' },
+      { label: 'requirements.txt — Starlette, uvicorn, sse-starlette', url: 'https://github.com/mojomast/hermesdashboard/blob/74ef867f3d7ad408c6c3c6aca6c91d4532464da9/requirements.txt' }
+    ],
+    sourceRevision: '74ef867f3d7ad408c6c3c6aca6c91d4532464da9',
+    researchedAt: '2026-10-13'
   },
   {
     id: 'becomussy',
     index: 11,
     issueSection: 'SPECIAL MONOGRAPH // IDENTITY & MEMORY',
     spreadType: 'monograph-covenant',
-    pageRange: 'pp. 100–111',
     readerServiceNo: 111,
     title: 'Becomussy',
-    kicker: 'How an Autonomous Mind Remembers Who It Is',
-    headline: 'The Five-Layer Memory Stratigraphy & Cryptographic Steward Gate',
-    deck: 'A landmark architectural monograph on governed agent identity continuity—separating ephemeral sensory buffers from episodic journals, semantic graphs, procedural skills, and the immutable Core Covenant.',
-    byline: 'By the Continuity & Stewardship Institute · Monograph XI',
+    kicker: 'How an Agent Remembers, Reflects, and Revises Itself',
+    headline: 'A Governed Continuity System for Agent Self-Development',
+    deck: 'Five kinds of memory, reflection journals, active threads and commitments, a versioned self-model with semantic diffing, and identity revisions that high-risk changes route through human approval.',
+    byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Agent Identity / Memory Architecture',
+    glanceNote: 'The repository combines memory, reflection, threads, a self-model and revision proposals. Keyword search is implemented; vector/hybrid retrieval and drift detection remain planned work.',
     repoUrl: 'https://github.com/mojomast/becomussy',
     liveUrl: null,
     spotInkHex: '#b45309', // Archival Gold-Ochre
     secondaryInkHex: '#0f766e', // Deep Verdigris
-    pullQuote: '“Continuity is not raw context-window hoarding; it is the disciplined distillation of experience through a governed moral covenant.”',
+    pullQuote: 'Continuity is not context-window hoarding; it is memory with provenance, reflection that compounds, and a self-model a human has agreed to.',
     bodyCopy:
-      'Becomussy separates what a mind senses from what it remembers and what it will never surrender. Sensory buffers expire by design; episodic journals are distilled during a reflective sleep cycle into a semantic graph; verified procedures accrue into a skill vault; and the Core Covenant — the layer that says who this agent is — can only be changed behind an Ed25519 Steward Gate. A hash-chained ledger makes the whole autobiography portable across model upgrades without persona drift.',
-    fieldNotes: ['L1 sensory · L2 episodic · L3 semantic · L4 skills · L5 covenant.', 'Layers 4–5 mutate only with a cryptographic steward seal.', 'Portable identity capsule survives model migrations.'],
+      'Becomussy is a governed continuity platform that lets an agent remember across sessions, resume unfinished work, reflect over time, and route meaningful self-revisions through human review. Durable memory items are typed—episodic, semantic, autobiographical, working, and relational—and carry provenance, salience, reinforce, and contradict operations. A versioned self-model stores the agent’s self-understanding across four facets (descriptive, aspirational, constrained, relational) and compares versions with a structured semantic diff engine. Revision proposals are risk-classified: low-risk thread or project changes may auto-approve, while constrained/value identity changes require approval, with policy checks and an emergency freeze. Every durable write records an audit event, and a context compiler assembles a resume bundle at session start.',
+    fieldNotes: ['Five typed memory kinds, each provenanced and searchable.', 'High-risk identity changes require human approval; low-risk changes may auto-approve.', 'MVP auth is header-based (X-User-Id / X-User-Role) and should be replaced with OAuth/JWT.', 'Drift detection and vector/hybrid search are planned, not shipped; search is keyword-based today.'],
     editorialLead:
-      'Closing our October 2026 Annual is Becomussy—the philosophical and architectural cornerstone of the Slopverse. When an AI agent wakes up in a fresh process or migrates to a new model backbone, how does it retain genuine autobiographical continuity without suffering persona drift or unauthorized self-modification? Becomussy solves this with a five-layer geological memory stratigraphy guarded by a cryptographic Steward Gate.',
+      'An agent that wakes in a fresh process is not the same agent unless something carries across. Becomussy answers that problem as a governance system rather than a bigger context window: a FastAPI modular monolith over PostgreSQL, with typed and provenanced memory, reflection journals, active threads and commitments, a versioned self-model, and revision proposals whose high-risk identity changes a human must approve. Every durable update is auditable, and the whole design is explicit about its MVP boundaries.',
     architecture: [
-      'Five-Layer Memory Stratigraphy: (L1) Ephemeral Sensory Buffer, (L2) Episodic Journal, (L3) Semantic Knowledge Graph, (L4) Procedural Skill Vault, and (L5) Core Identity Covenant.',
-      'Steward Gate governance protocol requiring explicit cryptographic sign-off before any mutation to Layer-4 skills or Layer-5 identity axioms.',
-      'Reflective consolidation sleep-cycle distilling raw episodic logs into coherent semantic insights without persona drift.',
-      'Immutable hash-chained continuity ledger guaranteeing verifiable identity provenance across model upgrades.'
+      'Modular monolith: one FastAPI application with service boundaries for memory, threads/projects, journal, self-model, revisions, governance, search, and audit.',
+      'Multi-layer memory items (episodic, semantic, autobiographical, working, relational) with provenance, salience, reinforce, and contradict operations.',
+      'Versioned self-model snapshots across four facets—descriptive, aspirational, constrained, relational—compared by a section-by-section semantic diff engine.',
+      'Risk-classified revision proposals: high-risk identity changes require approval, low-risk thread/project targets may auto-approve, with policy checks and an emergency freeze.',
+      'Immutable audit trail for every durable write, plus a context compiler that assembles a resume bundle at session start.'
     ],
     verifiedCapabilities: [
-      '5-Layer stratified memory engine with automatic episodic-to-semantic consolidation',
-      'Steward Gate approval workflow preventing unauthorized self-modification',
-      'Hash-chained autobiographical continuity ledger with drift detection',
-      'Portable identity capsule exportable across LLM backbones'
+      'Structured multi-layer memory with search, salience reinforcement, and contradiction recording',
+      'Versioned self-model with section-by-section semantic diffing',
+      'Risk-based governance: approve, reject, defer, policy checks, and emergency freeze',
+      'Active threads, projects, and commitments with a session-start resume bundle',
+      'Immutable audit events for all durable changes'
     ],
-    techStack: ['Python / TypeScript', '5-Layer Memory Graph', 'Steward Gate Crypto', 'Vector + Graph Store', 'Continuity Ledger'],
+    techStack: ['Python 3.12 / FastAPI', 'PostgreSQL + pgvector', 'SQLAlchemy + Alembic', 'Redis', 'Next.js', 'Docker Compose'],
     metrics: [
-      { label: 'Memory Strata', value: '5 Governed Layers' },
-      { label: 'Identity Drift', value: '0.00% Unsanctioned' },
-      { label: 'Steward Gate', value: 'Cryptographic Seal' }
+      { label: 'Memory Kinds', value: '5, typed + provenanced' },
+      { label: 'Self-Model', value: 'Versioned, 4 facets' },
+      { label: 'Identity Change', value: 'Risk-gated approval' }
     ],
     flexiFreqs: [261.63, 329.63, 392.00, 523.25],
-    codeListingTitle: 'LISTING 11.1 // STEWARD GATE L5 COVENANT VERIFIER',
-    codeListing: `def propose_stratum_mutation(proposal: MemoryMutation, steward_sig: bytes) -> Receipt:
-    if proposal.target_layer >= 4:
-        verify_ed25519_steward_seal(proposal.digest(), steward_sig)
-    return continuity_ledger.append_hash_chained(proposal)`,
+    codeListingTitle: 'SOURCE EXCERPT // RISK-CLASSIFIED REVISION GATE',
+    codeListing: `def _classify_risk(revision_type: str, target_entity_type: str) -> str:
+    """Determine risk class based on revision type and target entity.
+
+    Rules from spec:
+    - self_model + constrained/value keywords -> high
+    - self_model + descriptive keywords -> medium
+    - thread or project target -> low
+    - Default: medium
+    """
+    revision_lower = revision_type.lower()
+    target_lower = target_entity_type.lower()
+
+    if target_lower in ("thread", "project"):
+        return "low"
+
+    if target_lower == "self_model":
+        # Check for high-risk keywords in the revision type
+        if any(kw in revision_lower for kw in _HIGH_RISK_KEYWORDS):
+            return "high"
+        # Check for descriptive keywords
+        if any(kw in revision_lower for kw in _DESCRIPTIVE_KEYWORDS):
+            return "medium"
+
+    # Default
+    return "medium"`,
     terminalStream: [
-      '[stratum:L1->L2] Consolidated 28 reflections into Episodic Journal #409',
-      '[stratum:L3] Updated Semantic Graph: +6 verified architectural links',
-      '[steward:gate] Identity Covenant L5 verified — Steward signature VALID',
-      '[becomussy] Continuity seal intact: "I remember the craft; I honor the steward."'
-    ]
+      '[reading guide] README, line 15: “Every durable update is auditable. High-risk identity changes require human approval.”',
+      '[scope] FastAPI + PostgreSQL/pgvector + Next.js continuity MVP with a session-start resume bundle.',
+      '[auth] Header-based MVP (X-User-Id / X-User-Role); the code says to replace it with real OAuth/JWT.',
+      '[caveat] Drift detection and vector/hybrid search are planned, not implemented; background workers are future.'
+    ],
+    codeSource: {
+      label: 'backend/app/services/revisions/__init__.py L29–L53 · risk classification',
+      url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/backend/app/services/revisions/__init__.py#L29-L53'
+    },
+    sources: [
+      { label: 'becomussy README — governed continuity overview and API', url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/README.md' },
+      { label: 'backend/app/core/security.py — MVP header auth, no cryptography', url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/backend/app/core/security.py#L1-L46' },
+      { label: 'backend/app/models/memory.py — five typed memory kinds', url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/backend/app/models/memory.py#L30-L40' },
+      { label: 'backend/app/services/revisions/__init__.py — risk-based revision gate', url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/backend/app/services/revisions/__init__.py#L25-L63' },
+      { label: 'ARCHITECTURE.md — spec-to-code map and deferred scope', url: 'https://github.com/mojomast/becomussy/blob/7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f/ARCHITECTURE.md#L1-L40' }
+    ],
+    sourceRevision: '7ac531e2f48ece3e5f2013eddf6d5fd8cde7af3f',
+    researchedAt: '2026-10-13'
   }
 ];
 

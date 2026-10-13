@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10)
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.) — ISSUE 01
  * HARDENED NODE HTTP SERVER & EDITORIAL API GATEWAY
  *
  * Zero external runtime dependencies.
@@ -22,6 +22,7 @@ import { readFile } from 'node:fs/promises';
 import { extname, join, normalize, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MAGAZINE_ISSUE_META, USSY_PROJECTS } from './js/projects.js';
+import { totalFolios } from './js/issue-map.js';
 
 const rootDir = fileURLToPath(new URL('.', import.meta.url));
 const rootDirSafe = rootDir.endsWith(sep) ? rootDir : rootDir + sep;
@@ -188,8 +189,8 @@ function sendJson(res, statusCode, data) {
 export function createAppServer() {
   let pressMemoryState = {
     v: 1,
-    printMode: 'cream-press',
-    circledServiceNos: [101, 104, 111],
+    printMode: 'darkroom',
+    circledServiceNos: [],
     readerNotes: [],
     unlocked: [],
     counters: {
@@ -232,7 +233,8 @@ export function createAppServer() {
         status: 'ok',
         version: '6.0.0',
         publication: MAGAZINE_ISSUE_META.publicationTitle,
-        volume: MAGAZINE_ISSUE_META.volume,
+        issueNumber: MAGAZINE_ISSUE_META.issueNumber,
+        digitalFolios: totalFolios(USSY_PROJECTS),
         issueDate: MAGAZINE_ISSUE_META.coverDate,
         articles: USSY_PROJECTS.length,
         articleIds: USSY_PROJECTS.map((p) => p.id),
@@ -402,6 +404,6 @@ const isMainEntry =
 if (isMainEntry) {
   const server = createAppServer();
   server.listen(defaultPort, defaultHost, () => {
-    console.log(`[ussysite6] THE SLOP COMPUTING ANNUAL listening on http://${defaultHost}:${defaultPort}`);
+    console.log(`[ussysite6] SLOP ILLUSTRATED listening on http://${defaultHost}:${defaultPort}`);
   });
 }

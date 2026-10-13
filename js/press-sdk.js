@@ -1,10 +1,10 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL
- * PRESS ROOM & READER SERVICE CARD ("BINGO CARD") SDK
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.)
+ * PRESS ROOM & SOURCE ROOM READING-LIST SDK
  *
  * Exposes `window.PressSDK` (and `window.AnomalySDK` compatibility alias)
- * to persist circled Reader Service Inquiry numbers (#101-#111), active
- * paper stock mode, and reader margin dispatches.
+ * to persist selected projects, paper mode, and reading notes. Legacy service
+ * numbers (#101–#111) remain the storage keys for saved project selections.
  */
 
 const STORAGE_KEY = 'ussysite6.press.state.v1';
@@ -13,20 +13,14 @@ export class PressSDK {
   constructor() {
     this.state = {
       v: 1,
-      printMode: 'cream-press',
-      circledServiceNos: [101, 104, 111],
-      readerNotes: [
-        {
-          id: 'dispatch-1',
-          text: 'Spread XI (Becomussy): The 5-layer geological memory diagram is pure classic BYTE.',
-          createdAt: Date.now() - 1800_000
-        }
-      ],
+      printMode: 'darkroom',
+      circledServiceNos: [],
+      readerNotes: [],
       unlocked: [],
       counters: {
         articlesRead: 0,
         flexiPlays: 0,
-        bingoSubmissions: 1
+        bingoSubmissions: 0
       },
       flags: {},
       updatedAt: Date.now()
@@ -48,8 +42,8 @@ export class PressSDK {
           circledServiceNos: Array.isArray(parsed.circledServiceNos)
             ? parsed.circledServiceNos
             : this.state.circledServiceNos,
-          readerNotes: Array.isArray(parsed.readerNotes) && parsed.readerNotes.length > 0
-            ? parsed.readerNotes
+          readerNotes: Array.isArray(parsed.readerNotes)
+            ? parsed.readerNotes.filter((note) => !(note.id === 'dispatch-1' && note.text === 'Spread XI (Becomussy): The 5-layer geological memory diagram is pure classic BYTE.'))
             : this.state.readerNotes
         };
       }

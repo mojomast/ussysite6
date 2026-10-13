@@ -1,172 +1,79 @@
-/**
- * PLATE // ROUTETOK — “THE BELL RELAY EXCHANGE”
- * Bell-Labs-grade electro-mechanical telephone relay exchange & circuit breaker:
- * three heavy industrial stepping relays with cylindrical copper coils and brass
- * knife switches (one tripped open with an electrical spark gap), porcelain standoffs,
- * a 3-state FSM inset (CLOSED/OPEN/HALF-OPEN), and braided telegraph cables.
- */
-import {
-  rng, r2, scope, standardDefs, linGrad, radGrad, label, svgRoot,
-  BLEED, bleedRect, tint, shade, rgba
-} from '../svg-kit.js';
+/** RouteTok: an open relay exchange, drawn as a physical pre-output routing metaphor. */
+import { scope, svgRoot } from '../svg-kit.js';
+import { materials, studio, repeat, screw, type } from './instrument-materials.js';
 
 export default function routetokPlate(proj) {
-  const id = scope('pl-rtok');
-  const rand = rng(106);
-  const W = 800;
-  const H = 600;
-  const spot = proj.spotInkHex; // #047857 Emerald
-  const sec = proj.secondaryInkHex; // #0369a1 Cyan
+  const id = scope('si-routetok-still');
+  const title = 'Before the first word';
+  const defs = materials(id) + `
+    <linearGradient id="${id('enamel')}" x2=".5" y2="1"><stop stop-color="#77877a"/><stop offset=".18" stop-color="#465c51"/><stop offset=".7" stop-color="#243e38"/><stop offset="1" stop-color="#152e2c"/></linearGradient>
+    <linearGradient id="${id('ceramic')}" x2=".3" y2="1"><stop stop-color="#f3ead0"/><stop offset=".45" stop-color="#c3c4ae"/><stop offset="1" stop-color="#778b84"/></linearGradient>
+    <linearGradient id="${id('coil')}" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#462719"/><stop offset=".12" stop-color="#ad5e31"/><stop offset=".3" stop-color="#f8c38d"/><stop offset=".43" stop-color="#c7864e"/><stop offset=".64" stop-color="#783b23"/><stop offset=".88" stop-color="#301d18"/><stop offset="1" stop-color="#72432c"/></linearGradient>
+    <radialGradient id="${id('lamp')}"><stop stop-color="#f7ffe0"/><stop offset=".2" stop-color="#b4edbe"/><stop offset=".6" stop-color="#5b9d86"/><stop offset="1" stop-color="#163c37"/></radialGradient>`;
 
-  const defs = `
-    ${standardDefs(id, { ink: '#022416', dot: 0.75, gap: 5 })}
-    ${radGrad(id('spark-glow'), [[0, '#ffffff', 1], [0.25, '#67e8f9', 0.9], [0.65, '#0284c7', 0.4], [1, '#000000', 0]], { cx: 480, cy: 300, r: 90, units: 'userSpaceOnUse' })}
-    ${linGrad(id('rack-chassis'), [[0, '#0f291e'], [0.4, '#091c14'], [1, '#040d09']])}
-    ${linGrad(id('coppercable'), [[0, '#fdba74'], [0.4, '#c2410c'], [0.8, '#7c2d12'], [1, '#431407']])}
-    ${linGrad(id('brass-knife'), [[0, '#fef08a'], [0.4, '#ca8a04'], [0.8, '#854d0e'], [1, '#422006']])}
-    ${linGrad(id('porcelain'), [[0, '#ffffff'], [0.5, '#e2e8f0'], [1, '#94a3b8']])}
-    ${linGrad(id('slate-panel'), [[0, '#1e293b'], [0.5, '#0f172a'], [1, '#020617']])}
-    <filter id="${id('spark-bloom')}" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="3.5" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>`;
+  const relay = (x, y, state, opened, index) => `<g transform="translate(${x} ${y})">
+    <rect x="8" y="17" width="166" height="252" rx="15" fill="#000" opacity=".65" filter="${id.url('soft')}"/>
+    <path d="M0 5H165V244Q165 255 152 255H12Q0 255 0 242Z" fill="#57675b"/>
+    <rect width="165" height="242" rx="13" fill="${id.url('ceramic')}"/>
+    <path d="M7 230V16Q7 7 19 7H148" fill="none" stroke="#fff6d8" stroke-opacity=".7" stroke-width="1.2"/>
+    ${screw(id,14,16,4)}${screw(id,150,225,4)}
+    <rect x="19" y="54" width="130" height="114" rx="13" fill="#061315" opacity=".55"/>
+    <path d="M22 44H140V155H22Z" fill="${id.url('steel')}"/>
+    <rect x="26" y="39" width="18" height="128" rx="5" fill="${id.url('black')}"/>
+    <rect x="128" y="39" width="18" height="128" rx="5" fill="${id.url('black')}"/>
+    <rect x="40" y="46" width="92" height="115" rx="16" fill="${id.url('coil')}"/>
+    ${repeat(47, i => `<path d="M${44+i*1.83} 47C${37+i*1.83} 65 ${38+i*1.83} 143 ${44+i*1.83} 160" fill="none" stroke="#2e190f" stroke-width="1.65"/><path d="M${44+i*1.83} 47C${37+i*1.83} 65 ${38+i*1.83} 143 ${44+i*1.83} 160" fill="none" stroke="${id.url('copper')}" stroke-width="1.05"/>`)}
+    <path d="M46 57Q74 50 120 56" fill="none" stroke="#ffe5bb" stroke-width=".6" opacity=".75"/>
+    <path d="M26 44V154M143 43V155" stroke="#d6e0c7" stroke-width=".8" opacity=".5"/>
+    <path d="M44 157Q30 185 29 199M129 149Q146 165 140 201" fill="none" stroke="#3e2119" stroke-width="3"/>
+    <path d="M44 157Q30 185 29 199M129 149Q146 165 140 201" fill="none" stroke="#c18754" stroke-width="1.3"/>
+    <rect x="54" y="29" width="58" height="10" rx="3" fill="${id.url('steel')}"/>
+    <path d="M68 38V-15H77V39Z" fill="${id.url('silver')}"/>
+    <path d="M94 38V-15H104V39Z" fill="${id.url('steel')}"/>
+    ${repeat(9,i=>`<path d="M77 ${-4+i*3.8}q9 -4 17 0q-8 4 -17 0" fill="none" stroke="${id.url('brass')}" stroke-width="1.2"/>`)}
+    <path d="M56 -11H117V-4H56Z" fill="${id.url('brass')}"/>
+    <circle cx="86" cy="-7" r="4" fill="${id.url('steel')}"/>
+    <path d="M34 -34L${opened ? 102 : 112} ${opened ? -59 : -26}L${opened ? 107 : 113} ${opened ? -53 : -20}L34 -27Z" fill="${id.url('silver')}"/>
+    <path d="M35 -34L${opened ? 101 : 111} ${opened ? -59 : -26}" stroke="#f4f3d9" stroke-width="1"/>
+    <path d="M111 -19H126V14H115V-12H111Z" fill="${id.url('brass')}"/>
+    <ellipse cx="111" cy="-20" rx="6" ry="3" fill="${id.url('silver')}"/>
+    <path d="M29 -30V28H39V-30Z" fill="${id.url('brass')}"/>
+    ${screw(id,34,-30,6)}${screw(id,120,21,5)}
+    <rect x="20" y="188" width="126" height="28" rx="5" fill="${id.url('black')}"/>
+    ${[30,58,108,137].map((cx,i)=>screw(id,cx,202,6,22+i*21)).join('')}
+    <rect x="44" y="223" width="81" height="15" rx="2" fill="#142b2b"/>
+    ${type(84,234,state,8,'#dbe3c8','text-anchor="middle"')}
+    ${index === 0 ? `<circle cx="146" cy="178" r="5" fill="${id.url('lamp')}"/><circle cx="146" cy="178" r="8" fill="#92edb9" opacity=".35" filter="${id.url('bloom')}"/>` : ''}
+  </g>`;
 
-  // 1. Telephone Switching Rack Chassis & Slate Backing Panel
-  const rackFrame = `
-    <!-- Heavy Cast-Iron Rack Frame -->
-    <rect x="70" y="80" width="660" height="470" rx="6" fill="${id.url('rack-chassis')}" stroke="#065f46" stroke-width="2"/>
-    <rect x="85" y="95" width="630" height="440" rx="4" fill="${id.url('slate-panel')}" stroke="#334155" stroke-width="1.2"/>
-    <!-- Rivets around perimeter -->
-    ${Array.from({ length: 16 }, (_, i) => `<circle cx="${95 + i * 40}" cy="88" r="3" fill="#64748b" stroke="#0f172a" stroke-width="0.8"/>`).join('')}
-    ${Array.from({ length: 16 }, (_, i) => `<circle cx="${95 + i * 40}" cy="542" r="3" fill="#64748b" stroke="#0f172a" stroke-width="0.8"/>`).join('')}
+  const board = `<g transform="translate(120 163) matrix(.96 .12 -.10 .87 0 0)">
+    <rect x="2" y="28" width="610" height="354" rx="24" fill="#000" opacity=".7" filter="${id.url('shadow')}"/>
+    <path d="M-5 4H614V354Q614 372 592 372H15Q-5 372 -5 352Z" fill="#102629"/>
+    <rect x="-5" y="-7" width="619" height="365" rx="20" fill="${id.url('steel')}"/>
+    <rect x="0" y="-12" width="608" height="365" rx="18" fill="${id.url('enamel')}"/>
+    <path d="M5 326V9Q5 -6 22 -6H585" fill="none" stroke="#d4d9b7" stroke-width="1.2" opacity=".7"/>
+    <path d="M9 347H584Q600 347 600 333" fill="none" stroke="#8daca0" stroke-width="1" opacity=".5"/>
+    ${repeat(29,i=>`<path d="M${22+i*19} 321l${4+(i%4)*2} -1" stroke="#d6cfaa" stroke-width=".5" opacity=".22"/>`)}
+    ${[[15,5],[591,5],[15,335],[591,335]].map(([x,y])=>screw(id,x,y,6)).join('')}
+    <path d="M70 292C64 334 227 338 244 293S424 320 461 291" stroke="#0a1c1d" stroke-width="13" fill="none"/>
+    <path d="M70 289C64 331 227 335 244 290S424 317 461 288" stroke="#a09468" stroke-width="8" fill="none"/>
+    <path d="M70 287C64 329 227 333 244 288S424 315 461 286" stroke="#eee0b0" stroke-width="1.1" opacity=".6" fill="none"/>
+    <path d="M104 293C125 350 334 355 336 293S519 344 535 285" stroke="#112222" stroke-width="9" fill="none"/>
+    <path d="M104 291C125 348 334 353 336 291S519 342 535 283" stroke="#7b9591" stroke-width="5" fill="none"/>
+    ${relay(26,38,'CLOSED',false,0)}${relay(222,38,'OPEN',true,1)}${relay(418,38,'PROBE',true,2)}
+    <rect x="194" y="323" width="221" height="22" rx="3" fill="#102725" stroke="#8d9d83" stroke-width=".5"/>
+    ${type(305,338,'PRE-OUTPUT FALLBACK',9,'#c7cdb4','text-anchor="middle"')}
+  </g>`;
 
-    <!-- Vertical Solid Copper Busbars (+48V and GND) -->
-    <rect x="135" y="110" width="12" height="410" rx="1.5" fill="${id.url('coppercable')}" stroke="#9a3412" stroke-width="0.8"/>
-    <rect x="160" y="110" width="12" height="410" rx="1.5" fill="${id.url('coppercable')}" stroke="#9a3412" stroke-width="0.8"/>
-    <text x="141" y="530" font-family="IBM Plex Mono, monospace" font-size="6.5" font-weight="700" fill="#fed7aa" text-anchor="middle">BUS A</text>
-    <text x="166" y="530" font-family="IBM Plex Mono, monospace" font-size="6.5" font-weight="700" fill="#fed7aa" text-anchor="middle">BUS B</text>`;
+  const hood = `<g transform="translate(129 93) rotate(-8)">
+    <path d="M8 47L334 30L383 61L55 81Z" fill="#040d10" opacity=".35" filter="${id.url('soft')}"/>
+    <path d="M0 0L332 -9L382 17V57L53 71L0 40Z" fill="${id.url('glass')}" stroke="#a7c9bc" stroke-opacity=".3" stroke-width=".8"/>
+    <path d="M0 0L52 26L382 17M52 26V71" fill="none" stroke="#e5eee0" stroke-opacity=".52" stroke-width="1"/>
+    <path d="M10 1L329 -6L350 5L32 14Z" fill="${id.url('reflection')}"/>
+    <path d="M60 30L374 21" stroke="#c4ece5" opacity=".4"/>
+  </g>`;
+  const connector = `<g transform="translate(555 516) rotate(8)"><ellipse cx="43" cy="10" rx="102" ry="13" fill="#000" opacity=".4" filter="${id.url('soft')}"/><path d="M-75 0H-13" stroke="#182925" stroke-width="9"/><rect x="-18" y="-15" width="90" height="30" rx="6" fill="${id.url('black')}"/><rect x="60" y="-13" width="34" height="26" rx="4" fill="${id.url('steel')}"/>${repeat(9,i=>`<path d="M${-8+i*7} -12v24" stroke="#86958a" opacity=".4" stroke-width=".6"/>`)}<path d="M94 -7h27M94 0h27M94 7h27" stroke="${id.url('brass')}" stroke-width="3"/></g>`;
 
-  // 2. Three Industrial Electro-Mechanical Relays (Relay A, Relay B, Relay C)
-  const relayRows = [
-    { name: 'PROVIDER A (CLAUDE-3.5)', state: 'CLOSED (ACTIVE)', y: 175, statusCol: '#10b981', knifeOpen: false },
-    { name: 'PROVIDER B (OPENAI-429)', state: 'TRIPPED OPEN', y: 300, statusCol: '#ef4444', knifeOpen: true, spark: true },
-    { name: 'PROVIDER C (LOCAL vLLM)', state: 'HALF-OPEN PROBE', y: 425, statusCol: '#f59e0b', knifeOpen: false, half: true }
-  ].map((r, idx) => {
-    // Copper coil windings
-    const coil = `
-      <g class="relay-coil" transform="translate(230, ${r.y})">
-        <!-- Porcelain Standoff Insulator -->
-        <rect x="-24" y="-32" width="18" height="64" rx="4" fill="${id.url('porcelain')}" stroke="#64748b" stroke-width="1"/>
-        <line x1="-24" y1="-12" x2="-6" y2="-12" stroke="#94a3b8" stroke-width="1.5"/>
-        <line x1="-24" y1="12" x2="-6" y2="12" stroke="#94a3b8" stroke-width="1.5"/>
-
-        <!-- Iron Core Cylinder -->
-        <rect x="0" y="-22" width="120" height="44" rx="3" fill="#334155" stroke="#1e293b" stroke-width="1.2"/>
-        <!-- Copper Wire Windings (segmented bands) -->
-        ${Array.from({ length: 15 }, (_, i) => `
-          <rect x="${6 + i * 7.5}" y="-26" width="6" height="52" rx="1.5" fill="${id.url('coppercable')}" stroke="#7c2d12" stroke-width="0.7"/>
-        `).join('')}
-
-        <!-- Status Indicator Lamp -->
-        <circle cx="145" cy="0" r="10" fill="#0f172a" stroke="#475569" stroke-width="1.2"/>
-        <circle cx="145" cy="0" r="7" fill="${r.statusCol}" filter="${id.url('glow')}"/>
-        <circle cx="145" cy="0" r="2.5" fill="#fff" opacity="0.8"/>
-      </g>`;
-
-    // Brass Knife Switch Assembly
-    const knife = `
-      <g class="relay-knife" transform="translate(420, ${r.y})">
-        <!-- Contact Block Base (Porcelain) -->
-        <rect x="0" y="-18" width="22" height="36" rx="2" fill="${id.url('porcelain')}" stroke="#475569" stroke-width="1"/>
-        <rect x="70" y="-18" width="22" height="36" rx="2" fill="${id.url('porcelain')}" stroke="#475569" stroke-width="1"/>
-
-        <!-- Copper Contact Jaws -->
-        <rect x="6" y="-12" width="10" height="24" rx="1" fill="${id.url('coppercable')}"/>
-        <rect x="76" y="-12" width="10" height="24" rx="1" fill="${id.url('coppercable')}"/>
-
-        <!-- Pivot Pin -->
-        <circle cx="11" cy="0" r="4.5" fill="${id.url('brass-knife')}"/>
-
-        <!-- Knife Blade -->
-        ${r.knifeOpen ? `
-          <!-- Tripped open at 42 degree angle -->
-          <polygon points="11,0 68,-38 74,-34 14,4" fill="${id.url('brass-knife')}" stroke="#ffe082" stroke-width="0.8"/>
-          <circle cx="70" cy="-36" r="6" fill="#1c1917" stroke="#ca8a04" stroke-width="1"/>
-          <!-- Electrical Arc Spark Gap -->
-          <path d="M81 -2 L76 -18 L86 -22 L72 -32" fill="none" stroke="#67e8f9" stroke-width="2.5" filter="${id.url('spark-bloom')}"/>
-          <path d="M81 -2 L76 -18 L86 -22 L72 -32" fill="none" stroke="#fff" stroke-width="1"/>
-          <!-- Spark aura -->
-          <circle cx="78" cy="-15" r="38" fill="${id.url('spark-glow')}"/>
-        ` : `
-          <!-- Closed contact bridge -->
-          <polygon points="11,-4 81,-4 81,4 11,4" fill="${id.url('brass-knife')}" stroke="#ffe082" stroke-width="0.8"/>
-          <circle cx="86" cy="0" r="5" fill="#1c1917" stroke="#ca8a04" stroke-width="1"/>
-          ${r.half ? `<circle cx="81" cy="0" r="6" fill="#f59e0b" opacity="0.6" class="plate-blink"/>` : ''}
-        `}
-      </g>`;
-
-    // Relay Label Strip
-    const textLabel = `
-      <g transform="translate(540, ${r.y - 12})">
-        <rect x="0" y="0" width="165" height="26" rx="2" fill="#0f172a" stroke="#334155" stroke-width="1"/>
-        <text x="8" y="11" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="7.5" fill="#f8fafc">${r.name}</text>
-        <text x="8" y="21" font-family="IBM Plex Mono, monospace" font-size="6.5" font-weight="600" fill="${r.statusCol}">${r.state}</text>
-      </g>`;
-
-    return coil + knife + textLabel;
-  }).join('');
-
-  // 3. Finite State Machine (FSM) Diagram Inset (Top-Right Panel)
-  const fsmDiagram = `
-    <g class="fsm-inset" transform="translate(565, 30)">
-      <rect x="0" y="0" width="145" height="100" rx="3" fill="rgba(8,16,28,0.92)" stroke="#047857" stroke-width="1.2"/>
-      <text x="10" y="14" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="6.5" fill="#6ee7b7" letter-spacing="0.1em">CIRCUIT BREAKER FSM</text>
-
-      <!-- 3 State Nodes -->
-      <!-- CLOSED Node (Green) -->
-      <circle cx="35" cy="45" r="14" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
-      <text x="35" y="47.5" font-family="IBM Plex Mono, monospace" font-size="6" font-weight="700" fill="#a7f3d0" text-anchor="middle">CLOSED</text>
-
-      <!-- OPEN Node (Red) -->
-      <circle cx="110" cy="45" r="14" fill="#7f1d1d" stroke="#ef4444" stroke-width="1.5"/>
-      <text x="110" y="47.5" font-family="IBM Plex Mono, monospace" font-size="6" font-weight="700" fill="#fca5a5" text-anchor="middle">OPEN</text>
-
-      <!-- HALF-OPEN Node (Amber) -->
-      <circle cx="72" cy="80" r="14" fill="#78350f" stroke="#f59e0b" stroke-width="1.5"/>
-      <text x="72" y="82.5" font-family="IBM Plex Mono, monospace" font-size="5" font-weight="700" fill="#fde68a" text-anchor="middle">HALF-OP</text>
-
-      <!-- Transition Arrows -->
-      <path d="M49 42 Q72 32 96 42" fill="none" stroke="#ef4444" stroke-width="1.2" marker-end="url(#arrow)"/>
-      <path d="M104 57 Q96 74 86 78" fill="none" stroke="#f59e0b" stroke-width="1.2"/>
-      <path d="M58 78 Q48 74 40 57" fill="none" stroke="#10b981" stroke-width="1.2"/>
-    </g>`;
-
-  const body = `
-    <!-- Cyanotype Blueprint / Dark Slate Ground -->
-    ${bleedRect('#06161a')}
-    <!-- Halftone grid -->
-    <rect x="${BLEED.x}" y="${BLEED.y}" width="${BLEED.w}" height="${BLEED.h}" fill="${id.url('halftone')}" opacity="0.14"/>
-
-    <!-- Switching Rack Assembly -->
-    ${rackFrame}
-    ${relayRows}
-
-    <!-- FSM State Diagram Inset -->
-    ${fsmDiagram}
-
-    <!-- Technical Annotations -->
-    ${label(400, 55, 'PLATE VIII · “THE BELL RELAY EXCHANGE”', { size: 9, fill: '#6ee7b7', plate: 'rgba(2,36,22,0.9)', pad: 5, anchor: 'middle' })}
-    ${label(500, 350, '429 RATE-LIMIT EXHAUSTION (SWITCH OPENED IN 12MS)', { size: 7, fill: '#67e8f9', plate: 'rgba(4,20,30,0.85)', pad: 4 })}
-    ${label(400, 520, 'MULTI-ARMED BANDIT ROUTER WITH ACTIVE HEALTH PROBES', { size: 7.5, fill: '#a7f3d0', anchor: 'middle' })}`;
-
-  return {
-    title: 'The Bell Relay Exchange',
-    svg: svgRoot({
-      w: W,
-      h: H,
-      title: 'Plate VIII: The Bell Relay Exchange — Bell-Labs electro-mechanical relay rack and 3-state circuit breaker',
-      defs,
-      body
-    })
-  };
+  return { title, svg: svgRoot({ title, desc: 'Conceptual electromechanical exchange: finely wound copper relays with closed, open and probe contacts on a ceramic and enamel base. The removable glass hood rests behind the assembly.', defs,
+    body: studio(id, false) + hood + board + connector + type(52,55,'ROUTETOK / BEFORE THE FIRST WORD',11) + type(52,574,'CLOSED · OPEN · PROBE',9,'#9baea0') }) };
 }

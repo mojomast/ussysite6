@@ -1,14 +1,20 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
- * MASTER EDITORIAL LAYOUT, SCROLL OBSERVER, BINGO CARD & INTERACTIVE CONTROLLER
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.) — ISSUE 01
+ * MASTER EDITORIAL LAYOUT, SCROLL OBSERVER, SOURCE ROOM & INTERACTIVE CONTROLLER
  */
 
 import { MAGAZINE_ISSUE_META, USSY_PROJECTS, getProjectById } from './projects.js';
-import { initArticleLabCanvas } from './magazine-widgets.js';
+import { initArticleStudy } from './article-studies.js';
 import { initCoverPlate } from './cover-plate.js';
+import { initSourceRoom } from './source-room.js';
 import { mountPlate, toRoman } from './plates/index.js';
 import { FlexiDiscSynth } from './flexidisc-audio.js';
 import { PressSDK } from './press-sdk.js';
+import { buildIssueMap, formatFolio } from './issue-map.js';
+
+const issueMap = buildIssueMap(USSY_PROJECTS);
+const issueEntries = new Map(issueMap.map((entry) => [entry.id, entry]));
+const escapeHtml = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 function withViewTransition(fn) {
   if (typeof document.startViewTransition === 'function') {
@@ -23,6 +29,17 @@ document.addEventListener('DOMContentLoaded', () => {
   window.PressSDK = sdk;
   window.AnomalySDK = sdk;
 
+  function applyPrintMode(mode) {
+    document.documentElement.dataset.printMode = mode;
+    document.querySelectorAll('.stock-btn').forEach((button) => {
+      const active = button.dataset.mode === mode;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+    });
+  }
+  const savedMode = sdk.getState().printMode;
+  applyPrintMode(MAGAZINE_ISSUE_META.printModes.some((mode) => mode.id === savedMode) ? savedMode : 'darkroom');
+
   const flexiSynth = new FlexiDiscSynth();
 
   const runningSectionLabel = document.getElementById('running-section-label');
@@ -30,26 +47,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const tocArticleList = document.getElementById('toc-article-list');
   const spreadsContainer = document.getElementById('editorial-spreads-container');
 
-  // Reader Service Bingo Card Elements
-  const bingoNumbersGrid = document.getElementById('bingo-numbers-grid');
-  const bingoSelectionSummary = document.getElementById('bingo-selection-summary');
-  const bingoNoteForm = document.getElementById('bingo-note-form');
-  const bingoReaderNote = document.getElementById('bingo-reader-note');
-  const bingoRecentDispatches = document.getElementById('bingo-recent-dispatches');
-
   // 1. Render Top Running Header Page Tabs & Table of Contents Index
   function renderNavigationAndToc() {
     folioPageTabs.innerHTML = '';
     tocArticleList.innerHTML = '';
+    for (const entry of issueMap) {
+      const section = document.getElementById(entry.id);
+      if (section) section.dataset.sectionLabel = `FOLIO ${formatFolio(entry)} / ${entry.label.toUpperCase()}`;
+    }
+    document.querySelectorAll('[data-issue-count]').forEach((el) => { el.textContent = issueMap.length; });
+    document.querySelectorAll('[data-issue-folio], [data-issue-number]').forEach((el) => {
+      const entry = issueEntries.get(el.dataset.issueFolio || el.dataset.issueNumber);
+      if (entry) el.textContent = `${el.hasAttribute('data-issue-folio') ? 'FOLIO ' : ''}${formatFolio(entry)}`;
+    });
 
     for (const proj of USSY_PROJECTS) {
+      const entry = issueEntries.get(`spread-${proj.id}`);
       // Top Folio Tab
       const tab = document.createElement('a');
       tab.href = `#spread-${proj.id}`;
       tab.className = 'folio-tab';
       tab.dataset.spreadId = proj.id;
-      tab.textContent = String(proj.index).padStart(2, '0');
-      tab.title = `${proj.title} (${proj.pageRange})`;
+      tab.textContent = formatFolio(entry);
+      tab.title = `${proj.title} (Folio ${formatFolio(entry)})`;
       folioPageTabs.appendChild(tab);
 
       // Table of Contents Entry
@@ -57,16 +77,27 @@ document.addEventListener('DOMContentLoaded', () => {
       li.className = 'toc-entry';
       li.innerHTML = `
         <a href="#spread-${proj.id}">
-          <span class="toc-entry-pages">${proj.pageRange}</span>
+          <span class="toc-entry-pages" aria-label="Folio ${formatFolio(entry)}">${formatFolio(entry)}</span>
           <div>
-            <strong class="toc-entry-title">${proj.title} — ${proj.headline}</strong>
-            <span class="toc-entry-sub">${proj.deck}</span>
+            <strong class="toc-entry-title">${proj.title}</strong>
+            <span class="toc-entry-sub">${proj.headline}</span>
           </div>
-          <span class="toc-entry-service">CARD #${proj.readerServiceNo}</span>
+          <span class="toc-entry-service">${String(proj.index).padStart(2, '0')} / FEATURE</span>
         </a>
       `;
       tocArticleList.appendChild(li);
     }
+    const featured = ['orbitdesktop', 'jammate', 'warpi', 'becomussy'];
+    document.getElementById('cover-story-list').innerHTML = featured.map((id) => {
+      const project = getProjectById(id);
+      const entry = issueEntries.get(`spread-${id}`);
+      return `<li><a href="${entry.href}"><span class="cover-page-num">FOLIO ${formatFolio(entry)}</span><strong>${escapeHtml(project.title)}</strong><em>${escapeHtml(project.headline)}</em></a></li>`;
+    }).join('');
+    document.getElementById('cover-departments').innerHTML = USSY_PROJECTS.filter((p) => !featured.includes(p.id)).map((project) => {
+      const entry = issueEntries.get(`spread-${project.id}`);
+      const title = project.id === 'rgbagentflightindicator' ? 'RGB Flight Indicator' : project.title.split(' // ')[0];
+      return `<div><dt>${formatFolio(entry)}</dt><dd><a href="${entry.href}">${escapeHtml(title)}</a></dd></div>`;
+    }).join('');
   }
 
   // 2. Render All 11 Bespoke Magazine Spreads
@@ -76,12 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     for (const proj of USSY_PROJECTS) {
       const isCircled = circledSet.has(proj.readerServiceNo);
+      const entry = issueEntries.get(`spread-${proj.id}`);
       const section = document.createElement('article');
       section.id = `spread-${proj.id}`;
       section.className = `magazine-spread article-spread spread--${proj.spreadType}`;
       section.dataset.projectId = proj.id;
-      section.dataset.sectionLabel = `${proj.pageRange} // ${proj.issueSection}`;
+      section.dataset.sectionLabel = `FOLIO ${formatFolio(entry)} / ${proj.title.split(' // ')[0]}`;
       section.style.setProperty('--article-spot', proj.spotInkHex);
+      const nextProject = USSY_PROJECTS[proj.index];
+      const codeStart = Number(proj.codeSource?.url.match(/#L(\d+)/)?.[1] || 1);
 
       section.innerHTML = `
         <div class="crop-mark crop-tl" aria-hidden="true"></div>
@@ -91,8 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <div class="spread-folio-header">
           <span>${proj.issueSection}</span>
-          <span>THE SLOP COMPUTING ANNUAL · VOL. 11, NO. 10</span>
-          <span>${proj.pageRange.toUpperCase()} · SERVICE NO. #${proj.readerServiceNo}</span>
+          <span>SLOP ILLUSTRATED · ISSUE 01</span>
+          <span>FOLIO ${formatFolio(entry)} · PROJECT #${proj.readerServiceNo}</span>
         </div>
 
         <header class="article-header-deck">
@@ -101,20 +135,20 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="article-kicker-badge">${proj.kicker}</span>
               <span class="article-category-tag">${proj.category}</span>
             </div>
-            <h2 class="article-main-headline">${proj.title}: ${proj.headline}</h2>
+            <h2 class="article-main-headline"><span class="article-project-name">${proj.title}</span>${proj.headline}</h2>
             <p class="article-standfirst-deck">${proj.deck}</p>
             <div class="article-byline-strip">
               <span>${proj.byline}</span>
-              <span>·</span>
-              <span>VERIFIED OPEN-SOURCE ARCHITECTURE</span>
+              <span class="article-byline-edition">THE SOFTWARE ISSUE · ${String(proj.index).padStart(2, '0')} / ${USSY_PROJECTS.length}</span>
             </div>
           </div>
 
-          <aside class="article-spec-card" aria-label="${proj.title} Specification Scorecard">
+          <aside class="article-spec-card" aria-label="${proj.title} project facts">
             <div class="spec-card-top">
-              <span>BENCHMARK SCORECARD</span>
+              <span>AT A GLANCE</span>
               <span>#${proj.readerServiceNo}</span>
             </div>
+            <p class="spec-context-note">${escapeHtml(proj.glanceNote)}</p>
             <div class="spec-metrics-grid">
               ${proj.metrics
                 .map(
@@ -146,10 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
                 <button
                   type="button"
-                  class="bingo-circle-btn ${isCircled ? 'is-circled' : ''}"
+                  class="project-save-btn ${isCircled ? 'is-saved' : ''}"
                   data-service-no="${proj.readerServiceNo}"
+                  aria-pressed="${isCircled}"
+                  aria-label="Save ${escapeHtml(proj.title)} to your reading list"
                 >
-                  ${isCircled ? '✓ Circled #' + proj.readerServiceNo : '◯ Circle #' + proj.readerServiceNo}
+                  ${isCircled ? '✓ Saved' : '+ Save project'}
                 </button>
               </div>
             </div>
@@ -163,16 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <p class="article-body-para">${proj.bodyCopy}</p>
 
-            <blockquote class="editorial-pullquote">
+            <aside class="editorial-pullquote" aria-label="Editorial takeaway">
+              <span class="takeaway-label">THE EDITORIAL TAKEAWAY</span>
               ${proj.pullQuote}
-            </blockquote>
+            </aside>
 
-            <h3 class="arch-section-heading">SYSTEM ARCHITECTURE &amp; ENGINEERING NOTES</h3>
+            <h3 class="arch-section-heading"><span>01</span> Architecture &amp; engineering</h3>
             <ul class="arch-bullet-list">
               ${proj.architecture.map((item) => `<li>${item}</li>`).join('')}
             </ul>
 
-            <h3 class="arch-section-heading">VERIFIED BENCHMARK CAPABILITIES</h3>
+            <h3 class="arch-section-heading"><span>02</span> What the repository contains</h3>
             <div class="capabilities-tag-grid">
               ${proj.verifiedCapabilities.map((c) => `<div class="capability-box">${c}</div>`).join('')}
             </div>
@@ -182,14 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <aside class="article-field-notes" aria-label="Field notes and marginalia">
-              <h3 class="field-notes-heading">FIELD NOTES &amp; MARGINALIA</h3>
+              <h3 class="field-notes-heading">The notebook <span>FIELD NOTES &amp; MARGINALIA</span></h3>
               <ul>
                 ${(proj.fieldNotes || []).map((n) => `<li>${n}</li>`).join('')}
               </ul>
             </aside>
           </div>
 
-          <!-- Illustrated Plate + Interactive 2D Lab Plate + Green-Bar Type-In Listing Column -->
+          <!-- Illustrated still life + screenshot or SVG study + source listing -->
           <div class="article-lab-column">
             <figure class="editorial-plate" data-plate="${proj.id}">
               <div class="editorial-plate-art" aria-hidden="false">
@@ -197,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </div>
               <figcaption class="editorial-plate-caption">
                 <span>PLATE ${toRoman(proj.index + 2)} — <em class="editorial-plate-title">${proj.title}</em></span>
-                <span>FIG. ${proj.index}.2 · ILLUSTRATED LITHOGRAPH</span>
+                <span>FIG. ${proj.index}.1 · <span class="editorial-plate-medium">CONCEPTUAL ILLUSTRATION</span></span>
               </figcaption>
             </figure>
 
@@ -205,36 +242,38 @@ document.addEventListener('DOMContentLoaded', () => {
               proj.screenshot
                 ? `<figure class="article-screenshot-plate">
               <div class="lab-plate-header">
-                <span class="lab-plate-badge">VERIFIED SCREENSHOT · FIG. ${proj.index}.1</span>
-                <span>PROJECT CAPTURE</span>
+                <span class="lab-plate-badge">ON SCREEN · FIG. ${proj.index}.2</span>
+                <span>FROM THE PROJECT ARCHIVE</span>
               </div>
+              <a class="screenshot-image-link" href="${proj.screenshot}" target="_blank" rel="noopener" aria-label="Open full-size ${proj.title} screenshot">
               <img
                 class="article-screenshot-img"
                 src="${proj.screenshot}"
-                alt="${proj.title} — ${proj.screenshotCaption || 'screenshot'}"
+                ${proj.screenshotWidth && proj.screenshotHeight ? `width="${proj.screenshotWidth}" height="${proj.screenshotHeight}"` : ''}
+                alt="${escapeHtml(proj.title)} — ${escapeHtml(proj.screenshotCaption || 'screenshot')}"
                 loading="lazy"
                 decoding="async"
               />
+              </a>
               <figcaption class="lab-controls-strip">
                 <span>${proj.screenshotCaption || ''}</span>
+                <a href="${proj.screenshot}" target="_blank" rel="noopener">View full size ↗</a>
               </figcaption>
             </figure>`
                 : `<div class="interactive-lab-plate">
               <div class="lab-plate-header">
-                <span class="lab-plate-badge">INTERACTIVE 2D BENCH · FIG. ${proj.index}.1</span>
+                <span class="lab-plate-badge">INTERACTIVE STUDY · FIG. ${proj.index}.2</span>
                 <span id="lab-status-${proj.id}">READY</span>
               </div>
-              <canvas
-                id="lab-canvas-${proj.id}"
-                class="lab-canvas-stage"
-                width="540"
-                height="240"
-                aria-label="Interactive 2D technical diagram for ${proj.title}"
-              ></canvas>
+              <div
+                id="lab-study-${proj.id}"
+                class="article-study-stage"
+                aria-label="Interactive SVG study for ${escapeHtml(proj.title)}"
+              ></div>
               <div class="lab-controls-strip">
-                <span>CLICK DIAGRAM OR BUTTON TO STEP SIMULATION STATE</span>
+                <span>ILLUSTRATIVE STATES · NOT A LIVE PRODUCT CONNECTION</span>
                 <button type="button" id="lab-btn-${proj.id}" class="lab-action-btn">
-                  Step Bench State ↻
+                  Explore the Study ↻
                 </button>
               </div>
             </div>`
@@ -243,27 +282,40 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="tractor-listing-box">
               <div class="tractor-listing-header">
                 <span>${proj.codeListingTitle}</span>
-                <span>TRACTOR-FEED LISTING</span>
+                <span>${proj.codeSource ? 'REPOSITORY EXCERPT' : 'ILLUSTRATIVE EXAMPLE'}</span>
               </div>
-              <pre class="tractor-code-pre"><code>${proj.codeListing.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>
-              <pre class="teletype-log-box">${proj.terminalStream.join('\n')}</pre>
+              <pre class="tractor-code-pre"><code>${escapeHtml(proj.codeListing).split('\n').map((line, i) => `<span class="listing-line" data-line="${String(codeStart + i).padStart(2, '0')}">${line || ' '}</span>`).join('')}</code></pre>
+              ${proj.codeSource ? `<a class="code-source-link" href="${escapeHtml(proj.codeSource.url)}" target="_blank" rel="noopener">${escapeHtml(proj.codeSource.label)} ↗</a>` : ''}
+              <div class="reading-guide"><h4>READING NOTES</h4><ul>${proj.terminalStream.map((line) => `<li>${escapeHtml(line.replace(/^READING GUIDE\s*(?:\/\/|:)?\s*/, ''))}</li>`).join('')}</ul></div>
             </div>
           </div>
         </div>
+        ${proj.sources?.length ? `<aside class="article-sources" aria-label="Repository references for ${proj.title}">
+          <div class="article-sources-header">
+            <h3>At the source <span>REPOSITORY READING</span></h3>
+            <p>Reviewed ${escapeHtml(proj.researchedAt)} · revision <code>${escapeHtml(proj.sourceRevision.slice(0, 8))}</code></p>
+          </div>
+          <ul>${proj.sources.map((source) => `<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener">${escapeHtml(source.label)} ↗</a></li>`).join('')}</ul>
+        </aside>` : ''}
+        <footer class="spread-folio-footer">
+          <span class="folio-page">${formatFolio(entry)}</span>
+          <span class="folio-imprint"><b>Si.</b> <i>Slop Illustrated</i> / October 2026</span>
+          <a class="folio-next" href="${nextProject ? '#spread-' + nextProject.id : '#reader-service-spread'}">${nextProject ? 'NEXT / ' + nextProject.title : 'CONTINUE / The Source Room'} <span aria-hidden="true">↗</span></a>
+        </footer>
       `;
 
       spreadsContainer.appendChild(section);
 
-      // Lazily print the bespoke SVG illustration plate for this spread
+      // Lazily mount the editorial SVG or Blender still life for this spread.
       mountPlate(section.querySelector('.editorial-plate'), proj.id, proj);
 
-      // Initialize the interactive 2D Canvas workbench (only where no screenshot replaces it)
-      const canvasEl = section.querySelector(`#lab-canvas-${proj.id}`);
+      // Mount the native-vector study where the feature has no screenshot.
+      const studyEl = section.querySelector(`#lab-study-${proj.id}`);
       const statusEl = section.querySelector(`#lab-status-${proj.id}`);
       const stepBtn = section.querySelector(`#lab-btn-${proj.id}`);
 
-      if (canvasEl) {
-        initArticleLabCanvas(proj, canvasEl, statusEl, stepBtn, () => {
+      if (studyEl) {
+        initArticleStudy(proj, studyEl, statusEl, stepBtn, () => {
           flexiSynth.playRelayClick(540 + proj.index * 35);
         });
       }
@@ -280,70 +332,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Bind Reader Service Circle buttons inside articles
-    document.querySelectorAll('.bingo-circle-btn').forEach((btn) => {
+    // Save directly from a feature to the Source Room reading list.
+    document.querySelectorAll('.project-save-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const no = Number(btn.dataset.serviceNo);
         sdk.toggleServiceNumber(no);
         flexiSynth.playRelayClick(820);
-        syncReaderServiceUI();
       });
     });
   }
 
-  // 3. Render & Synchronize Detachable Reader Service "Bingo" Card (Page 112)
-  function syncReaderServiceUI() {
+  // 3. Keep feature save controls synchronized with the Source Room.
+  function syncProjectSaveButtons() {
     const state = sdk.getState();
     const circledSet = new Set(state.circledServiceNos || []);
 
     // Update article spread buttons
-    document.querySelectorAll('.bingo-circle-btn').forEach((btn) => {
+    document.querySelectorAll('.project-save-btn').forEach((btn) => {
       const no = Number(btn.dataset.serviceNo);
       const isCircled = circledSet.has(no);
-      btn.classList.toggle('is-circled', isCircled);
-      btn.textContent = isCircled ? `✓ Circled #${no}` : `◯ Circle #${no}`;
+      btn.classList.toggle('is-saved', isCircled);
+      btn.setAttribute('aria-pressed', String(isCircled));
+      btn.textContent = isCircled ? '✓ Saved' : '+ Save project';
     });
-
-    // Render 11-cell Reader Service Grid
-    bingoNumbersGrid.innerHTML = '';
-    for (const proj of USSY_PROJECTS) {
-      const isCircled = circledSet.has(proj.readerServiceNo);
-      const cell = document.createElement('button');
-      cell.type = 'button';
-      cell.className = `bingo-num-cell ${isCircled ? 'is-circled' : ''}`;
-      cell.innerHTML = `
-        <span class="bingo-num-code">#${proj.readerServiceNo} ${isCircled ? '●' : '○'}</span>
-        <span class="bingo-num-label">${proj.title}</span>
-      `;
-      cell.addEventListener('click', () => {
-        sdk.toggleServiceNumber(proj.readerServiceNo);
-        flexiSynth.playRelayClick(760);
-        syncReaderServiceUI();
-      });
-      bingoNumbersGrid.appendChild(cell);
-    }
-
-    // Render Selected Repositories Summary
-    const selectedProjects = USSY_PROJECTS.filter((p) => circledSet.has(p.readerServiceNo));
-    if (selectedProjects.length === 0) {
-      bingoSelectionSummary.innerHTML = `<em>No Reader Service numbers currently circled. Click any #101–#111 cell to queue source dispatches.</em>`;
-    } else {
-      bingoSelectionSummary.innerHTML =
-        `<strong>QUEUED DISPATCHES (${selectedProjects.length} OF 11 CIRCLED):</strong><br/>` +
-        selectedProjects
-          .map(
-            (p) =>
-              `<a href="${p.repoUrl}" target="_blank" rel="noopener" style="color:var(--spot-ink);margin-right:0.75rem;">[#${p.readerServiceNo} ${p.title} ↗]</a>`
-          )
-          .join(' ');
-    }
-
-    // Render Recent Reader Dispatches
-    const notes = state.readerNotes || [];
-    bingoRecentDispatches.innerHTML = notes
-      .slice(0, 4)
-      .map((n) => `<div>✦ “${n.text}”</div>`)
-      .join('');
   }
 
   // 4. Initialize Front Cover Interactive SVG Lithograph (Plate I) + TOC Plate II
@@ -352,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCoverPlate(coverHost, coverReadout, (projectId) => {
     const target = document.getElementById(`spread-${projectId}`);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     }
   });
   mountPlate(document.getElementById('toc-plate'), 'toc', MAGAZINE_ISSUE_META);
@@ -361,12 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.stock-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       const mode = btn.dataset.mode;
-      withViewTransition(() => {
-        document.documentElement.dataset.printMode = mode;
-        document.querySelectorAll('.stock-btn').forEach((b) => {
-          b.classList.toggle('is-active', b.dataset.mode === mode);
-        });
-      });
+      withViewTransition(() => applyPrintMode(mode));
       sdk.setPrintMode(mode);
       flexiSynth.playRelayClick(620);
     });
@@ -401,24 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFlexiHeaderButton();
   });
 
-  // 8. Reader Service Card Form & Circle-All Button
-  document.getElementById('btn-circle-all').addEventListener('click', () => {
-    sdk.circleAllServiceNumbers(USSY_PROJECTS.map((p) => p.readerServiceNo));
-    flexiSynth.playToneProgram([261.63, 329.63, 392.00, 523.25]);
-    updateFlexiHeaderButton();
-    syncReaderServiceUI();
-  });
-
-  bingoNoteForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = bingoReaderNote.value.trim();
-    if (!val) return;
-    sdk.addReaderNote(val);
-    bingoReaderNote.value = '';
-    flexiSynth.playRelayClick(880);
-    syncReaderServiceUI();
-  });
-
   // 9. IntersectionObserver to Update Running Folio Header & Active Page Tab on Scroll
   function setupSpreadScrollObserver() {
     const sections = document.querySelectorAll('.magazine-spread');
@@ -430,14 +418,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (label && runningSectionLabel) {
               runningSectionLabel.textContent = label;
             }
-            const projId = entry.target.dataset.projectId;
-            document.querySelectorAll('.folio-tab[data-spread-id]').forEach((tab) => {
-              tab.classList.toggle('is-active', tab.dataset.spreadId === projId);
+             document.querySelectorAll('.folio-tab').forEach((tab) => {
+               const active = tab.getAttribute('href') === `#${entry.target.id}`;
+               tab.classList.toggle('is-active', active);
+               if (active) tab.setAttribute('aria-current', 'location');
+               else tab.removeAttribute('aria-current');
             });
           }
         }
       },
-      { threshold: 0.25 }
+      { threshold: 0, rootMargin: '-20% 0px -70% 0px' }
     );
 
     sections.forEach((sec) => observer.observe(sec));
@@ -445,6 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderNavigationAndToc();
   renderAllArticleSpreads();
-  syncReaderServiceUI();
+  initSourceRoom(document.getElementById('reader-service-spread'), USSY_PROJECTS, sdk, () => flexiSynth.playRelayClick(760));
+  sdk.subscribe(syncProjectSaveButtons);
+  syncProjectSaveButtons();
   setupSpreadScrollObserver();
 });

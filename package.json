@@ -1,19 +1,19 @@
 {
   "name": "ussysite6",
   "version": "6.0.0",
-  "description": "THE USSY COMPUTING ANNUAL (Vol. 11, No. 10) — A Living 2D Editorial Computing Magazine & Monograph for Ussyverse Open Source Systems",
+  "description": "SLOP ILLUSTRATED (Si.) — A source-linked digital field journal of software and the work behind it",
   "type": "module",
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
     "dev": "node --watch server.mjs",
-    "check:syntax": "node --check server.mjs && node --check projects.js && node --check js/projects.js && node --check js/app.js && node --check js/magazine-widgets.js && node --check js/flexidisc-audio.js && node --check js/press-sdk.js && node --check js/cover-plate.js && node --check js/svg-kit.js && node --check js/plates/*.js",
+    "check:syntax": "node scripts/check-syntax.mjs",
     "check:mirrors": "node scripts/check-mirrors.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=22.0.0"
   },
-  "author": "mojomast",
+  "author": "SLOPTIMUS PRIME (https://github.com/mojomast)",
   "license": "MIT"
 }

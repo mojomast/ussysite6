@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.)
  * SVG LITHOGRAPHY KIT
  *
  * Tiny, dependency-free helpers shared by every illustrated plate:
@@ -97,6 +97,39 @@ export function isoBoxSvg(iso, [x, y, z, w, d, h], { top, left, right, edge = 'n
     poly(f.right, `fill="${right}" ${st} ${extra}`) +
     poly(f.top, `fill="${top}" ${st} ${extra}`)
   );
+}
+
+/** Fine, repeatable line engraving. Use on a face or through a silhouette clip. */
+export function engravingPattern(idName, { ink = '#233c3d', gap = 4, width = 0.55, angle = 30, cross = false } = {}) {
+  return `<pattern id="${idName}" width="${gap}" height="${gap}" patternUnits="userSpaceOnUse" patternTransform="rotate(${angle})">
+    <path d="M0 0V${gap}${cross ? ` M0 0H${gap}` : ''}" fill="none" stroke="${ink}" stroke-width="${width}"/>
+  </pattern>`;
+}
+
+/** A cut gear profile, with lands and roots rather than a star-shaped approximation. */
+export function gearPath(cx, cy, radius, { teeth = 32, depth = 4, phase = 0 } = {}) {
+  const points = [];
+  for (let tooth = 0; tooth < teeth; tooth++) {
+    for (const [step, r] of [[0, radius - depth], [0.2, radius - depth], [0.3, radius], [0.7, radius], [0.8, radius - depth]]) {
+      const a = phase + ((tooth + step) / teeth) * Math.PI * 2;
+      points.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]);
+    }
+  }
+  return pathFrom(points, true);
+}
+
+/** Turned vertical cylinder; projects correctly with any of the kit's iso scales. */
+export function isoCylinderSvg(iso, [x, y, z, radius, height], { top = '#d9c69e', side = '#526766', edge = '#203536', edgeW = 0.7, hatch = '' } = {}) {
+  const ring = (level, start = 0, end = Math.PI * 2, steps = 64) =>
+    Array.from({ length: steps + 1 }, (_, i) => {
+      const a = start + ((end - start) * i) / steps;
+      return iso(x + Math.cos(a) * radius, y + Math.sin(a) * radius, level);
+    });
+  // The near semicircle is x+y >= 0, from the right tangent to the left tangent.
+  const face = [...ring(z + height, -Math.PI / 4, Math.PI * 3 / 4, 32), ...ring(z, Math.PI * 3 / 4, -Math.PI / 4, 32)];
+  return poly(face, `fill="${side}" stroke="${edge}" stroke-width="${edgeW}"`) +
+    (hatch ? poly(face, `fill="${hatch}" opacity="0.35"`) : '') +
+    poly(ring(z + height), `fill="${top}" stroke="${edge}" stroke-width="${edgeW}"`);
 }
 
 /** Deterministic starfield. Pass x0/y0/w/h = BLEED to cover the bleed zone. */

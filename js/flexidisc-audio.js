@@ -1,5 +1,5 @@
 /**
- * USSYSITE6 // THE SLOP COMPUTING ANNUAL
+ * USSYSITE6 // SLOP ILLUSTRATED (Si.)
  * 33⅓ RPM BOUND-IN FLEXI-DISC & BELL-RELAY MODEM AUDIO SYNTHESIZER
  *
  * Pure WebAudio procedural synthesizer recreating the experience of playing

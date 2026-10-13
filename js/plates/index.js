@@ -1,10 +1,12 @@
 /**
  * USSYSITE6 // EDITORIAL PLATE REGISTRY
  *
- * Each feature spread gets a full-bleed illustrated plate (Fig. N.2) rendered as inline SVG.
+ * Each feature spread gets an editorial plate (Fig. N.1): inline vector artwork
+ * or a locally rendered Blender still life.
  * Plates live in `js/plates/<project-id>.js` and export a default function:
  *
- *    export default function plate(project) { return { title: string, svg: string }; }
+ *    export default function plate(project) { return { title, svg }; }
+ *    // Or: { title, medium, image: { src, width, height, alt, background } }
  *
  * Plates are loaded lazily (dynamic import) so a missing/broken plate never takes down the
  * page — the frame simply keeps its printed placeholder.
@@ -33,13 +35,31 @@ export async function mountPlate(figure, name, arg) {
   if (!result) return;
   const art = figure.querySelector('.editorial-plate-art');
   const titleEl = figure.querySelector('.editorial-plate-title');
+  const mediumEl = figure.querySelector('.editorial-plate-medium');
+  figure.classList.toggle('editorial-plate--rendered', Boolean(result.image));
   if (art) {
-    art.innerHTML = result.svg;
+    if (result.image) {
+      const image = document.createElement('img');
+      image.className = 'editorial-render-img';
+      image.src = result.image.src;
+      image.width = result.image.width;
+      image.height = result.image.height;
+      image.alt = result.image.alt;
+      image.loading = 'lazy';
+      image.decoding = 'async';
+      art.replaceChildren(image);
+      art.classList.add('is-rendered');
+      art.style.setProperty('--art-backdrop', result.image.background || '#151b1a');
+    } else {
+      art.innerHTML = result.svg;
+      art.classList.remove('is-rendered');
+    }
     art.classList.add('is-printed');
     const svg = art.querySelector('svg');
     if (svg) watchPlateMotion(svg);
   }
   if (titleEl && result.title) titleEl.textContent = `“${result.title}”`;
+  if (mediumEl && result.medium) mediumEl.textContent = result.medium;
 }
 
 const reduceMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;

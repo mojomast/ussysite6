@@ -14,14 +14,16 @@ async function withServer(fn) {
   }
 }
 
-test('GET /api/health returns THE SLOP COMPUTING ANNUAL metadata and all 11 article IDs & Reader Service numbers', async () => {
+test('GET /api/health returns SLOP ILLUSTRATED metadata and all 11 article IDs & Reader Service numbers', async () => {
   await withServer(async (baseUrl) => {
     const res = await fetch(`${baseUrl}/api/health`);
     assert.equal(res.status, 200);
     const data = await res.json();
     assert.equal(data.status, 'ok');
     assert.equal(data.version, '6.0.0');
-    assert.equal(data.publication, 'THE SLOP COMPUTING ANNUAL');
+    assert.equal(data.publication, 'SLOP ILLUSTRATED');
+    assert.equal(data.issueNumber, '01');
+    assert.equal(data.digitalFolios, 14);
     assert.equal(data.articles, 11);
     assert.equal(data.articleIds.length, 11);
     assert.deepEqual(data.readerServiceNos, [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]);
@@ -55,7 +57,7 @@ test('Static file allowlist serves index.html and denies server.mjs and dotfiles
     const indexRes = await fetch(`${baseUrl}/`);
     assert.equal(indexRes.status, 200);
     const html = await indexRes.text();
-    assert.ok(html.includes('THE SLOP COMPUTING ANNUAL'));
+    assert.ok(html.includes('SLOP ILLUSTRATED'));
 
     const deniedServer = await fetch(`${baseUrl}/server.mjs`);
     assert.equal(deniedServer.status, 404);

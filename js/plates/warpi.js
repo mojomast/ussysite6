@@ -1,190 +1,71 @@
-/**
- * PLATE // WARPI — “THE AIR-GAPPED MONOLITH”
- * Native Rust PTY multiplexer & air-gapped Pi coding helper: a detailed green PCB
- * single-board computer (SoC, 40-pin GPIO, ports, SMD components, circuit traces)
- * with floating translucent terminal command blocks rising in phosphor green projection.
- */
-import {
-  rng, r2, scope, standardDefs, linGrad, radGrad, label, svgRoot,
-  BLEED, bleedRect, tint, shade, rgba, makeIso, isoBoxSvg
-} from '../svg-kit.js';
+/** Warpi — an open modular apparatus as a metaphor for BYOK software integration. */
+import { scope, svgRoot, label } from '../svg-kit.js';
+import { materials, studio, screw, signature } from './machine-materials.js';
 
 export default function warpiPlate(proj) {
   const id = scope('pl-warpi');
-  const rand = rng(109);
-  const W = 800;
-  const H = 600;
-  const spot = proj.spotInkHex; // #15803d Phosphor Green
-  const sec = proj.secondaryInkHex; // #1e293b Charcoal
-
-  const iso = makeIso({ ox: 380, oy: 380, sx: 0.866, sy: 0.42 });
-
-  const defs = `
-    ${standardDefs(id, { ink: '#052e16', dot: 0.75, gap: 5 })}
-    ${radGrad(id('terminal-glow'), [[0, '#4ade80', 0.35], [0.45, '#16a34a', 0.15], [0.85, '#14532d', 0.04], [1, '#021206', 0]], { cx: 380, cy: 300, r: 350, units: 'userSpaceOnUse' })}
-    ${linGrad(id('pcb-green'), [[0, '#15803d'], [0.45, '#166534'], [1, '#14532d']])}
-    ${linGrad(id('soc-silver'), [[0, '#e2e8f0'], [0.4, '#94a3b8'], [0.8, '#475569'], [1, '#1e293b']])}
-    ${linGrad(id('gold-pin'), [[0, '#fef08a'], [0.5, '#eab308'], [1, '#a16207']])}
-    ${linGrad(id('port-metal'), [[0, '#cbd5e1'], [0.5, '#64748b'], [1, '#334155']])}
-    <filter id="${id('phosphor-bloom')}" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="3" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>`;
-
-  // 1. Single-Board Computer Green PCB (Isometric View at z=0)
-  const pcbSBC = `
-    <!-- Drop Shadow -->
-    <ellipse cx="380" cy="445" rx="270" ry="50" fill="#000" opacity="0.65" filter="${id.url('soft')}"/>
-
-    <!-- Main Green FR4 Fiberglass PCB Board (380x250x12) -->
-    ${isoBoxSvg(iso, [-200, -130, 0, 400, 260, 12], {
-      top: id.url('pcb-green'),
-      left: '#0f3d1f',
-      right: '#0b2b15',
-      edge: '#4ade80',
-      edgeW: 1.2
-    })}
-
-    <!-- Copper Circuit Traces on PCB Surface -->
-    ${[
-      [-160, -90, -70, -90, -70, -30],
-      [-160, -70, -90, -70, -90, -10],
-      [50, -90, 110, -90, 110, -40],
-      [50, -70, 90, -70, 90, -20],
-      [-50, 40, -50, 80, 20, 80],
-      [-30, 40, -30, 60, 40, 60]
-    ].map((coords) => {
-      const p1 = iso(coords[0], coords[1], 12);
-      const p2 = iso(coords[2], coords[3], 12);
-      const p3 = iso(coords[4], coords[5], 12);
-      return `<path d="M${r2(p1[0])} ${r2(p1[1])} L${r2(p2[0])} ${r2(p2[1])} L${r2(p3[0])} ${r2(p3[1])}" fill="none" stroke="#facc15" stroke-opacity="0.45" stroke-width="1.2"/>`;
-    }).join('')}
-
-    <!-- Broadcom 64-bit SoC CPU with Heatspreader (Center of Board) -->
-    ${isoBoxSvg(iso, [-45, -45, 12, 90, 90, 10], {
-      top: id.url('soc-silver'),
-      left: '#334155',
-      right: '#1e293b',
-      edge: '#f1f5f9',
-      edgeW: 0.8
-    })}
-    <!-- Laser etched SoC text -->
-    <g transform="translate(${r2(iso(0, 0, 22)[0])}, ${r2(iso(0, 0, 22)[1])})">
-      <text x="0" y="-3" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="7" fill="#1e293b" text-anchor="middle" letter-spacing="0.1em">BCM2712</text>
-      <text x="0" y="6" font-family="IBM Plex Mono, monospace" font-size="5.5" fill="#334155" text-anchor="middle">QUAD CORTEX-A76</text>
+  const defs = materials(id, true) + `<clipPath id="${id('screen-cut')}"><rect x="140" y="161" width="244" height="185" rx="9"/></clipPath>`;
+  const cable = (d, color) => `<path d="${d}" fill="none" stroke="#010a0f" stroke-width="14" opacity=".7" transform="translate(2 7)" filter="${id.url('contact')}"/><path d="${d}" fill="none" stroke="#07131a" stroke-width="12"/><path d="${d}" fill="none" stroke="${color}" stroke-width="9"/><path d="${d}" fill="none" stroke="#e2e7d4" stroke-width="1.3" opacity=".5" transform="translate(-1 -2)"/>`;
+  const socket = (x, y) => `<g transform="translate(${x} ${y})"><ellipse cy="2" rx="12" ry="8" fill="#071219"/><ellipse rx="12" ry="8" fill="${id.url('brass')}" stroke="#d3c6a1" stroke-width=".6"/><ellipse rx="7" ry="4.5" fill="#08151d" stroke="#5a6c70"/><ellipse cx="-1" cy="-1" rx="3" ry="2" fill="#21363d"/></g>`;
+  const body = `${studio(id, false)}
+    <path d="M91 405L464 329 738 431 372 532Z" fill="#030b10" opacity=".75" filter="${id.url('shadow')}"/>
+    <path d="M115 404V419Q127 429 145 425V415M346 500V516Q365 527 383 518V501M668 425V438Q681 446 696 437V418" fill="${id.url('edge')}" stroke="#15222a"/>
+    <path d="M91 375L470 294 718 389V414L365 511 91 401Z" fill="${id.url('dark')}" stroke="#1b282e"/>
+    <path d="M91 375L470 294 718 389 365 485Z" fill="${id.url('silver')}" stroke="#cad1c5"/>
+    <path d="M106 377L470 305 703 389 365 472Z" fill="#303c3f" stroke="#69787a"/>
+    <path d="M365 485V511L718 414M91 401L365 511" fill="none" stroke="#adbbb5" stroke-opacity=".4"/>
+    <g transform="rotate(-5 260 260)">
+      <path d="M112 126L153 105 422 105V357L398 383 112 383Z" fill="${id.url('dark')}" stroke="#677578"/>
+      <path d="M112 126L153 105H422L400 126Z" fill="${id.url('silver')}" stroke="#d8e0d4" stroke-width=".8"/>
+      <path d="M400 126L422 105V357L400 383Z" fill="${id.url('edge')}"/>
+      ${Array.from({ length: 17 }, (_, i) => `<path d="M406 ${160 + i * 8}l10-10" stroke="#0a1820" stroke-width="2"/><path d="M406 ${162 + i * 8}l10-10" stroke="#a9b8b4" stroke-width=".5"/>`).join('')}
+      <rect x="112" y="126" width="288" height="257" rx="12" fill="${id.url('silver')}" stroke="#d2d9cd" stroke-width="1.1"/>
+      <rect x="124" y="139" width="263" height="218" rx="15" fill="${id.url('dark')}" stroke="#101d24" stroke-width="3"/>
+      <rect x="134" y="153" width="249" height="193" rx="10" fill="#081820" stroke="#6b8388" stroke-width=".8"/>
+      <g clip-path="${id.url('screen-cut')}">
+        <path d="M141 163H380V345H141Z" fill="${id.url('glass')}" opacity=".2"/>
+        ${label(157, 185, 'WARP', { size: 15, fill: '#c1d9d7', ls: .18 })}
+        ${label(157, 204, 'UPSTREAM INTERFACE', { size: 7, fill: '#87a9b0', ls: .12 })}
+        <rect x="155" y="221" width="206" height="45" rx="4" fill="#41606a" fill-opacity=".2" stroke="#718e93" stroke-opacity=".4"/>
+        <path d="M166 234L172 238 166 242M181 241H231M166 253H311" fill="none" stroke="#a8d0c5" stroke-width="1.5"/>
+        <rect x="155" y="278" width="206" height="49" rx="4" fill="#41606a" fill-opacity=".2" stroke="#718e93" stroke-opacity=".4"/>
+        <path d="M166 290H288M166 299H330M166 308H258" stroke="#849da4" stroke-width="1.5" opacity=".65"/>
+        <path d="M136 154H210L334 347H276Z" fill="#e0ffff" opacity=".075"/>
+        <path d="M144 155H155L280 348H272Z" fill="#f5ffff" opacity=".16"/>
+      </g>
+      ${screw(id, 121, 134, 2.7)}${screw(id, 391, 135, 2.7)}${screw(id, 122, 374, 2.7)}${screw(id, 390, 374, 2.7)}
+      ${label(257, 372, 'INHERITED TERMINAL / NATIVE UI', { size: 7, fill: '#283b3e', anchor: 'middle', ls: .1 })}
     </g>
-
-    <!-- 40-Pin Dual-Row GPIO Header (Gold Pins along Top Edge) -->
-    ${Array.from({ length: 20 }, (_, i) => {
-      const px = -160 + i * 16;
-      return `
-        ${isoBoxSvg(iso, [px, -120, 12, 6, 6, 18], { top: id.url('gold-pin'), left: '#a16207', right: '#78350f' })}
-        ${isoBoxSvg(iso, [px, -108, 12, 6, 6, 18], { top: id.url('gold-pin'), left: '#a16207', right: '#78350f' })}
-      `;
-    }).join('')}
-
-    <!-- Dual USB 3.0 Ports (Stacked Blue Inserts) -->
-    ${isoBoxSvg(iso, [160, -100, 12, 45, 65, 34], {
-      top: id.url('port-metal'),
-      left: '#475569',
-      right: '#334155',
-      edge: '#cbd5e1',
-      edgeW: 1
-    })}
-
-    <!-- RJ45 Gigabit Ethernet Port -->
-    ${isoBoxSvg(iso, [160, -20, 12, 45, 60, 32], {
-      top: id.url('port-metal'),
-      left: '#475569',
-      right: '#334155',
-      edge: '#cbd5e1',
-      edgeW: 1
-    })}
-
-    <!-- USB-C Power & Micro-HDMI Ports -->
-    ${isoBoxSvg(iso, [-180, 110, 12, 28, 20, 12], { top: id.url('port-metal'), left: '#334155', right: '#1e293b' })}
-    ${isoBoxSvg(iso, [-130, 110, 12, 24, 18, 10], { top: id.url('port-metal'), left: '#334155', right: '#1e293b' })}
-
-    <!-- Surface-mount capacitors & status LEDs -->
-    ${[-80, -60, -40, 20, 40].map((x) => `
-      <circle cx="${r2(iso(x, 70, 12)[0])}" cy="${r2(iso(x, 70, 12)[1])}" r="3.5" fill="#94a3b8" stroke="#1e293b" stroke-width="0.8"/>
-    `).join('')}
-    <circle cx="${r2(iso(-185, 90, 12)[0])}" cy="${r2(iso(-185, 90, 12)[1])}" r="2.5" fill="#22c55e" filter="${id.url('glow')}"/>
-    <circle cx="${r2(iso(-175, 90, 12)[0])}" cy="${r2(iso(-175, 90, 12)[1])}" r="2.5" fill="#ea580c"/>`;
-
-  // 2. Floating Phosphor Terminal Command Blocks (Projected above hardware at z=60...180)
-  // Command Block 1: Cargo Test Suite Execution
-  const block1 = `
-    <g class="cmd-block-1" transform="translate(180, 130)">
-      <rect x="0" y="0" width="280" height="90" rx="4" fill="rgba(6,22,12,0.92)" stroke="#22c55e" stroke-width="1.4"/>
-      <rect x="0" y="0" width="280" height="18" fill="#14532d"/>
-      <circle cx="10" cy="9" r="3" fill="#ef4444"/>
-      <circle cx="20" cy="9" r="3" fill="#facc15"/>
-      <circle cx="30" cy="9" r="3" fill="#22c55e"/>
-      <text x="42" y="12" font-family="IBM Plex Mono, monospace" font-size="7" font-weight="600" fill="#dcfce7">PTY BLOCK #01 · RUST CARGO HARNESS</text>
-
-      <text x="12" y="34" font-family="IBM Plex Mono, monospace" font-size="7.5" fill="#4ade80">&gt; cargo test --workspace [14ms lock]</text>
-      <text x="12" y="48" font-family="IBM Plex Mono, monospace" font-size="7" fill="#86efac">  test pty::demux_vt100_stream ... ok</text>
-      <text x="12" y="60" font-family="IBM Plex Mono, monospace" font-size="7" fill="#86efac">  test pi_sidecar::zero_cloud_socket ... ok</text>
-      <text x="12" y="74" font-family="IBM Plex Mono, monospace" font-size="7.5" font-weight="700" fill="#22c55e">test result: ok. 14 passed; 0 failed; 0 ignored</text>
-    </g>`;
-
-  // Command Block 2: 120Hz WGPU Glyph Texture Atlas
-  const block2 = `
-    <g class="cmd-block-2" transform="translate(480, 160)">
-      <rect x="0" y="0" width="240" height="110" rx="4" fill="rgba(6,22,12,0.92)" stroke="#16a34a" stroke-width="1.2"/>
-      <rect x="0" y="0" width="240" height="18" fill="#14532d"/>
-      <text x="10" y="12" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="7" fill="#dcfce7" letter-spacing="0.08em">WGPU GLYPH TEXTURE ATLAS (120HZ)</text>
-
-      <!-- Glyph Cache Grid Matrix -->
-      ${Array.from({ length: 4 }, (_, r) => {
-        return Array.from({ length: 8 }, (__, c) => {
-          const gx = 14 + c * 26;
-          const gy = 26 + r * 18;
-          const char = ['F', 'n', '&gt;', '{', '}', '$', '_', ';', 'P', 'T', 'Y', '1', '2', '0', 'H', 'z', 'W', 'a', 'r', 'p', 'i', 'O', 'S', '8', '0', 'x', '7', 'F', '4', '5', '4', 'C'][(r * 8 + c) % 32];
-          return `
-            <rect x="${gx}" y="${gy}" width="22" height="15" rx="1" fill="#052e16" stroke="#22c55e" stroke-width="0.5"/>
-            <text x="${gx + 11}" y="${gy + 10.5}" font-family="IBM Plex Mono, monospace" font-size="7" fill="#86efac" text-anchor="middle">${char}</text>
-          `;
-        }).join('');
-      }).join('')}
-      <text x="10" y="103" font-family="IBM Plex Mono, monospace" font-size="6.5" fill="#86efac">GPU VRAM: 1.8MB · ZERO RE-RASTER</text>
-    </g>`;
-
-  // Light projection beams rising from PCB up to floating blocks
-  const projectionBeams = `
-    <path d="M${r2(iso(0, 0, 22)[0])} ${r2(iso(0, 0, 22)[1])} L320 220" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.65"/>
-    <path d="M${r2(iso(120, -50, 22)[0])} ${r2(iso(120, -50, 22)[1])} L600 270" stroke="#4ade80" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.65"/>`;
-
-  const body = `
-    <!-- Dark Laboratory Background -->
-    ${bleedRect('#030d07')}
-    <!-- Halftone grid -->
-    <rect x="${BLEED.x}" y="${BLEED.y}" width="${BLEED.w}" height="${BLEED.h}" fill="${id.url('halftone')}" opacity="0.12"/>
-
-    <!-- Green Terminal Phosphor Halo -->
-    <circle cx="380" cy="300" r="350" fill="${id.url('terminal-glow')}"/>
-
-    <!-- Single-Board Computer PCB Base -->
-    ${pcbSBC}
-
-    <!-- Projection Beams & Terminal Command Blocks -->
-    ${projectionBeams}
-    ${block1}
-    ${block2}
-
-    <!-- Technical Annotations -->
-    ${label(400, 65, 'PLATE XI · “THE AIR-GAPPED MONOLITH”', { size: 9, fill: '#86efac', plate: 'rgba(5,30,12,0.9)', pad: 5, anchor: 'middle' })}
-    ${label(400, 525, '14MS RUST PTY RUNTIME · AIR-GAPPED PI SIDECAR (ZERO CLOUD SOCKETS)', { size: 7.5, fill: '#4ade80', anchor: 'middle' })}`;
-
-  return {
-    title: 'The Air-Gapped Monolith',
-    svg: svgRoot({
-      w: W,
-      h: H,
-      title: 'Plate XI: The Air-Gapped Monolith — green SBC circuit board with floating WGPU terminal command blocks',
-      defs,
-      body
-    })
-  };
+    <ellipse cx="274" cy="385" rx="157" ry="18" fill="#061016" opacity=".55" filter="${id.url('contact')}"/>
+    <path d="M433 329L569 292 662 326V398L529 439 433 402Z" fill="${id.url('dark')}" stroke="#6c7b7a"/>
+    <path d="M433 329L569 292 662 326 529 366Z" fill="${id.url('brass')}" stroke="#e4d6b7"/>
+    <path d="M446 330L569 304 646 328 530 354Z" fill="#18282e" stroke="#3c4b49"/>
+    <g transform="matrix(.92 -.24 .84 .31 454 330)">
+      <rect width="112" height="52" rx="4" fill="#344646" stroke="#86988b"/>
+      ${Array.from({ length: 9 }, (_, i) => `<path d="M${9 + i * 11} 3V17L${14 + i * 9} 25V49" fill="none" stroke="#b8a774" stroke-width="1"/>`).join('')}
+      <rect x="28" y="13" width="53" height="29" rx="3" fill="${id.url('silver')}" stroke="#c8cfc4"/>
+      ${label(55, 32, 'Pi SDK', { size: 10, fill: '#15272b', anchor: 'middle', ls: 0 })}
+    </g>
+    <g stroke="#bed0c8" stroke-width=".7" fill="${id.url('silver')}"><path d="M453 328V315H459V331M563 303V290H569V306M631 328V315H637V331M529 350V337H535V353"/></g>
+    <path d="M450 312L566 286 641 312 532 342Z" fill="${id.url('glass')}" stroke="#d2ece0" stroke-opacity=".65" stroke-width=".8"/>
+    <path d="M476 306L485 304 561 333 552 337Z" fill="#f0fff8" opacity=".25"/>
+    <path d="M433 335L529 373 662 334M529 373V431" fill="none" stroke="#d4ceb3" stroke-width=".8"/>
+    <g transform="matrix(1 .38 0 1 447 363)">${label(0, 0, 'LOCAL Pi', { size: 10, fill: '#dce2ca', ls: .05 })}${label(0, 14, 'SOFTWARE HELPER', { size: 5.7, fill: '#96a9a5', ls: 0 })}</g>
+    <g transform="matrix(.95 -.29 0 1 545 383)">${label(0, 0, 'AGENT BRIDGE', { size: 9, fill: '#c8d4c8', ls: .05 })}${label(0, 15, 'SOFTWARE STUDY', { size: 6.5, fill: '#859a99', ls: .04 })}</g>
+    ${Array.from({ length: 12 }, (_, i) => `<path d="M${551 + i * 7} ${410 - i * 2.1}v7" stroke="#0a151b" stroke-width="2.7"/><path d="M${553 + i * 7} ${410 - i * 2.1}v7" stroke="#8da19f" stroke-width=".6"/>`).join('')}
+    ${screw(id, 444, 344, 3)}${screw(id, 519, 374, 3)}${screw(id, 650, 344, 3)}
+    ${socket(460, 386)}${socket(493, 400)}
+    ${cable('M383 358C416 357 404 433 436 441S496 446 493 400', '#ad8e62')}
+    ${cable('M460 386C439 411 470 477 542 465S680 445 680 354', '#708c8e')}
+    <g transform="translate(677 304) rotate(12)">
+      <path d="M-31-17L-15-26H27V29L12 42H-31Z" fill="${id.url('edge')}" stroke="#9aaead"/>
+      <rect x="-31" y="-17" width="45" height="59" rx="5" fill="${id.url('silver')}" stroke="#c7d1c5"/>
+      <rect x="-24" y="-9" width="31" height="23" rx="3" fill="#101f26" stroke="#96a69b"/>
+      ${Array.from({ length: 5 }, (_, i) => `<path d="M${-19 + i * 5} 0V9" stroke="#ceba88" stroke-width="2"/>`).join('')}
+      ${label(-9, 28, 'API', { size: 10, fill: '#243637', anchor: 'middle', ls: .1 })}
+    </g>
+    ${label(641, 279, 'YOUR ENDPOINT', { size: 8, fill: '#c4d2c6', anchor: 'middle', ls: .06 })}
+    <g transform="matrix(.94 .36 -.89 .24 235 380)"><rect y="3" width="135" height="61" rx="5" fill="#172127"/><rect width="135" height="61" rx="5" fill="${id.url('brass')}" stroke="#e5d9b7"/>${label(67, 26, 'BYOK', { size: 22, fill: '#283637', anchor: 'middle', ls: .12 })}${label(67, 44, 'AGENT INTEGRATION', { size: 7, fill: '#3e4943', anchor: 'middle', ls: .08 })}${screw(id, 9, 9, 2)}${screw(id, 126, 52, 2)}</g>
+    ${signature('THE PROVIDER BRIDGE / YOUR MODEL, WARP’S INTERFACE')}`;
+  return { title: 'The Provider Bridge', svg: svgRoot({ title: 'Conceptual editorial still life for Warpi: an upstream Warp interface connected to an exposed modular bridge representing the local Pi software helper and a configured API endpoint. A metaphor for BYOK agent integration, not a hardware product or performance measurement.', defs, body }) };
 }
