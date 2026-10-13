@@ -201,7 +201,25 @@ document.addEventListener('DOMContentLoaded', () => {
               </figcaption>
             </figure>
 
-            <div class="interactive-lab-plate">
+            ${
+              proj.screenshot
+                ? `<figure class="article-screenshot-plate">
+              <div class="lab-plate-header">
+                <span class="lab-plate-badge">VERIFIED SCREENSHOT · FIG. ${proj.index}.1</span>
+                <span>PROJECT CAPTURE</span>
+              </div>
+              <img
+                class="article-screenshot-img"
+                src="${proj.screenshot}"
+                alt="${proj.title} — ${proj.screenshotCaption || 'screenshot'}"
+                loading="lazy"
+                decoding="async"
+              />
+              <figcaption class="lab-controls-strip">
+                <span>${proj.screenshotCaption || ''}</span>
+              </figcaption>
+            </figure>`
+                : `<div class="interactive-lab-plate">
               <div class="lab-plate-header">
                 <span class="lab-plate-badge">INTERACTIVE 2D BENCH · FIG. ${proj.index}.1</span>
                 <span id="lab-status-${proj.id}">READY</span>
@@ -219,7 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
                   Step Bench State ↻
                 </button>
               </div>
-            </div>
+            </div>`
+            }
 
             <div class="tractor-listing-box">
               <div class="tractor-listing-header">
@@ -238,14 +257,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Lazily print the bespoke SVG illustration plate for this spread
       mountPlate(section.querySelector('.editorial-plate'), proj.id, proj);
 
-      // Initialize the interactive 2D Canvas workbench for this spread
+      // Initialize the interactive 2D Canvas workbench (only where no screenshot replaces it)
       const canvasEl = section.querySelector(`#lab-canvas-${proj.id}`);
       const statusEl = section.querySelector(`#lab-status-${proj.id}`);
       const stepBtn = section.querySelector(`#lab-btn-${proj.id}`);
 
-      initArticleLabCanvas(proj, canvasEl, statusEl, stepBtn, () => {
-        flexiSynth.playRelayClick(540 + proj.index * 35);
-      });
+      if (canvasEl) {
+        initArticleLabCanvas(proj, canvasEl, statusEl, stepBtn, () => {
+          flexiSynth.playRelayClick(540 + proj.index * 35);
+        });
+      }
     }
 
     // Bind Flexi-Disc track buttons inside articles

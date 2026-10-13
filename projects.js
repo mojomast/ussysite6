@@ -53,6 +53,8 @@ export const USSY_PROJECTS = [
     byline: 'By the Spatial Systems Desk · Fig. 1.1–1.4',
     category: 'Spatial Computing / Desktop OS',
     repoUrl: 'https://github.com/mojomast/orbitdesktop',
+    screenshot: 'assets/screenshots/orbitdesktop.png',
+    screenshotCaption: 'Desktop launchers and the Hermes agent shell',
     liveUrl: null,
     spotInkHex: '#d9381e', // Vermilion Red
     secondaryInkHex: '#0047ab', // Cobalt Blue
@@ -113,6 +115,8 @@ export function computeRingPose(slotIdx, totalSlots, ringDepth, focusAlpha) {
     byline: 'By the Narrative Engines Group · Folio II',
     category: 'Narrative Systems / Collaborative Fiction',
     repoUrl: 'https://github.com/mojomast/velvetrp',
+    screenshot: 'assets/screenshots/velvetrp.png',
+    screenshotCaption: 'The Adventure Table: shared story and character companion',
     liveUrl: null,
     spotInkHex: '#9b1b30', // Crimson Bordeaux
     secondaryInkHex: '#b45309', // Warm Ochre
@@ -170,6 +174,8 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     byline: 'By the Real-Time Audio Laboratory · Test Bench #03',
     category: 'Audio Engineering / Real-Time DSP',
     repoUrl: 'https://github.com/mojomast/jammate',
+    screenshot: 'assets/screenshots/jammate.jpg',
+    screenshotCaption: 'Guitar rig with neural amp captures and cabinet controls',
     liveUrl: null,
     spotInkHex: '#0f766e', // Oscilloscope Teal
     secondaryInkHex: '#d97706', // Amber Phosphor
@@ -283,6 +289,8 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     byline: 'By the Real-Time Graphics Workshop · Plate V',
     category: '3D Game Engine / Shader Art',
     repoUrl: 'https://github.com/mojomast/cocs-godot',
+    screenshot: 'assets/screenshots/cocs-godot.png',
+    screenshotCaption: 'Native Forward+ combat on the Verdant Reliquary',
     liveUrl: null,
     spotInkHex: '#2563eb', // Process Ultramarine
     secondaryInkHex: '#7c3aed', // Violet Halftone
@@ -338,6 +346,8 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     byline: 'By the Switching & Telemetry Division · Schematic 6-A',
     category: 'AI Infrastructure / Resilient Routing',
     repoUrl: 'https://github.com/mojomast/routetok',
+    screenshot: 'assets/screenshots/routetok.png',
+    screenshotCaption: 'Operations dashboard and live model-health table',
     liveUrl: null,
     spotInkHex: '#047857', // Emerald Relay Ink
     secondaryInkHex: '#0369a1', // Technical Cyan
@@ -454,6 +464,8 @@ export function resolveRoll(seedHex, poolSize, modifier, clockSegment) {
     byline: 'By the Binary Serialization Standards Committee · Datasheet #08',
     category: 'Build Systems / Binary Serialization',
     repoUrl: 'https://github.com/mojomast/mothbake',
+    screenshot: 'assets/screenshots/mothbake.png',
+    screenshotCaption: 'Eighteen tiling albedo textures baked by MothBake',
     liveUrl: null,
     spotInkHex: '#ea580c', // Rust Orange
     secondaryInkHex: '#334155', // Graphite Ink

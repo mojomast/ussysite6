@@ -1860,3 +1860,32 @@ svg.is-paused *, svg.is-paused { animation-play-state: paused !important; }
   .toc-entry-service { display: none; }
   .bingo-input-row { flex-direction: column; }
 }
+
+/* ============================================================================
+ * SCREENSHOT PLATES
+ * Where a project has a verified capture, the screenshot replaces the old
+ * interactive lab-bench canvas (the second drawing) inside the lab column.
+ * ========================================================================= */
+.article-screenshot-plate {
+  margin: 0;
+  border: 2px solid var(--rule-heavy);
+  background: var(--paper-elevated);
+  padding: 0.85rem;
+}
+.article-screenshot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--rule-heavy);
+  background: #12161f;
+}
+html[data-print-mode="cream-press"] .article-screenshot-img {
+  filter: saturate(0.92) contrast(1.03);
+}
+.article-screenshot-plate .lab-controls-strip {
+  margin-top: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
