@@ -16,7 +16,7 @@ const CANONICAL_IDS = [
   'becomussy'
 ];
 
-test('THE SLOP COMPUTING ANNUAL catalog contains all 11 canonical mojomast repositories with editorial metadata & code listings', () => {
+test('THE SLOP COMPUTING ANNUAL catalog contains all 11 canonical SLOPTIMUS PRIME repositories with editorial metadata & code listings', () => {
   assert.equal(USSY_PROJECTS.length, 11);
   assert.deepEqual(
     USSY_PROJECTS.map((p) => p.id),

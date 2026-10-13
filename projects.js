@@ -2,7 +2,7 @@
  * USSYSITE6 // THE SLOP COMPUTING ANNUAL (VOL. 11, NO. 10 — OCTOBER 2026)
  * EDITORIAL CATALOG & TECHNICAL MONOGRAPH SOURCE OF TRUTH
  *
- * Canonical verified metadata for all 11 mojomast repositories, structured as
+ * Canonical verified metadata for all 11 SLOPTIMUS PRIME repositories, structured as
  * feature articles in a classic collector's computing magazine.
  * NOTE: Keep `/projects.js` and `/js/projects.js` byte-identical (`npm run check:mirrors`).
  */
@@ -17,7 +17,7 @@ export const MAGAZINE_ISSUE_META = {
   issn: 'ISSN 2026-8779',
   priceTag: '$6.50 US · £4.95 UK · ¥1,200 JP',
   coverTheme: 'AUTONOMOUS SYSTEMS & DETERMINISTIC CRAFT',
-  editorInChief: 'Mojomast Press Syndicate',
+  editorInChief: 'SLOPTIMUS PRIME Press Syndicate',
   totalPages: 112,
   printModes: [
     {
