@@ -170,6 +170,7 @@ export function initPageReader(onChange = () => {}) {
     }
 
     const token = ++generation;
+    document.dispatchEvent(new Event('reader-layout-change'));
     const oldIndex = index;
     const outgoing = leaves[oldIndex];
     const incoming = leaves[destination];
@@ -242,6 +243,7 @@ export function initPageReader(onChange = () => {}) {
   }
 
   function enter() {
+    document.dispatchEvent(new Event('reader-layout-change'));
     const probe = header.getBoundingClientRect().bottom + Math.min(160, innerHeight * 0.2);
     index = pages.reduce((best, page, at) => page.getBoundingClientRect().top <= probe ? at : best, 0);
     const offset = Math.max(0, header.offsetHeight - pages[index].getBoundingClientRect().top);
@@ -282,6 +284,7 @@ export function initPageReader(onChange = () => {}) {
 
   function exit() {
     if (!active) return;
+    document.dispatchEvent(new Event('reader-layout-change'));
     const page = pages[index];
     const offset = fitToPage ? offsets.get(index) || 0 : page.scrollTop;
     active = false;
@@ -323,6 +326,7 @@ export function initPageReader(onChange = () => {}) {
   next.addEventListener('click', () => goTo(index + 1));
   jump.addEventListener('change', () => goTo(Number(jump.value)));
   fitButton.addEventListener('click', () => {
+    document.dispatchEvent(new Event('reader-layout-change'));
     if (!fitToPage) offsets.set(index, pages[index].scrollTop);
     fitToPage = !fitToPage;
     fitButton.setAttribute('aria-pressed', String(fitToPage));
@@ -333,6 +337,7 @@ export function initPageReader(onChange = () => {}) {
   });
   pages.forEach((page) => page.addEventListener('scroll', updateProgress, { passive: true }));
   stage.addEventListener('toggle', scheduleLayout, true);
+  stage.addEventListener('article-resize', layoutSheets);
   stage.addEventListener('click', scheduleLayout);
   window.addEventListener('resize', scheduleLayout);
   window.addEventListener('afterprint', scheduleLayout);

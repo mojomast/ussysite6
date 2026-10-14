@@ -1,9 +1,11 @@
 /** Reader utilities: project search, media tabs, image viewing and save feedback. */
 import { formatFolio, getIssueEntry } from './issue-map.js';
+import { initArticleDisclosures } from './article-disclosures.js';
 
 const shortTitle = (project) => project.title.split(' // ')[0];
 
 export function initReaderUI(projects, sdk) {
+  const finishDisclosures = initArticleDisclosures();
   const header = document.querySelector('.press-running-header');
   const measureHeader = () => document.documentElement.style.setProperty('--reader-header-height', `${header.getBoundingClientRect().height}px`);
   measureHeader();
@@ -175,6 +177,7 @@ export function initReaderUI(projects, sdk) {
   // Keep the full article printable, including inactive media and disclosures.
   let closedDetails = [];
   window.addEventListener('beforeprint', () => {
+    finishDisclosures();
     closedDetails = [...document.querySelectorAll('.article-deep-dive:not([open])')];
     closedDetails.forEach((details) => { details.open = true; });
   });

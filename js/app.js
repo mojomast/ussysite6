@@ -304,8 +304,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <details class="article-deep-dive">
-          <summary><strong>Under the hood</strong><span>Engineering, notes &amp; source code</span></summary>
-          <div class="article-technical-grid">
+          <summary aria-controls="technical-${proj.id}">
+            <span class="deep-dive-copy"><strong>Under the hood</strong><span class="deep-dive-description">Engineering, notes &amp; source code</span></span>
+            <span class="deep-dive-action" aria-hidden="true"><span data-deep-dive-label>Explore</span><span class="deep-dive-icon">+</span></span>
+          </summary>
+          <div id="technical-${proj.id}" class="article-technical-grid">
             <div class="article-technical-prose">
               <p class="article-body-para">${proj.bodyCopy}</p>
               <h3 class="arch-section-heading">Architecture</h3>
