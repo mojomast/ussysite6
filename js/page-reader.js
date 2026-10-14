@@ -9,6 +9,7 @@ export function initPageReader(onChange = () => {}) {
   const previous = document.getElementById('page-reader-prev');
   const next = document.getElementById('page-reader-next');
   const jump = document.getElementById('page-reader-jump');
+  const fitButton = document.getElementById('page-reader-fit');
   const hint = document.getElementById('page-reader-hint');
   const progress = document.getElementById('page-reading-progress');
   const announcement = document.getElementById('page-reader-announcement');
@@ -49,9 +50,57 @@ export function initPageReader(onChange = () => {}) {
   let touch = null;
   let suppressClickUntil = 0;
   let pending = null;
+  let fitToPage = true;
+  let layoutFrame = 0;
 
   const measureControls = () => root.style.setProperty('--page-controls-height', `${controls.offsetHeight}px`);
   if (typeof ResizeObserver === 'function') new ResizeObserver(measureControls).observe(controls);
+
+  // Measure the natural paper, then fit its bounds rather than stretching it
+  // to the viewport. The front scales inside the leaf so the turn, paper back
+  // and shadow share the same visible edges and hinge.
+  function layoutSheets() {
+    if (!active || matchMedia('print').matches) return;
+    stage.dataset.sheetFit = String(fitToPage);
+    const style = getComputedStyle(stage);
+    const width = Math.max(1, stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
+    const height = Math.max(1, stage.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
+    // Whole-sheet view keeps a spread composition on small screens; actual
+    // size returns to the responsive reading layout.
+    const layoutWidth = Math.min(1400, fitToPage ? Math.max(1100, width) : width);
+    leaves.forEach((leaf, at) => {
+      if (leaf.hidden) return;
+      const scrollTop = pages[at].scrollTop;
+      leaf.style.setProperty('--page-layout-width', `${layoutWidth}px`);
+      leaf.style.removeProperty('--page-reading-height');
+      const naturalHeight = pages[at].offsetHeight;
+      const scale = fitToPage ? Math.min(1, width / layoutWidth, height / Math.max(1, naturalHeight)) : 1;
+      leaf.style.setProperty('--page-scale', String(scale));
+      leaf.style.setProperty('--sheet-width', `${layoutWidth * scale}px`);
+      leaf.style.setProperty('--sheet-height', `${Math.min(height, naturalHeight * scale)}px`);
+      if (!fitToPage) {
+        leaf.style.setProperty('--page-reading-height', `${Math.min(height, naturalHeight)}px`);
+        pages[at].scrollTop = scrollTop;
+      }
+    });
+    updateProgress();
+  }
+
+  function scheduleLayout() {
+    if (!active || layoutFrame) return;
+    layoutFrame = requestAnimationFrame(() => {
+      layoutFrame = 0;
+      layoutSheets();
+    });
+  }
+
+  if (typeof ResizeObserver === 'function') {
+    const sheetObserver = new ResizeObserver(scheduleLayout);
+    sheetObserver.observe(stage);
+    pages.forEach((page) => sheetObserver.observe(page));
+  }
+  document.fonts?.ready.then(scheduleLayout);
+  stage.addEventListener('load', scheduleLayout, true);
 
   function prepareImages(at) {
     for (const page of pages.slice(Math.max(0, at - 1), at + 2)) {
@@ -67,7 +116,9 @@ export function initPageReader(onChange = () => {}) {
     progress.style.transform = `scaleX(${fraction})`;
     root.style.setProperty('--reader-issue-progress', String((index + fraction) / pages.length));
     const touchHint = matchMedia('(pointer: coarse)').matches;
-    hint.textContent = fraction > 0.99 && index < pages.length - 1
+    hint.textContent = fitToPage
+      ? (touchHint ? 'Whole sheet · swipe sideways to turn' : 'Whole sheet · scroll or ← → to turn')
+      : fraction > 0.99 && index < pages.length - 1
       ? (touchHint ? 'End of folio · swipe left or tap Next' : 'End of folio · scroll again or press →')
       : (touchHint ? 'Scroll to read · swipe sideways to turn' : 'Scroll to read · ← → to turn · Esc to exit');
   }
@@ -87,6 +138,7 @@ export function initPageReader(onChange = () => {}) {
   }
 
   function scrollToTarget(target) {
+    if (fitToPage) return;
     const page = pages[index];
     if (target === page) page.scrollTop = 0;
     else if (target) {
@@ -123,7 +175,7 @@ export function initPageReader(onChange = () => {}) {
     const incoming = leaves[destination];
     const shouldFocus = focus || outgoing.contains(document.activeElement);
     const forward = destination > oldIndex;
-    offsets.set(oldIndex, pages[oldIndex].scrollTop);
+    if (!fitToPage) offsets.set(oldIndex, pages[oldIndex].scrollTop);
     index = destination;
     turning = true;
     stage.classList.add('is-page-turning');
@@ -136,7 +188,8 @@ export function initPageReader(onChange = () => {}) {
     outgoing.style.zIndex = forward ? '3' : '1';
     incoming.style.zIndex = forward ? '1' : '3';
     prepareImages(index);
-    pages[index].scrollTop = offsets.get(index) || 0;
+    layoutSheets();
+    pages[index].scrollTop = fitToPage ? 0 : offsets.get(index) || 0;
     scrollToTarget(target);
     updateAddress(target || pages[index], push);
     updateControls();
@@ -203,7 +256,9 @@ export function initPageReader(onChange = () => {}) {
       leaf.inert = at !== index;
       leaf.classList.toggle('is-current-page', at === index);
     });
-    pages[index].scrollTop = offset;
+    offsets.set(index, offset);
+    layoutSheets();
+    pages[index].scrollTop = fitToPage ? 0 : offset;
     toggle.setAttribute('aria-pressed', 'true');
     toggle.setAttribute('title', 'Return to continuous scrolling');
     toggleLabel.textContent = 'Exit';
@@ -228,13 +283,14 @@ export function initPageReader(onChange = () => {}) {
   function exit() {
     if (!active) return;
     const page = pages[index];
-    const offset = page.scrollTop;
+    const offset = fitToPage ? offsets.get(index) || 0 : page.scrollTop;
     active = false;
     generation++;
     pending = null;
     turning = false;
     cancelAnimations();
     delete root.dataset.readerMode;
+    delete stage.dataset.sheetFit;
     stage.classList.remove('is-page-turning');
     stage.removeAttribute('aria-busy');
     controls.hidden = true;
@@ -266,10 +322,20 @@ export function initPageReader(onChange = () => {}) {
   previous.addEventListener('click', () => goTo(index - 1));
   next.addEventListener('click', () => goTo(index + 1));
   jump.addEventListener('change', () => goTo(Number(jump.value)));
+  fitButton.addEventListener('click', () => {
+    if (!fitToPage) offsets.set(index, pages[index].scrollTop);
+    fitToPage = !fitToPage;
+    fitButton.setAttribute('aria-pressed', String(fitToPage));
+    fitButton.title = fitToPage ? 'Show the sheet at actual size' : 'Fit the whole sheet in view';
+    layoutSheets();
+    pages[index].scrollTop = fitToPage ? 0 : offsets.get(index) || 0;
+    announcement.textContent = fitToPage ? 'Whole sheet fitted and centered.' : 'Actual size. Scroll within the sheet to read.';
+  });
   pages.forEach((page) => page.addEventListener('scroll', updateProgress, { passive: true }));
-  stage.addEventListener('toggle', updateProgress, true);
-  stage.addEventListener('click', () => { if (active) requestAnimationFrame(updateProgress); });
-  window.addEventListener('resize', updateProgress);
+  stage.addEventListener('toggle', scheduleLayout, true);
+  stage.addEventListener('click', scheduleLayout);
+  window.addEventListener('resize', scheduleLayout);
+  window.addEventListener('afterprint', scheduleLayout);
   document.addEventListener('fullscreenchange', () => {
     if (active && ownsFullscreen && !document.fullscreenElement) exit();
     else if (!active && ownsFullscreen && document.fullscreenElement) document.exitFullscreen().catch(() => {});

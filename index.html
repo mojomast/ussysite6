@@ -291,8 +291,11 @@
     <button id="page-reader-prev" type="button" class="page-turn-button" aria-label="Previous folio"><span aria-hidden="true">←</span><span class="page-turn-word">Previous</span></button>
     <div class="page-reader-position">
       <label class="sr-only" for="page-reader-jump">Go to folio</label>
-      <select id="page-reader-jump"></select>
-      <p class="page-reader-hint" id="page-reader-hint">Scroll to read · ← → to turn · Esc to exit</p>
+      <div class="page-reader-selector">
+        <select id="page-reader-jump"></select>
+        <button id="page-reader-fit" type="button" aria-pressed="true" title="Show the sheet at actual size">Fit sheet</button>
+      </div>
+      <p class="page-reader-hint" id="page-reader-hint">Whole sheet · scroll or ← → to turn</p>
     </div>
     <button id="page-reader-next" type="button" class="page-turn-button" aria-label="Next folio"><span class="page-turn-word">Next</span><span aria-hidden="true">→</span></button>
     <div class="page-reading-track" aria-hidden="true"><span id="page-reading-progress"></span></div>

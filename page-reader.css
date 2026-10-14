@@ -40,7 +40,20 @@
 #page-reader-prev { justify-self: end; }
 #page-reader-next { justify-self: start; }
 .page-reader-position { text-align: center; min-width: 0; }
+.page-reader-selector { display: flex; justify-content: center; align-items: center; gap: 0.5rem; }
+#page-reader-fit {
+  flex: none;
+  min-height: 32px;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--rule-hairline);
+  background: var(--paper-card);
+  color: var(--ink-primary);
+  font: 500 0.65rem/1.3 var(--font-mono);
+  cursor: pointer;
+}
+#page-reader-fit[aria-pressed="true"] { background: var(--ink-primary); color: var(--paper-bg); }
 #page-reader-jump {
+  min-width: 0;
   width: 100%;
   max-width: 390px;
   padding: 0.25rem 0.45rem;
@@ -61,15 +74,16 @@ html[data-reader-mode="pages"] .scroll-ink-progress { animation: none; transform
 html[data-reader-mode="pages"] #btn-page-mode { background: var(--ink-primary); color: var(--paper-bg); }
 html[data-reader-mode="pages"] .crop-mark { display: none; }
 html[data-reader-mode="pages"] .magazine-issue-folio {
-  --page-gutter: clamp(0.65rem, 2.5vw, 2.25rem);
+  --page-gutter: clamp(1rem, 3vw, 3rem);
+  --page-block-gutter: clamp(1rem, 3vh, 2.5rem);
   position: fixed;
   inset: var(--reader-header-height, 60px) 0 var(--page-controls-height, 75px);
   max-width: none;
   margin: 0;
-  padding: 0;
+  padding: var(--page-block-gutter) var(--page-gutter);
   overflow: hidden;
   perspective: 2200px;
-  perspective-origin: 50% 45%;
+  perspective-origin: 50% 50%;
   background: radial-gradient(ellipse at 50% 45%, var(--paper-elevated), var(--paper-bg) 78%);
   touch-action: pan-y pinch-zoom;
 }
@@ -77,28 +91,30 @@ html[data-reader-mode="pages"] .editorial-spreads-container { display: contents;
 html[data-reader-mode="pages"] .page-leaf {
   display: block;
   position: absolute;
-  inset: clamp(0.65rem, 1.8vh, 1.25rem) 0;
-  width: min(1400px, calc(100% - var(--page-gutter) * 2));
-  margin-inline: auto;
+  top: calc((100% - var(--sheet-height)) / 2);
+  left: calc((100% - var(--sheet-width)) / 2);
+  width: var(--sheet-width);
+  height: var(--sheet-height);
   transform-origin: 0% 50%;
   transform-style: preserve-3d;
 }
 html[data-reader-mode="pages"] .page-leaf[hidden] { display: none; }
 html[data-reader-mode="pages"] .magazine-spread {
   position: relative;
-  height: 100%;
+  height: var(--page-reading-height, auto);
   min-height: 0;
-  width: 100%;
+  width: var(--page-layout-width);
   margin: 0;
   overflow: auto;
   overscroll-behavior: contain;
   touch-action: pan-y pinch-zoom;
   scrollbar-width: thin;
   scrollbar-color: var(--ink-muted) var(--paper-elevated);
-  scrollbar-gutter: stable;
+  scrollbar-gutter: auto;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transform: translateZ(0.2px);
+  transform: scale(var(--page-scale, 1)) translateZ(0.2px);
+  transform-origin: top left;
   box-shadow: inset 12px 0 22px -22px #0009, 0 10px 35px #0005, 2px 0 0 var(--rule-hairline);
 }
 html[data-reader-mode="pages"] .page-turn-back {
@@ -109,6 +125,8 @@ html[data-reader-mode="pages"] .page-turn-back {
   justify-content: center;
   flex-direction: column;
   gap: 1.5rem;
+  container-type: inline-size;
+  overflow: hidden;
   background: linear-gradient(90deg, #0002, transparent 9% 85%, #0003), var(--paper-card);
   background-image: linear-gradient(90deg, #0002, transparent 9% 85%, #0003), var(--grain-fibre);
   color: var(--ink-muted);
@@ -119,8 +137,8 @@ html[data-reader-mode="pages"] .page-turn-back {
   -webkit-backface-visibility: hidden;
   pointer-events: none;
 }
-.page-back-monogram { font: italic 700 clamp(5rem, 15vw, 12rem)/1 var(--font-display); letter-spacing: -0.1em; opacity: 0.22; }
-.page-back-imprint { font: 0.65rem/1.5 var(--font-mono); letter-spacing: 0.2em; opacity: 0.5; }
+.page-back-monogram { font: italic 700 min(20cqi, 12rem)/1 var(--font-display); letter-spacing: -0.1em; opacity: 0.22; }
+.page-back-imprint { font: min(1.3cqi, 0.65rem)/1.5 var(--font-mono); letter-spacing: 0.2em; opacity: 0.5; }
 html[data-reader-mode="pages"] .page-turn-shade {
   display: block;
   position: absolute;
@@ -140,14 +158,47 @@ select:focus-visible { outline: 2px solid var(--secondary-ink); outline-offset: 
   html[data-reader-mode="pages"] .page-leaf[data-alternate="true"] .article-prose-column { order: 2; }
   html[data-reader-mode="pages"] .page-leaf[data-alternate="true"] .article-media { order: 1; }
 }
+/* A fitted spread remains a sheet, rather than a miniature mobile scroll.
+   Turning Fit sheet off restores the regular responsive reading layout. */
+@media screen and (max-width: 1280px) {
+  [data-sheet-fit="true"] .magazine-spread { padding: 1.1rem 1.65rem 1rem; }
+  [data-sheet-fit="true"] .cover-masthead-title { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); }
+  [data-sheet-fit="true"] .masthead-wordmark { font-size: 9rem; }
+  [data-sheet-fit="true"] .masthead-illustrated { font-size: 5.5rem; }
+  [data-sheet-fit="true"] .cover-body-grid { display: grid; grid-template-columns: minmax(175px, 0.8fr) minmax(0, 2.8fr) minmax(185px, 0.85fr); }
+  [data-sheet-fit="true"] .cover-art-frame { order: 0; }
+  [data-sheet-fit="true"] .cover-illustration { flex: 1; min-height: 0; aspect-ratio: 4 / 3; }
+  [data-sheet-fit="true"] .cover-story-list { display: flex; flex-direction: column; }
+  [data-sheet-fit="true"] .cover-right-column { display: flex; grid-column: auto; flex-direction: column; align-items: stretch; }
+  [data-sheet-fit="true"] .cover-right-column > * { flex: none; }
+  [data-sheet-fit="true"] .department-highlights-box dl { grid-template-columns: 1fr; }
+  [data-sheet-fit="true"] .toc-spread-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.32fr); }
+  [data-sheet-fit="true"] .contents-title-row { flex-direction: row; }
+  [data-sheet-fit="true"] .article-header-deck { grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1.05fr); }
+  [data-sheet-fit="true"] .article-headline-col { display: flex; }
+  [data-sheet-fit="true"] .article-spread .article-main-headline { font-size: clamp(2.15rem, 5.8cqi, 3.25rem); margin-bottom: 0.55rem; }
+  [data-sheet-fit="true"] .article-spec-card { display: flex; }
+  [data-sheet-fit="true"] .spec-metrics-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  [data-sheet-fit="true"] .spec-metric-row { flex-direction: column; }
+  [data-sheet-fit="true"] .article-body-workbench { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.92fr); gap: 1.25rem; }
+  [data-sheet-fit="true"] .article-prose-column { display: flex; }
+  [data-sheet-fit="true"] .article-media { grid-area: auto; }
+  [data-sheet-fit="true"] .capabilities-tag-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  [data-sheet-fit="true"] .article-sources ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  [data-sheet-fit="true"] .source-room-heading { grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr); }
+  [data-sheet-fit="true"] .source-room-workbench { grid-template-columns: minmax(0, 1fr) 280px; }
+  [data-sheet-fit="true"] .source-projects { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  [data-sheet-fit="true"] .source-project { display: flex; }
+}
 @media (max-width: 720px) {
   .page-reader-controls { grid-template-columns: 42px minmax(0, 1fr) 42px; gap: 0.5rem; padding-inline: 0.65rem; }
   .page-turn-button { width: 42px; padding: 0.35rem; }
   .page-turn-word { display: none; }
   #page-reader-jump { font-size: 1rem; }
   .page-reader-hint { font-size: 0.5rem; }
-  html[data-reader-mode="pages"] .magazine-issue-folio { --page-gutter: 0.5rem; }
-  html[data-reader-mode="pages"] .page-leaf { inset-block: 0.5rem; }
+  .page-reader-selector { gap: 0.25rem; }
+  #page-reader-fit { font-size: 0.55rem; padding-inline: 0.35rem; }
+  html[data-reader-mode="pages"] .magazine-issue-folio { --page-gutter: 1rem; --page-block-gutter: 1rem; }
 }
 @media (max-width: 380px) {
   #btn-page-mode > span[aria-hidden] { display: none; }
@@ -162,5 +213,5 @@ select:focus-visible { outline: 2px solid var(--secondary-ink); outline-offset: 
   html[data-reader-mode="pages"], html[data-reader-mode="pages"] body { overflow: visible; }
   html[data-reader-mode="pages"] .magazine-issue-folio { position: static; padding: 0; overflow: visible; perspective: none; background: none; }
   html[data-reader-mode="pages"] .page-leaf, html[data-reader-mode="pages"] .page-leaf[hidden] { display: contents; transform: none !important; filter: none !important; }
-  html[data-reader-mode="pages"] .magazine-spread { height: auto; overflow: visible; transform: none; box-shadow: none; scrollbar-gutter: auto; }
+  html[data-reader-mode="pages"] .magazine-spread { width: 100%; height: auto; overflow: visible; transform: none; box-shadow: none; scrollbar-gutter: auto; }
 }

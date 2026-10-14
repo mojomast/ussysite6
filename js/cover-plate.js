@@ -135,7 +135,8 @@ export function initCoverPlate(host, readoutEl, onSelectNode) {
   let compact;
   let laidOutWidth = -1;
   const layout = () => {
-    const width = host.getBoundingClientRect().width;
+    // Compose from the paper's layout width, before whole-sheet scaling.
+    const width = host.clientWidth;
     const next = width < 520;
     if (next === compact && Math.abs(width - laidOutWidth) < 0.5) return;
     compact = next;
