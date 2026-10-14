@@ -74,3 +74,25 @@ catalog/server tests pass.
   Syntax (34 modules), catalog mirror checks and all four catalog/server tests
   pass. Browser verification scripts and captures are in
   `/tmp/opencode/slop-review/`.
+
+## Type desk and spread balance — 2026-10-14
+
+- Added Barlow Condensed and Cormorant Garamond to the four existing type
+  families. Technical, literary and serif-led features have distinct headline
+  treatments with curated phrase breaks, italic contrast and fluid optical scale.
+- Rebalanced headlines against the facts cards, redesigned takeaway typography,
+  numbered capability entries, and retuned drop caps, tracking, leading, captions,
+  contents, cover teasers and Source Room headings.
+- Added intermediate-width compositions: a horizontal facts band, a split
+  headline/deck at laptop widths, and a full-width capability row beneath the
+  prose/artwork pair. Artwork keeps its natural aspect ratio.
+- Checked nine widths from 320 to 1920px in all three paper modes: six font
+  families loaded, all eleven rendered headlines match catalog text, no text or
+  page overflow, and all twelve editorial frames remain 4:3. Font-blocked checks
+  at 1440, 390 and 320px verified fallback sizing; the mobile Contents heading
+  was adjusted to fit both the display face and its fallback.
+- Reviewed desktop and mobile headline contact sheets and representative full
+  spreads. The existing five-width reader-UX checks passed across search,
+  keyboard controls, media tabs, studies, image viewing and saved-list persistence.
+  Syntax, catalog mirrors and all four server/catalog tests pass. Type captures
+  and the browser verification report are in `/tmp/opencode/slop-review/type-desk/`.

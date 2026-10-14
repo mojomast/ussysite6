@@ -17,6 +17,27 @@ const issueMap = buildIssueMap(USSY_PROJECTS);
 const issueEntries = new Map(issueMap.map((entry) => [entry.id, entry]));
 const escapeHtml = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+// Art-directed phrase breaks; the catalog remains the source of headline copy.
+const headlineAccents = {
+  orbitdesktop: 'the Agent Can Reshape',
+  velvetrp: 'The Server Decides.',
+  jammate: 'Listens for the Downbeat',
+  cocs: 'a 60 Hz Heartbeat',
+  'cocs-godot': 'A Native Godot Client.',
+  routetok: 'When to Switch',
+  rgbagentflightindicator: 'an Agent Status Board',
+  mothbake: 'Leaves a Trail',
+  warpi: 'Your Model.',
+  hermesdashboard: 'of the Agent Fleet',
+  becomussy: 'Carries Forward',
+};
+
+function typesetHeadline(project) {
+  const accent = headlineAccents[project.id];
+  if (!accent || !project.headline.endsWith(accent)) return escapeHtml(project.headline);
+  return `<span class="headline-opening">${escapeHtml(project.headline.slice(0, -accent.length).trim())}</span> <em class="headline-accent">${escapeHtml(accent)}</em>`;
+}
+
 function withViewTransition(fn) {
   if (typeof document.startViewTransition === 'function') {
     document.startViewTransition(() => fn());
@@ -138,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <span class="article-kicker-badge">${proj.kicker}</span>
               <span class="article-category-tag">${proj.category}</span>
             </div>
-            <h2 class="article-main-headline"><span class="article-project-name">${proj.title}</span>${proj.headline}</h2>
+            <h2 class="article-main-headline"><span class="article-project-name">${proj.title}</span><span class="headline-copy">${typesetHeadline(proj)}</span></h2>
             <p class="article-standfirst-deck">${proj.deck}</p>
             <div class="article-byline-strip">
               <span>By SLOPTIMUS PRIME</span>
@@ -148,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <aside class="article-spec-card" aria-label="${proj.title} project facts">
             <div class="spec-card-top">
-              <span>AT A GLANCE</span>
+              <span>At a glance</span>
               <span>#${proj.readerServiceNo}</span>
             </div>
             <p class="spec-context-note">${escapeHtml(proj.glanceNote)}</p>
@@ -202,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             <aside class="editorial-pullquote" aria-label="Editorial takeaway">
               <span class="takeaway-label">THE TAKE</span>
-              ${proj.pullQuote}
+              <span class="takeaway-copy">${proj.pullQuote}</span>
             </aside>
 
             <h3 class="arch-section-heading">Inside the project</h3>
