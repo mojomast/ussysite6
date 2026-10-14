@@ -8,6 +8,7 @@ import { initArticleStudy } from './article-studies.js';
 import { initCoverPlate } from './cover-plate.js';
 import { initSourceRoom } from './source-room.js';
 import { initReaderUI } from './reader-ui.js';
+import { initPageReader } from './page-reader.js';
 import { mountPlate, toRoman } from './plates/index.js';
 import { FlexiDiscSynth } from './flexidisc-audio.js';
 import { PressSDK } from './press-sdk.js';
@@ -47,6 +48,7 @@ function withViewTransition(fn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  let pageReader;
   const sdk = new PressSDK();
   window.PressSDK = sdk;
   window.AnomalySDK = sdk;
@@ -400,7 +402,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initCoverPlate(coverHost, coverReadout, (projectId) => {
     const target = document.getElementById(`spread-${projectId}`);
     if (target) {
-      target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      if (pageReader?.active) pageReader.goTo(target.id, { target, focus: true });
+      else target.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
     }
   });
   mountPlate(document.getElementById('toc-plate'), 'toc', MAGAZINE_ISSUE_META);
@@ -445,30 +448,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 9. IntersectionObserver to Update Running Folio Header & Active Page Tab on Scroll
+  function updateRunningFolio(section) {
+    if (section.dataset.sectionLabel && runningSectionLabel) runningSectionLabel.textContent = section.dataset.sectionLabel;
+    document.querySelectorAll('.folio-tab').forEach((tab) => {
+      const active = tab.getAttribute('href') === `#${section.id}`;
+      tab.classList.toggle('is-active', active);
+      if (active) {
+        tab.setAttribute('aria-current', 'location');
+        const strip = tab.closest('.running-spread-strip');
+        const bounds = tab.getBoundingClientRect();
+        const stripBounds = strip.getBoundingClientRect();
+        if (bounds.left < stripBounds.left || bounds.right > stripBounds.right) {
+          strip.scrollLeft += bounds.left - stripBounds.left - (strip.clientWidth - bounds.width) / 2;
+        }
+      } else tab.removeAttribute('aria-current');
+    });
+  }
+
   function setupSpreadScrollObserver() {
     const sections = document.querySelectorAll('.magazine-spread');
     const observer = new IntersectionObserver(
       (entries) => {
+        if (pageReader?.active) return;
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            const label = entry.target.dataset.sectionLabel;
-            if (label && runningSectionLabel) {
-              runningSectionLabel.textContent = label;
-            }
-             document.querySelectorAll('.folio-tab').forEach((tab) => {
-               const active = tab.getAttribute('href') === `#${entry.target.id}`;
-               tab.classList.toggle('is-active', active);
-                if (active) {
-                  tab.setAttribute('aria-current', 'location');
-                  const strip = tab.closest('.running-spread-strip');
-                  const bounds = tab.getBoundingClientRect();
-                  const stripBounds = strip.getBoundingClientRect();
-                  if (bounds.left < stripBounds.left || bounds.right > stripBounds.right) {
-                    strip.scrollLeft += bounds.left - stripBounds.left - (strip.clientWidth - bounds.width) / 2;
-                  }
-                }
-               else tab.removeAttribute('aria-current');
-            });
+            updateRunningFolio(entry.target);
           }
         }
       },
@@ -482,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderAllArticleSpreads();
   initSourceRoom(document.getElementById('reader-service-spread'), USSY_PROJECTS, sdk, () => flexiSynth.playRelayClick(760));
   initReaderUI(USSY_PROJECTS, sdk);
+  pageReader = initPageReader(updateRunningFolio);
   sdk.subscribe(syncProjectSaveButtons);
   syncProjectSaveButtons();
   setupSpreadScrollObserver();

@@ -147,7 +147,8 @@ export function initReaderUI(projects, sdk) {
     if (!options.contains(event.target)) options.open = false;
   });
   options.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
+    if (event.key === 'Escape' && options.open) {
+      event.preventDefault();
       options.open = false;
       options.querySelector('summary').focus();
     }

@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="./page-reader.css" />
 </head>
 <body>
   <a class="skip-link" href="#toc-spread">Skip to contents</a>
@@ -60,6 +61,7 @@
 
       <!-- Right Press Room Controls: Paper Stock, Printers Loupe, Flexi-Disc Synth -->
       <div class="header-right-press">
+        <button id="btn-page-mode" type="button" class="press-tool-btn" aria-pressed="false" aria-controls="page-reader-controls" title="Enter full-screen page view"><span aria-hidden="true">▣</span><span id="page-mode-label">Pages</span></button>
         <button id="btn-find-project" type="button" class="press-tool-btn" aria-haspopup="dialog" aria-controls="project-finder">Find <kbd>/</kbd></button>
         <details class="reader-options">
           <summary>Options</summary>
@@ -284,6 +286,18 @@
     </section>
 
   </main>
+
+  <nav id="page-reader-controls" class="page-reader-controls" aria-label="Full-screen page navigation" hidden>
+    <button id="page-reader-prev" type="button" class="page-turn-button" aria-label="Previous folio"><span aria-hidden="true">←</span><span class="page-turn-word">Previous</span></button>
+    <div class="page-reader-position">
+      <label class="sr-only" for="page-reader-jump">Go to folio</label>
+      <select id="page-reader-jump"></select>
+      <p class="page-reader-hint" id="page-reader-hint">Scroll to read · ← → to turn · Esc to exit</p>
+    </div>
+    <button id="page-reader-next" type="button" class="page-turn-button" aria-label="Next folio"><span class="page-turn-word">Next</span><span aria-hidden="true">→</span></button>
+    <div class="page-reading-track" aria-hidden="true"><span id="page-reading-progress"></span></div>
+  </nav>
+  <div id="page-reader-announcement" class="sr-only" role="status" aria-live="polite"></div>
 
   <dialog id="project-finder" class="reader-dialog" aria-labelledby="finder-title">
     <div class="reader-dialog-heading"><h2 id="finder-title">Find a project</h2><button type="button" data-close-dialog aria-label="Close project finder">✕</button></div>

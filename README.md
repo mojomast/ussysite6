@@ -35,6 +35,9 @@ When updating copy, review implementation as well as documentation, pin the revi
 
 ## Visual and interaction system
 
+- Continuous reading has generous gaps between the folios. **Pages** in the header opens the full-screen reader; **Exit** or Escape returns to your place in the scrolling edition.
+- In page view, scroll within a long feature, then scroll again at its edge to turn. Left/right arrows, horizontal swipes, previous/next buttons and the folio selector also turn pages. Page Up/Down and Space read within the current folio before advancing. The live pages turn in 3D with paper backs and moving shadows; reduced-motion preferences use immediate transitions. Native browser fullscreen has a viewport-filling fallback.
+- `js/page-reader.js` and `page-reader.css` own the reading modes. They retain each folio’s scroll position, preserve live controls, follow source/contents/search links, and keep all folios available for printing. Page wrappers are mounted only while page view is active.
 - **Find** (or `/`) searches project names, topics and tools; a Saved only filter narrows the results to the reading list. Arrow keys navigate results, Enter opens a feature, and Escape closes the dialog.
 - Each feature has Artwork and Screenshot / Interactive study tabs, a collapsible **Under the hood** section for engineering notes and source code, and previous/next navigation. Source links stay directly accessible. Printing includes both media panels and the engineering detail.
 - Screenshots and Blender editorial images open in a keyboard-accessible image viewer, with an original-file link. Saving a feature displays a confirmation with a reading-list shortcut.
@@ -91,7 +94,7 @@ npm start
 ## Production: ussy.host
 
 Nginx serves the publication from `/home/mojo/web/out`. Publish `index.html`,
-`index.css`, `projects.js`, `js/`, and the rendered assets there. The existing
+`index.css`, `page-reader.css`, `projects.js`, `js/`, and the rendered assets there. The existing
 `archives/`, `ari/`, and `old2/` directories contain earlier work and should be
 preserved. Blender Python sources and asset READMEs are rebuild material, not
 required web assets.
