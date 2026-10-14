@@ -1,0 +1,3 @@
+# Keep commit-pinned third-party reference text byte-identical to upstream.
+.opencode/skills/frontend-design/THIRD_PARTY_NOTICES.md whitespace=-blank-at-eol
+.opencode/skills/impeccable/reference/*.md whitespace=-blank-at-eol,-blank-at-eof

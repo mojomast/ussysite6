@@ -18,25 +18,57 @@ const issueMap = buildIssueMap(USSY_PROJECTS);
 const issueEntries = new Map(issueMap.map((entry) => [entry.id, entry]));
 const escapeHtml = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-// Art-directed phrase breaks; the catalog remains the source of headline copy.
-const headlineAccents = {
-  orbitdesktop: 'the Agent Can Reshape',
-  velvetrp: 'The Server Decides.',
-  jammate: 'Listens for the Downbeat',
-  cocs: 'a 60 Hz Heartbeat',
-  'cocs-godot': 'A Native Godot Client.',
-  routetok: 'When to Switch',
-  rgbagentflightindicator: 'an Agent Status Board',
-  mothbake: 'Leaves a Trail',
-  warpi: 'Your Model.',
-  hermesdashboard: 'of the Agent Fleet',
-  becomussy: 'Carries Forward',
+// Three editorial compositions, independent of folio position and print mode.
+// The catalog remains the source of all feature copy and repository evidence.
+const featureLayouts = {
+  orbitdesktop: 'opener',
+  velvetrp: 'essay',
+  jammate: 'opener',
+  cocs: 'report',
+  'cocs-godot': 'report',
+  routetok: 'report',
+  rgbagentflightindicator: 'report',
+  mothbake: 'report',
+  warpi: 'opener',
+  hermesdashboard: 'essay',
+  becomussy: 'essay',
 };
 
-function typesetHeadline(project) {
-  const accent = headlineAccents[project.id];
-  if (!accent || !project.headline.endsWith(accent)) return escapeHtml(project.headline);
-  return `<span class="headline-opening">${escapeHtml(project.headline.slice(0, -accent.length).trim())}</span> <em class="headline-accent">${escapeHtml(accent)}</em>`;
+function renderFeatureFacts(project) {
+  return `<aside class="article-spec-card" aria-labelledby="facts-${project.id}">
+    <h3 class="spec-card-top" id="facts-${project.id}">At a glance</h3>
+    <p class="spec-context-note">${escapeHtml(project.glanceNote)}</p>
+    <dl class="spec-metrics-grid">
+      ${project.metrics.map((metric) => `<div class="spec-metric-row"><dt>${escapeHtml(metric.label)}</dt><dd>${escapeHtml(metric.value)}</dd></div>`).join('')}
+    </dl>
+    <div class="article-kicker-row">
+      <p class="article-kicker-badge">${escapeHtml(project.kicker)}</p>
+      <p class="article-category-tag">${escapeHtml(project.category)}</p>
+    </div>
+  </aside>`;
+}
+
+function renderFeatureCapabilities(project) {
+  return `<section class="article-capabilities" aria-labelledby="capabilities-${project.id}">
+    <h3 class="arch-section-heading" id="capabilities-${project.id}">Inside the project</h3>
+    <ul class="capabilities-tag-grid">
+      ${project.verifiedCapabilities.map((capability) => `<li class="capability-box">${escapeHtml(capability)}</li>`).join('')}
+    </ul>
+    <ul class="tech-stack-strip" aria-label="Technology stack">
+      ${project.techStack.map((technology) => `<li class="tech-badge">${escapeHtml(technology)}</li>`).join('')}
+    </ul>
+  </section>`;
+}
+
+function renderFeatureActions(project, isSaved) {
+  return `<div class="spec-card-actions" role="group" aria-label="${escapeHtml(project.title)} reader tools">
+    <a href="${project.repoUrl}" target="_blank" rel="noopener noreferrer" class="repo-dispatch-link">Open repository <span aria-hidden="true">↗</span></a>
+    ${project.liveUrl ? `<a href="${project.liveUrl}" target="_blank" rel="noopener noreferrer" class="live-arena-link">Play at arena.ussyco.de <span aria-hidden="true">↗</span></a>` : ''}
+    <div class="article-tool-row">
+      <button type="button" class="flexi-track-btn" data-project-id="${project.id}">Play sound</button>
+      <button type="button" class="project-save-btn ${isSaved ? 'is-saved' : ''}" data-service-no="${project.readerServiceNo}" aria-pressed="${isSaved}" aria-label="Save ${escapeHtml(project.title)} to your reading list">${isSaved ? '✓ Saved' : '+ Save project'}</button>
+    </div>
+  </div>`;
 }
 
 function withViewTransition(fn) {
@@ -137,7 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
       section.id = `spread-${proj.id}`;
       section.className = `magazine-spread article-spread spread--${proj.spreadType}`;
       section.dataset.projectId = proj.id;
+      section.dataset.featureLayout = featureLayouts[proj.id];
       section.dataset.sectionLabel = `FOLIO ${formatFolio(entry)} / ${proj.title.split(' // ')[0]}`;
+      section.setAttribute('aria-labelledby', `headline-${proj.id}`);
       section.style.setProperty('--article-spot', proj.spotInkHex);
       const nextProject = USSY_PROJECTS[proj.index];
       const previousProject = USSY_PROJECTS[proj.index - 2];
@@ -155,89 +189,18 @@ document.addEventListener('DOMContentLoaded', () => {
           <span>FOLIO ${formatFolio(entry)} · PROJECT #${proj.readerServiceNo}</span>
         </div>
 
+        <div class="feature-composition">
         <header class="article-header-deck">
           <div class="article-headline-col">
-            <div class="article-kicker-row">
-              <span class="article-kicker-badge">${proj.kicker}</span>
-              <span class="article-category-tag">${proj.category}</span>
-            </div>
-            <h2 class="article-main-headline"><span class="article-project-name">${proj.title}</span><span class="headline-copy">${typesetHeadline(proj)}</span></h2>
+            <h2 class="article-main-headline" id="headline-${proj.id}"><span class="headline-copy">${escapeHtml(proj.headline)}</span></h2>
             <p class="article-standfirst-deck">${proj.deck}</p>
             <div class="article-byline-strip">
+              <span class="article-project-name">${escapeHtml(proj.title)}</span>
               <span>By SLOPTIMUS PRIME</span>
               <a href="#sources-${proj.id}" class="article-reference-link">Sources ↓</a>
             </div>
           </div>
-
-          <aside class="article-spec-card" aria-label="${proj.title} project facts">
-            <div class="spec-card-top">
-              <span>At a glance</span>
-              <span>#${proj.readerServiceNo}</span>
-            </div>
-            <p class="spec-context-note">${escapeHtml(proj.glanceNote)}</p>
-            <div class="spec-metrics-grid">
-              ${proj.metrics
-                .map(
-                  (m) => `
-                  <div class="spec-metric-row">
-                    <span>${m.label}</span>
-                    <strong>${m.value}</strong>
-                  </div>
-                `
-                )
-                .join('')}
-            </div>
-            <div class="spec-card-actions">
-              <a href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer" class="repo-dispatch-link">
-                <span>Open repository</span>
-                <span aria-hidden="true">↗</span>
-              </a>
-              ${
-                proj.liveUrl
-                  ? `<a href="${proj.liveUrl}" target="_blank" rel="noopener noreferrer" class="live-arena-link">
-                      <span>Play at arena.ussyco.de</span>
-                      <span aria-hidden="true">⚡</span>
-                    </a>`
-                  : ''
-              }
-              <div class="article-tool-row">
-                <button type="button" class="flexi-track-btn" data-project-id="${proj.id}">
-                  ◎ Play sound
-                </button>
-                <button
-                  type="button"
-                  class="project-save-btn ${isCircled ? 'is-saved' : ''}"
-                  data-service-no="${proj.readerServiceNo}"
-                  aria-pressed="${isCircled}"
-                  aria-label="Save ${escapeHtml(proj.title)} to your reading list"
-                >
-                  ${isCircled ? '✓ Saved' : '+ Save project'}
-                </button>
-              </div>
-            </div>
-          </aside>
         </header>
-
-        <div class="article-body-workbench">
-          <!-- Editorial Prose & Architecture Column -->
-          <div class="article-prose-column">
-            <p class="article-lead-paragraph">${proj.editorialLead}</p>
-
-            <aside class="editorial-pullquote" aria-label="Editorial takeaway">
-              <span class="takeaway-label">THE TAKE</span>
-              <span class="takeaway-copy">${proj.pullQuote}</span>
-            </aside>
-
-            <h3 class="arch-section-heading">Inside the project</h3>
-            <div class="capabilities-tag-grid">
-              ${proj.verifiedCapabilities.map((c) => `<div class="capability-box">${c}</div>`).join('')}
-            </div>
-
-            <div class="tech-stack-strip">
-              ${proj.techStack.map((t) => `<span class="tech-badge">${t}</span>`).join('')}
-            </div>
-
-          </div>
 
           <!-- Illustrated still life + screenshot or SVG study + source listing -->
           <div class="article-lab-column article-media">
@@ -301,6 +264,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             </div>
           </div>
+
+          <div class="article-prose-column">
+            <p class="article-lead-paragraph">${proj.editorialLead}</p>
+            <aside class="editorial-pullquote" aria-label="Editorial takeaway">
+              <span class="takeaway-copy">${proj.pullQuote}</span>
+              <span class="takeaway-label">The editorial take</span>
+            </aside>
+          </div>
+          ${renderFeatureFacts(proj)}
+          ${renderFeatureCapabilities(proj)}
+          ${renderFeatureActions(proj, isCircled)}
         </div>
 
         <details class="article-deep-dive">

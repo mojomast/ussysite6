@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="./publication.css" />
   <link rel="stylesheet" href="./page-reader.css" />
 </head>
 <body>
@@ -42,21 +43,17 @@
       <div class="header-left-folio">
         <a href="#issue-cover" class="cmyk-target-mark" title="Return to Front Cover">
           <span class="si-monogram" aria-label="SLOP ILLUSTRATED">Si<span>.</span></span>
-          <span class="cmyk-bars">
-            <i class="c-bar"></i><i class="m-bar"></i><i class="y-bar"></i><i class="k-bar"></i>
-          </span>
         </a>
         <div class="running-pub-meta">
-          <span class="running-vol">SLOP ILLUSTRATED · ISSUE 01 · OCT 2026</span>
           <strong id="running-section-label" class="running-section-label">FOLIO 01 / COVER</strong>
         </div>
       </div>
 
       <!-- Center Quick Spread Jumper -->
       <nav class="running-spread-strip" aria-label="Issue folios">
-        <a href="#toc-spread" class="folio-tab" title="Contents"><span data-issue-number="toc-spread">02</span> TOC</a>
+        <a href="#toc-spread" class="folio-tab" title="Contents"><span data-issue-number="toc-spread">02</span> Contents</a>
         <div id="folio-page-tabs" class="folio-page-tabs"></div>
-        <a href="#reader-service-spread" class="folio-tab" title="The Source Room"><span data-issue-number="reader-service-spread">14</span> SOURCE</a>
+        <a href="#reader-service-spread" class="folio-tab" title="The Source Room"><span data-issue-number="reader-service-spread">14</span> Sources</a>
       </nav>
 
       <!-- Right Press Room Controls: Paper Stock, Printers Loupe, Flexi-Disc Synth -->
@@ -98,11 +95,10 @@
       <div class="crop-mark crop-bl" aria-hidden="true"></div>
       <div class="crop-mark crop-br" aria-hidden="true"></div>
 
-      <!-- Top Issue Banner -->
+      <!-- Issue imprint -->
       <div class="cover-top-strip">
-        <span>SOFTWARE. SHOWN &amp; EXPLAINED.</span>
-        <span>OCTOBER 2026 · ISSUE 01</span>
-        <span>DIGITAL EDITION · <span data-issue-count>14</span> FOLIOS</span>
+        <span>A field journal of software &amp; the work behind it</span>
+        <span>October 2026 / Issue 01</span>
       </div>
 
       <!-- Monumental Masthead -->
@@ -112,50 +108,33 @@
           <span class="masthead-illustrated">Illustrated<span class="masthead-period">.</span></span>
         </h1>
         <div class="cover-sub-banner">
-          <span>A FIELD JOURNAL OF SOFTWARE &amp; THE WORK BEHIND IT</span>
-          <span class="cover-editor-credit">EDITED BY SLOPTIMUS PRIME</span>
+          <span>Software. Shown &amp; explained.</span>
+          <span class="cover-editor-credit">Edited by SLOPTIMUS PRIME</span>
         </div>
-        <p class="masthead-acronym"><strong>Si.</strong> / Eleven projects. Repository sources. Illustrated ideas.</p>
       </div>
 
-      <!-- Cover Centerpiece Grid: Left Cover Lines + Interactive 2D Airbrush/Isometric Illustration + Right Cover Lines + Barcode -->
+      <!-- Plate I and the cover-line rail -->
       <div class="cover-body-grid">
-        <div class="cover-left-teasers">
-          <div class="cover-feature-tag">IN THIS ISSUE</div>
-          <ul id="cover-story-list" class="cover-story-list"></ul>
-        </div>
-
         <!-- Interactive biomechanical illustration with eleven project links -->
         <figure class="cover-art-frame">
           <div id="cover-illustration" class="cover-illustration" role="group" aria-label="The Machine Beneath the Skin: a conceptual biomechanical illustration and index of eleven software projects"></div>
           <figcaption class="cover-art-caption">
-            <span>PLATE I <em>“The Machine Beneath the Skin”</em><small>Select a project to read its feature.</small></span>
-            <span id="cover-probe-readout" class="cover-probe-readout">ILLUSTRATED INDEX / SELECT A PROJECT</span>
+            <span><small>Plate I / Original Blender still life</small><em>The Machine Beneath the Skin</em></span>
+            <span id="cover-probe-readout" class="cover-probe-readout">Eleven projects / Select a folio</span>
           </figcaption>
         </figure>
 
-        <!-- Right Column: Bound-in Flexi-Disc Callout + UPC Barcode -->
-        <div class="cover-right-column">
+        <aside class="cover-story-rail" aria-label="Featured in this issue">
+          <ul id="cover-story-list" class="cover-story-list"></ul>
           <div class="flexi-callout-stamp">
-            <span class="stamp-eyebrow">A BROWSER SOUND SHEET</span>
             <div class="flexi-record" aria-hidden="true"><span>33⅓<br><b>Si.</b><br>SIDE A</span></div>
-            <h3>A little<br>listening matter.</h3>
+            <h3>A little listening matter.</h3>
             <p>Eleven original sound sketches, synthesized for the issue.</p>
-            <button id="btn-cover-audition" class="stamp-action-btn">▶ Play a sound sketch</button>
+            <button id="btn-cover-audition" type="button" class="stamp-action-btn">Play a sound sketch <span aria-hidden="true">↗</span></button>
           </div>
-
-          <div class="department-highlights-box">
-            <h4>DEPARTMENTS &amp; LABS</h4>
-            <dl id="cover-departments"></dl>
-          </div>
-
-          <div class="issue-seal" aria-label="SLOP ILLUSTRATED, digital issue 01">
-            <span class="si-monogram">Si<span>.</span></span>
-            <div><strong>ISSUE 01</strong><span>AN INDEPENDENT<br>DIGITAL FIELD JOURNAL</span></div>
-          </div>
-        </div>
+        </aside>
       </div>
-      <div class="cover-bottom-strip"><span>THE SOFTWARE ISSUE</span><strong>A closer look at what we build.</strong><span>ILLUSTRATIONS · SOURCE REFERENCES · FIELD NOTES</span></div>
+      <div class="cover-bottom-strip"><strong>A closer look at what we build.</strong><a href="#toc-spread">Open the issue <span aria-hidden="true">↗</span></a></div>
     </section>
 
     <!-- =====================================================================
@@ -163,8 +142,8 @@
          ===================================================================== -->
     <section id="toc-spread" class="magazine-spread spread--toc" data-section-label="FOLIO 02 / CONTENTS &amp; EDITORIAL">
       <div class="spread-folio-header">
-        <span>SLOP ILLUSTRATED · OCTOBER 2026</span>
-        <span>TABLE OF CONTENTS &amp; MASTHEAD</span>
+        <span>SLOP ILLUSTRATED</span>
+        <span>CONTENTS &amp; EDITORIAL</span>
         <span data-issue-folio="toc-spread">FOLIO 02</span>
       </div>
 
@@ -174,10 +153,19 @@
       </header>
 
       <div class="toc-spread-grid">
-        <!-- Left Column: Editor's Note + Masthead Staff Box -->
+        <!-- Frontispiece and editor's letter -->
         <div class="editor-letter-col">
-          <div class="section-rubric">FROM THE EDITOR’S DESK</div>
-          <h2 class="editor-headline">Show the work.<br><em>Credit the foundations.</em></h2>
+          <figure id="toc-plate" class="editorial-plate editorial-plate--toc" data-plate="toc">
+            <div class="editorial-plate-art">
+              <span class="editorial-plate-placeholder">PLATE II · PLATE IN PRESS…</span>
+            </div>
+            <figcaption class="editorial-plate-caption">
+              <span>PLATE II — <em class="editorial-plate-title">The Press Room</em></span>
+              <span class="editorial-plate-medium">FRONTISPIECE</span>
+            </figcaption>
+          </figure>
+          <div class="editor-letter">
+          <h2 class="editor-headline">Show the work.<br>Credit the foundations.</h2>
           <p class="editor-dropcap-para">
             Eleven projects from <strong>SLOPTIMUS PRIME</strong>, illustrated and explained. See what each one does, what it adds, and where the work comes from.
           </p>
@@ -188,9 +176,21 @@
             <span class="editor-sig">SLOPTIMUS PRIME</span>
             <span class="editor-place">Si. / October 2026</span>
           </div>
+          </div>
+        </div>
 
+        <div class="toc-index-col">
+          <div class="toc-index-header">
+            <h3>In this issue</h3>
+            <span>Eleven feature stories</span>
+          </div>
+          <ol id="toc-article-list" class="toc-article-list"></ol>
+        </div>
+      </div>
+
+      <div class="contents-colophon">
           <div class="masthead-staff-box">
-            <h3>PUBLICATION MASTHEAD</h3>
+            <h3>Publication masthead</h3>
             <dl>
               <div><dt>EDITOR &amp; PROJECT CONTRIBUTOR</dt><dd>SLOPTIMUS PRIME (<a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast</a>)</dd></div>
               <div><dt>TYPESETTING &amp; LITHOGRAPHY</dt><dd>Fraunces · Barlow Condensed · Cormorant Garamond · Newsreader · Space Grotesk · IBM Plex Mono</dd></div>
@@ -199,26 +199,10 @@
               <div><dt>ABOUT THE NUMBERING</dt><dd>Folios identify sections of this digital issue; printed pagination varies by device and paper size.</dd></div>
             </dl>
           </div>
-
-          <figure id="toc-plate" class="editorial-plate editorial-plate--toc" data-plate="toc">
-            <div class="editorial-plate-art">
-              <span class="editorial-plate-placeholder">PLATE II · PLATE IN PRESS…</span>
-            </div>
-            <figcaption class="editorial-plate-caption">
-              <span>PLATE II — <em class="editorial-plate-title">The Press Room</em></span>
-              <span class="editorial-plate-medium">FRONTISPIECE</span>
-            </figcaption>
-          </figure>
-        </div>
-
-        <!-- Right Column: Annotated Index of All 11 Feature Articles -->
-        <div class="toc-index-col">
-          <div class="toc-index-header">
-            <h3>In this issue</h3>
-            <span>ELEVEN FEATURE STORIES</span>
+          <div class="department-highlights-box">
+            <h4>Departments &amp; labs</h4>
+            <dl id="cover-departments"></dl>
           </div>
-          <ol id="toc-article-list" class="toc-article-list"></ol>
-        </div>
       </div>
       <footer class="spread-folio-footer"><span class="folio-page" data-issue-number="toc-spread">02</span><span class="folio-imprint"><b>Si.</b> <i>Slop Illustrated</i> / The editor’s desk</span><a class="folio-next" href="#spread-orbitdesktop">BEGIN READING ↗</a></footer>
     </section>
@@ -240,26 +224,25 @@
 
       <header class="source-room-heading">
         <div>
-          <p class="section-rubric">AFTER THE LAST PAGE / INTO THE REPOSITORY</p>
-          <h2 id="source-room-title">The issue ends.<br>The work <em>goes on.</em></h2>
+          <h2 id="source-room-title">The issue ends.<br>The work goes on.</h2>
         </div>
         <p class="source-room-intro">Open a repository. Save your next read. Take the list with you.</p>
       </header>
 
       <div class="source-room-workbench">
         <div class="source-shelf">
-          <div class="source-shelf-heading"><h3>Eleven ways in</h3><span>ISSUE 01 / SOURCE INDEX</span></div>
+          <div class="source-shelf-heading"><h3>Eleven ways in</h3><span>Folio / Repository / Reading list</span></div>
           <ul id="source-projects" class="source-projects" aria-label="Project repositories"></ul>
         </div>
 
         <aside class="source-reading-desk" aria-label="Your repository reading list">
-          <div class="source-desk-heading"><span>YOUR NEXT READS</span><strong id="source-saved-count">00<span> / 11</span></strong></div>
+          <div class="source-desk-heading"><span>Your next reads</span><strong id="source-saved-count">00<span> / 11</span></strong></div>
           <div id="source-queue" class="source-queue"></div>
           <div class="source-list-tools">
             <button id="source-save-all" type="button">Save all eleven</button>
             <button id="source-clear" type="button" disabled>Clear list</button>
           </div>
-          <button id="source-copy" type="button" class="source-copy" disabled><span>Copy reading list</span><span>MARKDOWN ↗</span></button>
+          <button id="source-copy" type="button" class="source-copy" disabled><span>Copy reading list</span><span>Markdown ↗</span></button>
           <p id="source-action-status" class="source-action-status" role="status" aria-live="polite"></p>
           <div id="source-export-fallback" class="source-export-fallback" hidden>
             <label for="source-export-text">YOUR MARKDOWN READING LIST</label>

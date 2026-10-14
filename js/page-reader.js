@@ -27,7 +27,6 @@ export function initPageReader(onChange = () => {}) {
   const leaves = pages.map((page, index) => {
     const leaf = document.createElement('div');
     leaf.className = 'page-leaf';
-    leaf.dataset.alternate = String(page.matches('.article-spread:nth-child(even)'));
     const face = document.createElement('div');
     face.className = 'page-face';
     const paper = document.createElement('div');
@@ -87,12 +86,14 @@ export function initPageReader(onChange = () => {}) {
   // viewing window change, so zooming never reflows the type or swaps columns.
   function layoutSheets() {
     if (!active || matchMedia('print').matches) return;
-    stage.dataset.sheetLayout = 'spread';
     stage.dataset.pageZoom = fitToPage ? 'fit' : 'fill';
     const style = getComputedStyle(stage);
     const width = Math.max(1, stage.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
     const height = Math.max(1, stage.clientHeight - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom));
-    const layoutWidth = Math.min(1400, Math.max(1100, width));
+    // Compose for the actual reading surface, including phones. The same
+    // composition is retained through zoom; Fill restores readable natural type.
+    const layoutWidth = Math.min(1400, width);
+    stage.dataset.sheetLayout = layoutWidth < 760 ? 'narrow' : 'spread';
     const key = `${width}:${height}:${layoutWidth}`;
     if (key !== layoutKey) { fillScales.clear(); layoutKey = key; }
     leaves.forEach((leaf, at) => {
@@ -180,7 +181,7 @@ export function initPageReader(onChange = () => {}) {
     face.inert = true;
     stage.classList.add('is-page-zooming');
     layoutSheets();
-    announcement.textContent = fit ? 'Whole sheet fitted and centered.' : 'Fill view. Scroll to read; pan sideways to explore the sheet.';
+    announcement.textContent = fit ? 'Whole sheet fitted and centered.' : 'Fill view. Scroll to read the enlarged sheet.';
     if (reducedMotion.matches) { finishZoom(); return; }
     const began = performance.now();
     const step = (now) => {
@@ -214,8 +215,10 @@ export function initPageReader(onChange = () => {}) {
     hint.textContent = fitToPage
       ? (touchHint ? 'Whole sheet · swipe sideways to turn' : 'Whole sheet · scroll or ← → to turn')
       : fraction > 0.99 && index < pages.length - 1
-      ? (touchHint ? 'End of folio · swipe left or tap Next' : 'End of folio · scroll again or press →')
-      : (touchHint ? 'Swipe to explore · Fit sheet to zoom out' : 'Scroll to read · Shift + wheel to pan');
+      ? (touchHint ? 'End of folio · tap Next' : 'End of folio · scroll again or press →')
+      : page.scrollWidth > page.clientWidth + 1
+      ? (touchHint ? 'Swipe to explore · Fit sheet to zoom out' : 'Scroll to read · Shift + wheel to pan')
+      : (touchHint ? 'Swipe up to read · Fit sheet to zoom out' : 'Scroll to read · Fit sheet to zoom out');
   }
 
   function updateControls() {

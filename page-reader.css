@@ -26,12 +26,12 @@
   align-items: center;
   gap: 0.65rem;
   width: fit-content;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0.45rem 1rem;
-  border: 1px solid var(--rule-hairline);
+  border: 1px solid transparent;
   color: var(--ink-primary);
-  background: var(--paper-card);
-  font: 500 0.75rem/1.4 var(--font-mono);
+  background: transparent;
+  font: 500 0.8rem/1.4 var(--font-grotesk);
   cursor: pointer;
 }
 .page-turn-button > span[aria-hidden] { font: 1.5rem/1 var(--font-body); }
@@ -49,7 +49,7 @@
   border: 1px solid var(--rule-hairline);
   background: var(--paper-card);
   color: var(--ink-primary);
-  font: 500 0.65rem/1.3 var(--font-mono);
+  font: 500 0.75rem/1.3 var(--font-grotesk);
   cursor: pointer;
 }
 .page-reader-zoom button[aria-pressed="true"] { background: var(--ink-primary); color: var(--paper-bg); }
@@ -66,7 +66,7 @@
   cursor: pointer;
   text-overflow: ellipsis;
 }
-.page-reader-hint { margin-top: 0.2rem; font: 0.6rem/1.5 var(--font-mono); color: var(--ink-muted); }
+.page-reader-hint { margin-top: 0.2rem; font: 0.7rem/1.5 var(--font-grotesk); color: var(--ink-muted); }
 .page-reading-track { position: absolute; inset: 0 0 auto; height: 2px; overflow: hidden; }
 .page-reading-track > span { display: block; height: 100%; width: 100%; transform-origin: left; background: var(--spot-ink); }
 
@@ -169,50 +169,15 @@ html[data-reader-mode="pages"] .reader-feedback { bottom: calc(var(--page-contro
 .is-page-zooming .is-current-page .magazine-spread { will-change: transform; }
 select:focus-visible { outline: 2px solid var(--secondary-ink); outline-offset: 3px; }
 
-@media screen and (min-width: 1281px) {
-  html[data-reader-mode="pages"] .page-leaf[data-alternate="true"] .article-body-workbench { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.28fr); }
-  html[data-reader-mode="pages"] .page-leaf[data-alternate="true"] .article-prose-column { order: 2; }
-  html[data-reader-mode="pages"] .page-leaf[data-alternate="true"] .article-media { order: 1; }
-}
-/* Keep one spread composition while smoothly zooming between Fit and Fill. */
-@media screen and (max-width: 1280px) {
-  [data-sheet-layout="spread"] .magazine-spread { padding: 1.1rem 1.65rem 1rem; }
-  [data-sheet-layout="spread"] .cover-masthead-title { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); }
-  [data-sheet-layout="spread"] .masthead-wordmark { font-size: 9rem; }
-  [data-sheet-layout="spread"] .masthead-illustrated { font-size: 5.5rem; }
-  [data-sheet-layout="spread"] .cover-body-grid { display: grid; grid-template-columns: minmax(175px, 0.8fr) minmax(0, 2.8fr) minmax(185px, 0.85fr); }
-  [data-sheet-layout="spread"] .cover-art-frame { order: 0; }
-  [data-sheet-layout="spread"] .cover-illustration { flex: 1; min-height: 0; aspect-ratio: 4 / 3; }
-  [data-sheet-layout="spread"] .cover-story-list { display: flex; flex-direction: column; }
-  [data-sheet-layout="spread"] .cover-right-column { display: flex; grid-column: auto; flex-direction: column; align-items: stretch; }
-  [data-sheet-layout="spread"] .cover-right-column > * { flex: none; }
-  [data-sheet-layout="spread"] .department-highlights-box dl { grid-template-columns: 1fr; }
-  [data-sheet-layout="spread"] .toc-spread-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.32fr); }
-  [data-sheet-layout="spread"] .contents-title-row { flex-direction: row; }
-  [data-sheet-layout="spread"] .article-header-deck { grid-template-columns: minmax(0, 1.55fr) minmax(320px, 1.05fr); }
-  [data-sheet-layout="spread"] .article-headline-col { display: flex; }
-  [data-sheet-layout="spread"] .article-spread .article-main-headline { font-size: clamp(2.15rem, 5.8cqi, 3.25rem); margin-bottom: 0.55rem; }
-  [data-sheet-layout="spread"] .article-spec-card { display: flex; }
-  [data-sheet-layout="spread"] .spec-metrics-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  [data-sheet-layout="spread"] .spec-metric-row { flex-direction: column; }
-  [data-sheet-layout="spread"] .article-body-workbench { grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.92fr); gap: 1.25rem; }
-  [data-sheet-layout="spread"] .article-prose-column { display: flex; }
-  [data-sheet-layout="spread"] .article-media { grid-area: auto; }
-  [data-sheet-layout="spread"] .capabilities-tag-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  [data-sheet-layout="spread"] .article-sources ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  [data-sheet-layout="spread"] .source-room-heading { grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr); }
-  [data-sheet-layout="spread"] .source-room-workbench { grid-template-columns: minmax(0, 1fr) 280px; }
-  [data-sheet-layout="spread"] .source-projects { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  [data-sheet-layout="spread"] .source-project { display: flex; }
-}
+/* Composition belongs to the publication styles. Fit/Fill change geometry only. */
 @media (max-width: 720px) {
-  .page-reader-controls { grid-template-columns: 42px minmax(0, 1fr) 42px; gap: 0.5rem; padding-inline: 0.65rem; }
-  .page-turn-button { width: 42px; padding: 0.35rem; }
+  .page-reader-controls { grid-template-columns: 44px minmax(0, 1fr) 44px; gap: 0.5rem; padding-inline: 0.65rem; }
+  .page-turn-button { width: 44px; padding: 0.35rem; }
   .page-turn-word { display: none; }
-  #page-reader-jump { font-size: 1rem; }
-  .page-reader-hint { font-size: 0.5rem; }
+  #page-reader-jump { min-height: 38px; font-size: 1rem; }
+  .page-reader-hint { font-size: 0.6rem; }
   .page-reader-selector { flex-wrap: wrap; gap: 0.25rem; }
-  .page-reader-zoom button { min-height: 34px; font-size: 0.6rem; padding-inline: 0.5rem; }
+  .page-reader-zoom button { min-height: 44px; font-size: 0.7rem; padding-inline: 0.5rem; }
   html[data-reader-mode="pages"] .magazine-issue-folio { --page-gutter: 1rem; --page-block-gutter: 1rem; }
 }
 @media (max-width: 380px) {

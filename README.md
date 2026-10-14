@@ -29,7 +29,7 @@ CoCS links to the live arena at **[arena.ussyco.de](https://arena.ussyco.de)**.
 
 Every feature includes `sources`, a pinned `sourceRevision`, `researchedAt`, and a `codeSource` link for its repository excerpt. Research reports in `docs/editorial-audit/` record the evidence and corrections. Descriptions distinguish the contribution of each project from upstream work—for example, Warpi adds a Pi-powered agent backend and BYOK configuration to Warp’s existing terminal interface, and JamMate builds on Guitar Companion.
 
-“At a glance” boxes contain source-supported facts or explicitly labelled targets. Takeaways are editorial statements. Reading notes replace synthetic execution logs. Blender still lifes, drawn SVG plates, and the five interactive SVG studies are conceptual illustrations; screenshots and test fixtures have captions identifying their provenance. Artwork and copy were developed with AI assistance.
+“At a glance” ledgers contain source-supported facts or explicitly labelled targets. Takeaways are editorial statements. Reading notes replace synthetic execution logs. Blender still lifes, drawn SVG plates, and the five interactive SVG studies are conceptual illustrations; screenshots and test fixtures have captions identifying their provenance. Artwork and copy were developed with AI assistance.
 
 When updating copy, review implementation as well as documentation, pin the revision used, and update the associated source links. Keep root `projects.js` and runtime `js/projects.js` byte-identical.
 
@@ -38,19 +38,20 @@ When updating copy, review implementation as well as documentation, pin the revi
 - Continuous reading has generous gaps between the folios. **Pages** in the header opens the full-screen reader; **Exit** or Escape returns to your place in the scrolling edition.
 - Page view fits each complete, content-sized sheet inside the viewport and centers it with space on every side. **Fill view** smoothly zooms the same composition to fill the reading area; **Fit sheet** pulls back to the whole sheet. Scroll or swipe to explore enlarged pages, and use Shift + wheel for sideways panning with a mouse. Zoom remembers each folio’s reading position. Left/right arrows, previous/next buttons and the folio selector turn pages; horizontal swipes turn in whole-sheet view. Page Up/Down and Space read within an enlarged folio before advancing. The live pages turn in 3D with paper backs and moving shadows; reduced-motion preferences use immediate transitions. Native browser fullscreen has a viewport-filling fallback.
 - `js/page-reader.js` and `page-reader.css` own the reading modes. They retain each folio’s scroll position, preserve live controls, follow source/contents/search links, and keep all folios available for printing. Page wrappers are mounted only while page view is active.
+- Sheets compose at the available reading width before zoom is calculated. Phone Fill uses the same single-column composition as phone Fit, restoring natural reading type rather than panning across a desktop-width page. Publication styles own composition; the reader only scales and positions sheets.
 - **Find** (or `/`) searches project names, topics and tools; a Saved only filter narrows the results to the reading list. Arrow keys navigate results, Enter opens a feature, and Escape closes the dialog.
 - Each feature has Artwork and Screenshot / Interactive study tabs, a highlighted **Under the hood** bar with an **Explore / Close** control, and previous/next navigation. Engineering notes and source code unfold smoothly; fitted sheets resize and stay centered in the same animation. Reduced motion uses immediate changes, and printing includes both media panels and the engineering detail. Source links stay directly accessible.
 - Screenshots and Blender editorial images open in a keyboard-accessible image viewer, with an original-file link. Saving a feature displays a confirmation with a reading-list shortcut.
 - The header groups paper, loupe and sound controls under **Options**. Its folio strip follows the current feature, and anchor offsets adapt to the header height on smaller screens.
 - Cover project links support pointer interaction and arrows, Home/End, Enter/Space.
 - Editorial plate modules live in `js/plates/` and return inline SVG artwork or a local image with its title, medium, intrinsic dimensions, and alt text. Blender still lifes retain their original 4:3 framing on desktop and mobile.
-- All twelve editorial frames keep their natural 4:3 proportions instead of stretching to fill a taller text column. Source references form a compact full-width band below each feature. Wider “At a glance” cards include short source-supported context notes. Unloaded artwork uses the current paper mode’s neutral background.
-- Eight native-SVG still lifes use layered vector materials, reflections, bevels, and contact shadows. `js/svg-kit.js` supplies scoped definitions and illustration helpers. Keep IDs unique across the issue, including interactive study states.
+- All twelve editorial frames keep their natural 4:3 proportions instead of stretching to fill a taller text column. Source references form a directly accessible band below each feature. Open “At a glance” ledgers include short source-supported context notes. Unloaded artwork uses the current paper mode’s neutral background.
 - Six locally hosted screenshots live in `assets/screenshots/`. The catalog records intrinsic dimensions and links each image to its full-resolution version.
 - Five responsive native-SVG studies in `js/article-studies.js` have explicit step controls and keyboard interaction. Their readouts describe illustrated states. Each study uses a 640 × 360 viewBox and renders statically between interactions.
 - Darkroom is the default paper mode; readers can select Cream or Blueprint, and their saved choice is restored on reload. Optional registration-grid loupe; reduced-motion handling, offscreen animation pausing, responsive and print styles.
-- Six coordinated type voices: Fraunces for the identity and feature display; Barlow Condensed for bold headings; Cormorant Garamond for literary headlines, italic contrasts and folios; Newsreader for reading; Space Grotesk for facts and controls; IBM Plex Mono for annotations.
-- Feature headlines use curated phrase breaks and container-relative sizing. At intermediate widths, the facts card becomes a horizontal band and capabilities form a full-width row beneath prose and artwork. Phones use a single-column reading order. The type-desk section at the end of `index.css` defines these compositions; `headlineAccents` in `js/app.js` selects emphasis without changing catalog copy.
+- Six coordinated type voices: Fraunces for the identity and selected feature display; Barlow Condensed for technical headings; Cormorant Garamond for editorial takeaways; Newsreader for reading; Space Grotesk for facts and controls; IBM Plex Mono for code and precise technical annotations.
+- Features have three explicit compositions: plate-led openers (OrbitDesktop, JamMate, Warpi), technical reports (CoCS, CoCS-Godot, RouteTok, RGB Flight Indicator, MothBake), and essays (VelvetRP, HermesDashboard, Becomussy). `js/app.js` assigns `data-feature-layout`; `index.css` owns their responsive grids. Phones use a single-column reading order.
+- `publication.css` directs the cover, contents, Source Room and reader chrome. The cover's original sculpture leads, with compact project annotations and a restrained cover-story rail; the Source Room uses a repository directory rather than a grid of cards.
 - The flexi-disc is a WebAudio sound sketch: synthesized tone sequences, vinyl-like surface noise, and relay clicks made for the magazine.
 - `js/source-room.js` renders the closing project shelf. Readers can open repositories, save projects from either the shelf or feature cards, select all, clear their list, and copy repository links as Markdown. A selectable text fallback handles unavailable clipboard access. Keyboard focus is preserved when saving; state is restored on reload.
 - `window.PressSDK` persists reader selections and notes in localStorage and posts them to `/api/press/state`. The server state is in-memory and shared by clients. Existing service-number storage keys are retained so earlier saved selections still work.
@@ -75,6 +76,10 @@ The cover, table-of-contents frontispiece, and all eleven feature spreads are or
 | Hermes Dashboard | *The Drawer of Little Assistants* — a walnut session-orrery cabinet with its illuminated subagent drawer pulled open | [`assets/editorial/hermesdashboard/`](assets/editorial/hermesdashboard/README.md) |
 | Becomussy | *The Bureau of Becoming* — a porcelain memory archive pouring a paper recollection into a teacup | [`assets/editorial/becomussy/`](assets/editorial/becomussy/README.md) |
 
+### Design references
+
+The editorial redesign uses commit-pinned text-only guidance from Anthropic's **Frontend Design** and Paul Bakaus's **Impeccable**, stored with licenses and provenance in `.opencode/skills/`. Their installation popularity is documented separately from user ratings. See [the research record](docs/editorial-audit/design-research-2026.md), `PRODUCT.md`, and `DESIGN.md` for the source material, product constraints and finished visual system. The source-only skill and design documents are not part of the static deployment.
+
 ## Quickstart
 
 Zero external runtime dependencies—runs out of the box on Node.js 22+:
@@ -94,7 +99,7 @@ npm start
 ## Production: ussy.host
 
 Nginx serves the publication from `/home/mojo/web/out`. Publish `index.html`,
-`index.css`, `page-reader.css`, `projects.js`, `js/`, and the rendered assets there. The existing
+`index.css`, `publication.css`, `page-reader.css`, `projects.js`, `js/`, and the rendered assets there. The existing
 `archives/`, `ari/`, and `old2/` directories contain earlier work and should be
 preserved. Blender Python sources and asset READMEs are rebuild material, not
 required web assets.
