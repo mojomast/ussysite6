@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./index.css" />
 </head>
 <body>
+  <a class="skip-link" href="#toc-spread">Skip to contents</a>
   <!-- Inline SVG Archival Paper Grain & Lithographic Ink Filters -->
   <svg class="svg-defs-vault" aria-hidden="true">
     <defs>
@@ -59,6 +60,10 @@
 
       <!-- Right Press Room Controls: Paper Stock, Printers Loupe, Flexi-Disc Synth -->
       <div class="header-right-press">
+        <button id="btn-find-project" type="button" class="press-tool-btn" aria-haspopup="dialog" aria-controls="project-finder">Find <kbd>/</kbd></button>
+        <details class="reader-options">
+          <summary>Options</summary>
+          <div class="reader-options-panel">
         <div class="stock-switcher" role="group" aria-label="Paper Stock & Ink Mode">
           <button class="stock-btn" data-mode="cream-press" aria-pressed="false" title="Warm paper and dark ink">Cream</button>
           <button class="stock-btn" data-mode="blueprint" aria-pressed="false" title="Prussian Cyanotype Blueprint Linen">Blueprint</button>
@@ -71,8 +76,10 @@
 
         <button id="btn-flexi-toggle" class="press-tool-btn flexi-btn" aria-pressed="false" title="Play 33⅓ RPM Bound-In Flexi-Disc Audio Program">
           <span class="flexi-disc-icon" aria-hidden="true">◎</span>
-          <span id="flexi-btn-label">33⅓ Flexi-Disc</span>
+          <span id="flexi-btn-label">Play sound</span>
         </button>
+          </div>
+        </details>
       </div>
     </div>
   </header>
@@ -120,7 +127,7 @@
         <figure class="cover-art-frame">
           <div id="cover-illustration" class="cover-illustration" role="group" aria-label="The Machine Beneath the Skin: a conceptual biomechanical illustration and index of eleven software projects"></div>
           <figcaption class="cover-art-caption">
-            <span>PLATE I <em>“The Machine Beneath the Skin”</em><small>Explore the illustration · Select a project to turn to its feature</small></span>
+            <span>PLATE I <em>“The Machine Beneath the Skin”</em><small>Select a project to read its feature.</small></span>
             <span id="cover-probe-readout" class="cover-probe-readout">ILLUSTRATED INDEX / SELECT A PROJECT</span>
           </figcaption>
         </figure>
@@ -131,8 +138,8 @@
             <span class="stamp-eyebrow">A BROWSER SOUND SHEET</span>
             <div class="flexi-record" aria-hidden="true"><span>33⅓<br><b>Si.</b><br>SIDE A</span></div>
             <h3>A little<br>listening matter.</h3>
-            <p>Eleven synthesized tone sequences made for this issue. These are editorial sound sketches, not recordings of the projects.</p>
-            <button id="btn-cover-audition" class="stamp-action-btn">▶ Audition Disc Side A</button>
+            <p>Eleven original sound sketches, synthesized for the issue.</p>
+            <button id="btn-cover-audition" class="stamp-action-btn">▶ Play a sound sketch</button>
           </div>
 
           <div class="department-highlights-box">
@@ -170,10 +177,10 @@
           <div class="section-rubric">FROM THE EDITOR’S DESK</div>
           <h2 class="editor-headline">Show the work.<br>Credit the foundations.</h2>
           <p class="editor-dropcap-para">
-            Software is easier to understand when you can see the interface, follow a source reference, and tell what a project adds to the tools it builds on. That is the idea behind <em>SLOP ILLUSTRATED</em>: a small field journal with room for both a useful explanation and a good drawing.
+            Eleven projects from <strong>SLOPTIMUS PRIME</strong>, illustrated and explained. See what each one does, what it adds, and where the work comes from.
           </p>
           <p class="editor-body-para">
-            This issue visits eleven repositories from <strong>SLOPTIMUS PRIME</strong>. Each feature links to the sources used for its description and distinguishes project additions from upstream foundations. Screenshots are captioned as captures or test fixtures. The drawn plates and interactive studies are editorial illustrations, not product interfaces or performance measurements.
+            Follow the source links or open <em>Under the hood</em> for the engineering. Artwork is conceptual; screenshots and test fixtures are labelled.
           </p>
           <div class="editor-sig-row">
             <span class="editor-sig">SLOPTIMUS PRIME</span>
@@ -234,7 +241,7 @@
           <p class="section-rubric">AFTER THE LAST PAGE / INTO THE REPOSITORY</p>
           <h2 id="source-room-title">The issue ends.<br>The work <em>goes on.</em></h2>
         </div>
-        <p class="source-room-intro">The drawings are an invitation. The source is where it gets interesting. Open a project, follow its decisions, or build a reading list to take with you.</p>
+        <p class="source-room-intro">Open a repository. Save your next read. Take the list with you.</p>
       </header>
 
       <div class="source-room-workbench">
@@ -250,7 +257,7 @@
             <button id="source-save-all" type="button">Save all eleven</button>
             <button id="source-clear" type="button" disabled>Clear list</button>
           </div>
-          <button id="source-copy" type="button" class="source-copy" disabled><span>Take the list with you</span><span>COPY MARKDOWN ↗</span></button>
+          <button id="source-copy" type="button" class="source-copy" disabled><span>Copy reading list</span><span>MARKDOWN ↗</span></button>
           <p id="source-action-status" class="source-action-status" role="status" aria-live="polite"></p>
           <div id="source-export-fallback" class="source-export-fallback" hidden>
             <label for="source-export-text">YOUR MARKDOWN READING LIST</label>
@@ -258,26 +265,43 @@
           </div>
 
           <form id="source-note-form" class="source-note-form">
-            <label for="source-note">Leave yourself a lead.</label>
-            <p>A question to follow. A detail worth keeping.</p>
+            <label for="source-note">A note for later.</label>
             <div class="source-note-input">
               <input id="source-note" type="text" maxlength="160" placeholder="What do you want to explore next?" required />
               <button type="submit" aria-label="Save reading note">↵</button>
             </div>
           </form>
           <ul id="source-notes" class="source-notes" aria-label="Saved reading notes"></ul>
-          <p class="source-storage-note">Your list and notes are kept in this browser and sent to the site’s shared press-state endpoint.</p>
+          <p class="source-storage-note">Saved in this browser; also sent to the shared press-state API.</p>
         </aside>
       </div>
       <div class="press-colophon">
         <span class="colophon-mark si-monogram" aria-hidden="true">Si<span>.</span></span>
-        <div><h3>Slop, Illustrated.</h3><p>Set in Fraunces &amp; Newsreader, with Space Grotesk and IBM Plex Mono. Artwork and copy developed with AI assistance; feature descriptions link to the repository sources reviewed for this issue.</p></div>
+        <div><h3>Slop, Illustrated.</h3><p>Made with AI assistance. Grounded in the source. Set in Fraunces, Newsreader, Space Grotesk and IBM Plex Mono.</p></div>
         <p class="colophon-credit">SLOP ILLUSTRATED / SLOPTIMUS PRIME<br>A digital field journal.<br><a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast ↗</a></p>
       </div>
       <footer class="spread-folio-footer"><span class="folio-page" data-issue-number="reader-service-spread">14</span><span class="folio-imprint"><b>Si.</b> <i>Slop Illustrated</i> / End of issue</span><a class="folio-next" href="#issue-cover">BACK TO THE COVER ↗</a></footer>
     </section>
 
   </main>
+
+  <dialog id="project-finder" class="reader-dialog" aria-labelledby="finder-title">
+    <div class="reader-dialog-heading"><h2 id="finder-title">Find a project</h2><button type="button" data-close-dialog aria-label="Close project finder">✕</button></div>
+    <label class="sr-only" for="project-query">Search projects, topics or tools</label>
+    <input id="project-query" type="search" placeholder="Name, topic or tool…" autocomplete="off" aria-controls="project-results" />
+    <div class="finder-controls"><button id="finder-saved" type="button" aria-pressed="false">Saved only</button><span id="finder-result-count" role="status"></span></div>
+    <ul id="project-results" class="project-results"></ul>
+    <p id="finder-empty" hidden>No matches. Try another term or turn off “Saved only”.</p>
+    <div class="finder-footer"><a href="#toc-spread">Contents ↗</a><a href="#reader-service-spread">Reading list ↗</a><span>Esc to close</span></div>
+  </dialog>
+
+  <dialog id="image-viewer" class="image-viewer reader-dialog" aria-labelledby="image-viewer-title">
+    <div class="reader-dialog-heading"><h2 id="image-viewer-title">Image</h2><button type="button" data-close-dialog aria-label="Close image viewer">✕</button></div>
+    <img id="image-viewer-image" alt="" />
+    <p id="image-viewer-caption"></p>
+    <a id="image-viewer-original" target="_blank" rel="noopener">Open original ↗</a>
+  </dialog>
+  <div class="reader-feedback" id="reader-feedback" hidden><span role="status" id="reader-feedback-text"></span><a href="#reader-service-spread">View list ↗</a><button type="button" aria-label="Dismiss notification">✕</button></div>
 
   <script type="module" src="./js/app.js"></script>
 </body>

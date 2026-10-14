@@ -57,7 +57,7 @@ export function initSourceRoom(host, projects, sdk, onAction = () => {}) {
     count.innerHTML = `${String(selected.length).padStart(2, '0')}<span> / ${projects.length}</span>`;
     queue.innerHTML = selected.length
       ? `<ol>${selected.map((project) => `<li><span>${formatFolio(getIssueEntry(projects, project.id))}</span><a href="${project.repoUrl}" target="_blank" rel="noopener">${escapeHtml(shortTitle(project))} ↗</a></li>`).join('')}</ol>`
-      : '<p class="source-empty"><strong>Follow your curiosity.</strong>Save a project from the shelf or from any feature. Your next reading session starts here.</p>';
+      : '<p class="source-empty"><strong>What’s next?</strong>Save a project to start your reading list.</p>';
     copyButton.disabled = clearButton.disabled = selected.length === 0;
     host.querySelector('#source-save-all').disabled = selected.length === projects.length;
     notes.innerHTML = sdk.getState().readerNotes.slice(0, 4).map((note) => `<li>${escapeHtml(note.text)}</li>`).join('');

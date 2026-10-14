@@ -7,6 +7,7 @@ import { MAGAZINE_ISSUE_META, USSY_PROJECTS, getProjectById } from './projects.j
 import { initArticleStudy } from './article-studies.js';
 import { initCoverPlate } from './cover-plate.js';
 import { initSourceRoom } from './source-room.js';
+import { initReaderUI } from './reader-ui.js';
 import { mountPlate, toRoman } from './plates/index.js';
 import { FlexiDiscSynth } from './flexidisc-audio.js';
 import { PressSDK } from './press-sdk.js';
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       tab.dataset.spreadId = proj.id;
       tab.textContent = formatFolio(entry);
       tab.title = `${proj.title} (Folio ${formatFolio(entry)})`;
+      tab.setAttribute('aria-label', `${proj.title.split(' // ')[0]}, folio ${formatFolio(entry)}`);
       folioPageTabs.appendChild(tab);
 
       // Table of Contents Entry
@@ -115,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
       section.dataset.sectionLabel = `FOLIO ${formatFolio(entry)} / ${proj.title.split(' // ')[0]}`;
       section.style.setProperty('--article-spot', proj.spotInkHex);
       const nextProject = USSY_PROJECTS[proj.index];
+      const previousProject = USSY_PROJECTS[proj.index - 2];
       const codeStart = Number(proj.codeSource?.url.match(/#L(\d+)/)?.[1] || 1);
 
       section.innerHTML = `
@@ -138,8 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2 class="article-main-headline"><span class="article-project-name">${proj.title}</span>${proj.headline}</h2>
             <p class="article-standfirst-deck">${proj.deck}</p>
             <div class="article-byline-strip">
-              <span>${proj.byline}</span>
-              <span class="article-byline-edition">THE SOFTWARE ISSUE · ${String(proj.index).padStart(2, '0')} / ${USSY_PROJECTS.length}</span>
+              <span>By SLOPTIMUS PRIME</span>
+              <a href="#sources-${proj.id}" class="article-reference-link">Sources ↓</a>
             </div>
           </div>
 
@@ -163,20 +166,20 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="spec-card-actions">
               <a href="${proj.repoUrl}" target="_blank" rel="noopener noreferrer" class="repo-dispatch-link">
-                <span>SOURCE REPOSITORY (${proj.id})</span>
+                <span>Open repository</span>
                 <span aria-hidden="true">↗</span>
               </a>
               ${
                 proj.liveUrl
                   ? `<a href="${proj.liveUrl}" target="_blank" rel="noopener noreferrer" class="live-arena-link">
-                      <span>LIVE ARENA (arena.ussyco.de)</span>
+                      <span>Play at arena.ussyco.de</span>
                       <span aria-hidden="true">⚡</span>
                     </a>`
                   : ''
               }
               <div class="article-tool-row">
                 <button type="button" class="flexi-track-btn" data-project-id="${proj.id}">
-                  ◎ Audition Tone
+                  ◎ Play sound
                 </button>
                 <button
                   type="button"
@@ -197,19 +200,12 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="article-prose-column">
             <p class="article-lead-paragraph">${proj.editorialLead}</p>
 
-            <p class="article-body-para">${proj.bodyCopy}</p>
-
             <aside class="editorial-pullquote" aria-label="Editorial takeaway">
-              <span class="takeaway-label">THE EDITORIAL TAKEAWAY</span>
+              <span class="takeaway-label">THE TAKE</span>
               ${proj.pullQuote}
             </aside>
 
-            <h3 class="arch-section-heading"><span>01</span> Architecture &amp; engineering</h3>
-            <ul class="arch-bullet-list">
-              ${proj.architecture.map((item) => `<li>${item}</li>`).join('')}
-            </ul>
-
-            <h3 class="arch-section-heading"><span>02</span> What the repository contains</h3>
+            <h3 class="arch-section-heading">Inside the project</h3>
             <div class="capabilities-tag-grid">
               ${proj.verifiedCapabilities.map((c) => `<div class="capability-box">${c}</div>`).join('')}
             </div>
@@ -218,16 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
               ${proj.techStack.map((t) => `<span class="tech-badge">${t}</span>`).join('')}
             </div>
 
-            <aside class="article-field-notes" aria-label="Field notes and marginalia">
-              <h3 class="field-notes-heading">The notebook <span>FIELD NOTES &amp; MARGINALIA</span></h3>
-              <ul>
-                ${(proj.fieldNotes || []).map((n) => `<li>${n}</li>`).join('')}
-              </ul>
-            </aside>
           </div>
 
           <!-- Illustrated still life + screenshot or SVG study + source listing -->
-          <div class="article-lab-column">
+          <div class="article-lab-column article-media">
+            <div class="media-tabs" role="tablist" aria-label="${escapeHtml(proj.title)} images">
+              <button type="button" role="tab" id="tab-art-${proj.id}" aria-controls="media-art-${proj.id}" aria-selected="true">Artwork</button>
+              <button type="button" role="tab" id="tab-project-${proj.id}" aria-controls="media-project-${proj.id}" aria-selected="false" tabindex="-1">${proj.screenshot ? 'Screenshot' : 'Interactive study'}</button>
+            </div>
+            <div class="media-panel" id="media-art-${proj.id}" role="tabpanel" aria-labelledby="tab-art-${proj.id}" tabindex="0">
             <figure class="editorial-plate" data-plate="${proj.id}">
               <div class="editorial-plate-art" aria-hidden="false">
                 <span class="editorial-plate-placeholder">PLATE ${toRoman(proj.index + 2)} · PLATE IN PRESS…</span>
@@ -237,15 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>FIG. ${proj.index}.1 · <span class="editorial-plate-medium">CONCEPTUAL ILLUSTRATION</span></span>
               </figcaption>
             </figure>
+            </div>
+            <div class="media-panel" id="media-project-${proj.id}" role="tabpanel" aria-labelledby="tab-project-${proj.id}" tabindex="0" hidden>
 
             ${
               proj.screenshot
                 ? `<figure class="article-screenshot-plate">
               <div class="lab-plate-header">
                 <span class="lab-plate-badge">ON SCREEN · FIG. ${proj.index}.2</span>
-                <span>FROM THE PROJECT ARCHIVE</span>
+                <span>PROJECT CAPTURE</span>
               </div>
-              <a class="screenshot-image-link" href="${proj.screenshot}" target="_blank" rel="noopener" aria-label="Open full-size ${proj.title} screenshot">
+              <a class="screenshot-image-link" href="${proj.screenshot}" target="_blank" rel="noopener" aria-haspopup="dialog" aria-label="Enlarge ${proj.title} screenshot">
               <img
                 class="article-screenshot-img"
                 src="${proj.screenshot}"
@@ -271,14 +268,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 aria-label="Interactive SVG study for ${escapeHtml(proj.title)}"
               ></div>
               <div class="lab-controls-strip">
-                <span>ILLUSTRATIVE STATES · NOT A LIVE PRODUCT CONNECTION</span>
+                <span>CONCEPTUAL · NOT LIVE DATA</span>
                 <button type="button" id="lab-btn-${proj.id}" class="lab-action-btn">
-                  Explore the Study ↻
+                  Next state ↻
                 </button>
               </div>
             </div>`
             }
 
+            </div>
+          </div>
+        </div>
+
+        <details class="article-deep-dive">
+          <summary><strong>Under the hood</strong><span>Engineering, notes &amp; source code</span></summary>
+          <div class="article-technical-grid">
+            <div class="article-technical-prose">
+              <p class="article-body-para">${proj.bodyCopy}</p>
+              <h3 class="arch-section-heading">Architecture</h3>
+              <ul class="arch-bullet-list">${proj.architecture.map((item) => `<li>${item}</li>`).join('')}</ul>
+              <aside class="article-field-notes" aria-label="Project notes">
+                <h3 class="field-notes-heading">The notebook</h3>
+                <ul>${(proj.fieldNotes || []).map((note) => `<li>${note}</li>`).join('')}</ul>
+              </aside>
+            </div>
             <div class="tractor-listing-box">
               <div class="tractor-listing-header">
                 <span>${proj.codeListingTitle}</span>
@@ -289,10 +302,10 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="reading-guide"><h4>READING NOTES</h4><ul>${proj.terminalStream.map((line) => `<li>${escapeHtml(line.replace(/^READING GUIDE\s*(?:\/\/|:)?\s*/, ''))}</li>`).join('')}</ul></div>
             </div>
           </div>
-        </div>
-        ${proj.sources?.length ? `<aside class="article-sources" aria-label="Repository references for ${proj.title}">
+        </details>
+        ${proj.sources?.length ? `<aside class="article-sources" id="sources-${proj.id}" aria-label="Repository references for ${proj.title}">
           <div class="article-sources-header">
-            <h3>At the source <span>REPOSITORY READING</span></h3>
+            <h3>Sources</h3>
             <p>Reviewed ${escapeHtml(proj.researchedAt)} · revision <code>${escapeHtml(proj.sourceRevision.slice(0, 8))}</code></p>
           </div>
           <ul>${proj.sources.map((source) => `<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener">${escapeHtml(source.label)} ↗</a></li>`).join('')}</ul>
@@ -300,7 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <footer class="spread-folio-footer">
           <span class="folio-page">${formatFolio(entry)}</span>
           <span class="folio-imprint"><b>Si.</b> <i>Slop Illustrated</i> / October 2026</span>
-          <a class="folio-next" href="${nextProject ? '#spread-' + nextProject.id : '#reader-service-spread'}">${nextProject ? 'NEXT / ' + nextProject.title : 'CONTINUE / The Source Room'} <span aria-hidden="true">↗</span></a>
+          <nav class="article-page-links" aria-label="Feature navigation">
+            <a href="${previousProject ? '#spread-' + previousProject.id : '#toc-spread'}" aria-label="Previous: ${escapeHtml(previousProject?.title || 'Contents')}">← Previous</a>
+            <a class="folio-next" href="${nextProject ? '#spread-' + nextProject.id : '#reader-service-spread'}">${nextProject ? 'Next / ' + nextProject.title.split(' // ')[0] : 'Source Room'} ↗</a>
+          </nav>
         </footer>
       `;
 
@@ -394,7 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateFlexiHeaderButton() {
     flexiToggleBtn.setAttribute('aria-pressed', String(flexiSynth.isPlaying));
-    flexiBtnLabel.textContent = flexiSynth.isPlaying ? '33⅓ Spinning' : '33⅓ Flexi-Disc';
+    flexiBtnLabel.textContent = flexiSynth.isPlaying ? 'Stop sound' : 'Play sound';
   }
 
   flexiToggleBtn.addEventListener('click', () => {
@@ -421,7 +437,15 @@ document.addEventListener('DOMContentLoaded', () => {
              document.querySelectorAll('.folio-tab').forEach((tab) => {
                const active = tab.getAttribute('href') === `#${entry.target.id}`;
                tab.classList.toggle('is-active', active);
-               if (active) tab.setAttribute('aria-current', 'location');
+                if (active) {
+                  tab.setAttribute('aria-current', 'location');
+                  const strip = tab.closest('.running-spread-strip');
+                  const bounds = tab.getBoundingClientRect();
+                  const stripBounds = strip.getBoundingClientRect();
+                  if (bounds.left < stripBounds.left || bounds.right > stripBounds.right) {
+                    strip.scrollLeft += bounds.left - stripBounds.left - (strip.clientWidth - bounds.width) / 2;
+                  }
+                }
                else tab.removeAttribute('aria-current');
             });
           }
@@ -436,6 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderNavigationAndToc();
   renderAllArticleSpreads();
   initSourceRoom(document.getElementById('reader-service-spread'), USSY_PROJECTS, sdk, () => flexiSynth.playRelayClick(760));
+  initReaderUI(USSY_PROJECTS, sdk);
   sdk.subscribe(syncProjectSaveButtons);
   syncProjectSaveButtons();
   setupSpreadScrollObserver();

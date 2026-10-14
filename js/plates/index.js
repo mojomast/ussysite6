@@ -47,7 +47,20 @@ export async function mountPlate(figure, name, arg) {
       image.alt = result.image.alt;
       image.loading = 'lazy';
       image.decoding = 'async';
-      art.replaceChildren(image);
+      const link = document.createElement('a');
+      link.className = 'render-image-link';
+      link.href = result.image.src;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.setAttribute('aria-haspopup', 'dialog');
+      link.setAttribute('aria-label', `Enlarge ${result.title}`);
+      link.appendChild(image);
+      const hint = document.createElement('span');
+      hint.className = 'image-zoom-hint';
+      hint.textContent = 'Enlarge ↗';
+      hint.setAttribute('aria-hidden', 'true');
+      link.appendChild(hint);
+      art.replaceChildren(link);
       art.classList.add('is-rendered');
       art.style.setProperty('--art-backdrop', result.image.background || '#151b1a');
     } else {

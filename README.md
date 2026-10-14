@@ -35,6 +35,10 @@ When updating copy, review implementation as well as documentation, pin the revi
 
 ## Visual and interaction system
 
+- **Find** (or `/`) searches project names, topics and tools; a Saved only filter narrows the results to the reading list. Arrow keys navigate results, Enter opens a feature, and Escape closes the dialog.
+- Each feature has Artwork and Screenshot / Interactive study tabs, a collapsible **Under the hood** section for engineering notes and source code, and previous/next navigation. Source links stay directly accessible. Printing includes both media panels and the engineering detail.
+- Screenshots and Blender editorial images open in a keyboard-accessible image viewer, with an original-file link. Saving a feature displays a confirmation with a reading-list shortcut.
+- The header groups paper, loupe and sound controls under **Options**. Its folio strip follows the current feature, and anchor offsets adapt to the header height on smaller screens.
 - Cover project links support pointer interaction and arrows, Home/End, Enter/Space.
 - Editorial plate modules live in `js/plates/` and return inline SVG artwork or a local image with its title, medium, intrinsic dimensions, and alt text. Blender still lifes retain their original 4:3 framing on desktop and mobile.
 - All twelve editorial frames keep their natural 4:3 proportions instead of stretching to fill a taller text column. Source references form a compact full-width band below each feature. Wider “At a glance” cards include short source-supported context notes. Unloaded artwork uses the current paper mode’s neutral background.

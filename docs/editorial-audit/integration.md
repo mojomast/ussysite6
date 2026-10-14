@@ -50,3 +50,27 @@ reload persistence, keyboard-focus retention, select-all and clear, real Markdow
 clipboard export, the denied-clipboard fallback, escaped reading notes, and bounds.
 The footer reads **Slop, Illustrated.** Syntax, catalog mirrors, and all four
 catalog/server tests pass.
+
+## Reader UX and shorter copy — 2026-10-14
+
+- Reduced the combined feature headlines, decks, introductions, takeaways and
+  capability copy from 2,240 to 1,600 words (29%). Kept upstream credit,
+  experimental/scoped qualifications, and the screenshot fixture attribution.
+- Moved extended prose, architecture, notebook entries and exact source excerpts
+  into **Under the hood** disclosures. Source-reference bands stay visible.
+- Added a searchable project finder with a saved-only filter, `/` shortcut,
+  result keyboard navigation, empty state, and native-dialog focus handling.
+- Added accessible media tabs, an image viewer for all six screenshots and four
+  editorial renders, save feedback, previous/next feature links, a skip link,
+  and a compact Options menu. Header-aware anchors and a following folio strip
+  improve navigation on small screens.
+- Verified at 1440, 1024, 768, 390 and 320px: search and keyboard controls, all
+  eleven media-tab pairs and disclosures, all 21 study states, ten image-viewer
+  entries, paper options, save feedback, reload persistence, unique IDs, SVG
+  references, anchors, and no horizontal overflow or browser console errors.
+  Print-event checks confirmed disclosures expand and restore their prior state.
+- Rechecked Source Room save synchronization, focus retention, select-all/clear,
+  Markdown clipboard and fallback, escaped notes, and bounds at all five widths.
+  Syntax (34 modules), catalog mirror checks and all four catalog/server tests
+  pass. Browser verification scripts and captures are in
+  `/tmp/opencode/slop-review/`.

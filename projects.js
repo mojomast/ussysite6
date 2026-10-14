@@ -45,7 +45,7 @@ export const USSY_PROJECTS = [
     title: 'OrbitDesktop',
     kicker: 'Agent-Customizable Spatial Workspace',
     headline: 'A Browser Desktop the Agent Can Reshape',
-    deck: 'Orbit is a local-first, single-owner workspace where conversations, persistent terminals, browser apps and optional Linux applications share one screen—arranged as movable windows, an opt-in tiled docking layout, or a Three.js + CSS3D spatial scene.',
+    deck: 'A local browser workspace for conversations, terminals and apps—with movable windows, optional tiling and a spatial view.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Agent Workspace / Spatial UI',
     glanceNote: 'A bound Hermes agent can inspect the workspace and, when permitted, rearrange its panes. Layout revisions, checkpoints and command receipts live in a local SQLite store; the controller is read-only by default.',
@@ -57,7 +57,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#d9381e', // Vermilion Red
     secondaryInkHex: '#0047ab', // Cobalt Blue
-    pullQuote: 'Orbit’s real proposition is not a prettier window manager but a desktop the agent can rearrange with you, so the interface keeps changing as the work does.',
+    pullQuote: 'A workspace should adapt to the work—and to the agent helping you do it.',
     bodyCopy:
       'Orbit treats the workspace as a small web application rather than a fixed dashboard. Pane views are keyed by stable pane IDs, so an editor, a terminal and a conversation can move between the default movable-windows desktop, an opt-in tiled Docking layout, or the Three.js + CSS3D spatial view without discarding the embedded document where the browser supports it. A local Node service persists layout, revisions, checkpoints and command receipts to a SQLite workspace store, and a scoped `orbit_workspace` controller lets a bound Hermes agent inspect and rearrange panes—read-only unless mutations are explicitly allowed.',
     fieldNotes: ['Local-first, single-owner, agent-operated workspace.', 'Default movable windows; opt-in Docking and Spatial views.', 'Spatial placement uses a validated grid, row or curve tiling.', 'Layout and checkpoints commit to a local SQLite workspace store.'],
@@ -121,8 +121,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 102,
     title: 'VelvetRP',
     kicker: 'Model Proposes, the Server Decides',
-    headline: 'A Local-First Campaign RPG Where the Server Owns What Became True',
-    deck: 'One premise becomes a connected world, up to twelve characters share attributed, streamed rooms, and every committed action leaves a durable receipt in local SQLite—while free-form narration stays free of mechanical side effects.',
+    headline: 'The Model Imagines. The Server Decides.',
+    deck: 'A local-first campaign RPG with shared rooms, source-attributed recall and a receipt for every committed action.',
     byline: 'By SLOPTIMUS PRIME · Folio II',
     category: 'Narrative Systems / Collaborative Fiction',
     glanceNote: 'Campaign recall keeps recorded events, declarations and prior exchanges attributed to their sources. The server validates mechanical actions before narration can describe them as outcomes.',
@@ -134,7 +134,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#9b1b30', // Crimson Bordeaux
     secondaryInkHex: '#b45309', // Warm Ochre
-    pullQuote: 'A trustworthy table needs no referee: let the model propose, let the server decide, and the author is free to spend attention on voice, tension, and consequence.',
+    pullQuote: 'Let the story improvise. Make the mechanics leave a receipt.',
     bodyCopy:
       'VelvetRP is a set of strict TypeScript and Zod contracts spanning a React client, a Fastify API, and a SQLite store in WAL mode. The server derives legal actions and exact candidates, validates the provider’s selection, and commits commands, revisions, and events atomically—so narration can describe a mechanical change only when a receipt establishes it, while routine conversation stays receipt-free. Campaign recall is deliberately bounded: it draws on declarations, recorded outcomes, and prior exchanges while preserving their source and authority, and it tracks who witnessed an event versus who merely heard about it. The table can improvise freely without letting prose overwrite state.',
     fieldNotes: ['Model proposes; the server decides what became true.', 'Automated dice use server rolls with explicit full rerolls.', 'Campaigns live in local SQLite (WAL); remote providers still receive assembled prompts.', 'A trusted-local app: loopback-bound local-owner with no remote-auth boundary.'],
@@ -215,8 +215,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 103,
     title: 'JamMate',
     kicker: 'Adaptive Drums on a Lock-Free Musical Clock',
-    headline: 'A JUCE Guitar Rig Whose Experimental Drummer Listens for the Bar Line',
-    deck: 'Inside an offline-first JUCE 8 practice rig: Neural Amp Modeler captures, convolution cabinet impulse responses, and a bounded lock-free analysis path feeding an experimental Musical Clock that joins prepared 4/4 drums on a bar boundary.',
+    headline: 'A Guitar Rig That Listens for the Downbeat',
+    deck: 'An offline-first JUCE practice rig with an experimental Musical Clock that brings prepared drums in on the bar line.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Audio Engineering / Real-Time DSP',
     glanceNote: 'Guitar Companion supplies the original amp and cabinet chain. JamMate adds an experimental Musical Clock, tempo and bar telemetry, and prepared drum playback that joins on a bar boundary.',
@@ -228,12 +228,12 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#0f766e', // Oscilloscope Teal
     secondaryInkHex: '#d97706', // Amber Phosphor
-    pullQuote: 'Real-time audio is a promise about what never happens inside the callback — no allocation, no lock, no wait — and the honest version of that promise is a bounded, measured claim, not a slogan.',
+    pullQuote: 'Real-time discipline is measured in the callback, not promised in the headline.',
     bodyCopy:
       'JamMate is an open-source, offline-first guitar practice and jamming app built on Raphael Fukuda’s Guitar Companion. It keeps the inherited rig — Neural Amp Modeler captures, convolution cabinet impulse responses, up to three parallel amp/cab lanes, reorderable effects, a tuner, a looper, hosted VST3 slots, a sampled drum kit and song/scene tools — and adds a separately testable rhythm-analysis layer. Guitar input feeds a bounded single-producer/single-consumer ring buffer; an injected tracker (experimental BTrack by default, aubio optional) publishes observations to a deterministic Musical Clock, and the experimental live Jam joins prepared 4/4 drums on a bar boundary. No release binary ships yet: Windows and Linux builds are verified, macOS is not, and tracker selection remains open.',
     fieldNotes: ['Product code is C++17; only the bundled Neural Amp Modeler Core target compiles as C++20.', 'No measured physical round-trip latency is published — SPEC.md §18.3 sets a ≈12 ms target on a reference ASIO 48 kHz / 128-frame setup.', 'The Jam screen polls telemetry at 30 Hz while visible (not 120 Hz); the fork adds no AVX2/NEON SIMD cascade.'],
     editorialLead:
-      'Most practice tools hand you a backing track that ignores what you play. JamMate takes the harder route: it starts from a mature JUCE guitar rig, then adds a portable musical-intelligence core — a deterministic Musical Clock, an injected rhythm tracker and a bounded, lock-free command/telemetry path — that tries to hear a pulse and answer it. The real-time discipline is written down rather than assumed: the project’s own rulebook forbids allocation, blocking, locks, network and file I/O inside processBlock, and the fork has begun measuring how close the real callback comes to that rule.',
+      'JamMate builds on Guitar Companion’s amp, cabinet and effects chain. Its experimental drummer follows guitar analysis through a Musical Clock, then joins a prepared 4/4 pattern at a bar boundary. Bounded queues separate analysis from the audio callback; scoped processor probes track allocations and locks without claiming universal real-time guarantees.',
     architecture: [
       'Musical-intelligence core (src/jam, no JUCE dependency) built around a deterministic Musical Clock, an injected rhythm tracker and a next-bar join policy.',
       'Bounded single-producer/single-consumer AnalysisAudioRing for the audio-to-analysis handoff: fixed capacity, cache-line-aligned atomics, drop-incoming-and-count overflow, and no allocation or blocking in push().',
@@ -241,10 +241,10 @@ export const USSY_PROJECTS = [
       'Inherited JUCE 8 rig: Neural Amp Modeler captures, juce::dsp::Convolution cabinet IRs, three parallel amp/cab lanes, reorderable effects, tuner, looper and hosted VST3 slots.'
     ],
     verifiedCapabilities: [
-      'Neural Amp Modeler capture playback via the bundled NeuralAmpModelerCore v0.5.4 (MIT), with convolution cabinet impulse responses',
-      'Experimental adaptive drums: guitar analysis drives a Musical Clock that joins six prepared 4/4 styles on a bar boundary',
-      'Bounded lock-free analysis and telemetry plumbing; 26 real-processor probe cases reported zero detected heap alloc/free or lock/wait operations after the scoped NAM LSTM repair (a bounded matrix, not every model, effect, host or device)',
-      'Inherited practice rig: reorderable effects, tuner, looper, hosted VST3 slots, sampled drum kit, song sections and guitar/drum/mix stem recording'
+      'Neural Amp Modeler playback and cabinet impulse responses',
+      'Six prepared 4/4 drum styles; experimental bar-aligned entry',
+      'Bounded analysis queues and scoped audio-callback probes',
+      'Inherited effects, tuner, looper, VST3 hosting and stem recording'
     ],
     techStack: ['C++17 (product) / C++20 (NAM Core)', 'JUCE 8.0.15', 'Neural Amp Modeler Core v0.5.4 (MIT)', 'Lock-free SPSC (jam-core)', 'AGPLv3 · VST3 / Standalone'],
     metrics: [
@@ -301,8 +301,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 104,
     title: 'CoCS // Colosseum of Competitive Slop',
     kicker: 'Local-First Browser Arena — Live at arena.ussyco.de',
-    headline: 'A 60 Hz Authoritative Arena with Client Prediction & Delta Snapshots',
-    deck: 'A fixed 60 Hz authoritative simulation, a predicting client that reconciles every snapshot, and a delta-compressed JSON WebSocket wire — the entire arena runs in a browser tab or on your own LAN.',
+    headline: 'An Arena Built Around a 60 Hz Heartbeat',
+    deck: 'A browser shooter with server authority, client prediction and delta snapshots. Play online or host it on your LAN.',
     byline: 'By SLOPTIMUS PRIME (github.com/mojomast) · SLOP ILLUSTRATED (Si.)',
     category: 'Multiplayer Game Server / Netcode',
     glanceNote: 'Nine parody operators and seven harnesses populate the roster. The pure-JavaScript simulation is shared by the client, server and tests, while Combined Arms can field up to sixteen bots.',
@@ -310,12 +310,12 @@ export const USSY_PROJECTS = [
     liveUrl: 'https://arena.ussyco.de',
     spotInkHex: '#e11d48', // Signal Magenta-Red
     secondaryInkHex: '#1d4ed8', // Blueprint Cobalt
-    pullQuote: 'CoCS is an honest arena shooter: a 60 Hz fixed-step simulation, a predicting client and a delta-compressed JSON wire — no rewind buffer required.',
+    pullQuote: 'One simulation, a responsive client, and clear authority over the match.',
     bodyCopy:
       'CoCS manufactures the feel of a fair fight with a fixed 60 Hz authoritative tick. Your client runs a local shadow match so movement, aim and fire respond instantly, then replays every still-unacknowledged input once the next snapshot lands — reconciliation rather than a historical rewind buffer. Snapshots quantize actor transforms to the millimetre at 30 Hz and travel as plain JSON over a WebSocket, with a v2 delta codec and a full-snapshot fallback. Remote actors and projectiles render through interpolation at an adaptive delay of roughly 100 ms. Nine parody operators and seven harnesses populate the roster, and Combined Arms can field up to sixteen bots.',
     fieldNotes: ['Fixed 60 Hz authoritative tick (16.67 ms); snapshots broadcast at 30 Hz.', 'The client shadow predicts and reconciles — it does not rewind historical hitboxes.', 'Nine operators and seven harnesses; Combined Arms fields up to sixteen bots.'],
     editorialLead:
-      'Colosseum of Competitive Slop (CoCS) is a local-first Three.js arena shooter that also runs live at arena.ussyco.de. Its netcode is deliberately conventional: a fixed 60 Hz pure-JavaScript engine shared by the client, the server and the tests; per-peer sequenced inputs; 30 Hz quantized snapshots; a client prediction shadow that reconciles to every authoritative frame; and interpolation for remote actors, vehicles and projectiles. Reconnect keeps a 20-second held seat with bot handoff and host migration. No accounts, no cloud, no inference service — every asset is procedural.',
+      'Colosseum of Competitive Slop shares one JavaScript simulation between client, server and tests. The client predicts your movement, then reconciles with the server’s 30 Hz snapshots. Remote actors are interpolated. Procedural assets and a self-hosted LAN mode keep the arena independent of accounts or an inference service.',
     architecture: [
       'Fixed-step 60 Hz authoritative simulation (server/game-server.mjs, tickDt = 1/60) with per-peer sequenced inputs and 30 Hz quantized snapshots.',
       'Client prediction: a local shadow Match runs the player’s inputs immediately, then reconciles and replays pending inputs after each authoritative snapshot.',
@@ -366,8 +366,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 105,
     title: 'CoCS-Godot',
     kicker: 'A Native Godot 4 Client on the Same Authoritative Server',
-    headline: 'Porting the Colosseum to Godot 4.5 on the GL Compatibility Renderer',
-    deck: 'CoCS-Godot keeps the original Node.js simulation authoritative and rebuilds the arena natively in Godot: exact spring-driven operator motion, shader and material labs, and a particle lab that scales from 8K to one million.',
+    headline: 'The Same Arena. A Native Godot Client.',
+    deck: 'Godot 4.5 handles the controls, visuals and sound. The original Node.js simulation keeps authority over the match.',
     byline: 'By SLOPTIMUS PRIME (github.com/mojomast) · SLOP ILLUSTRATED (Si.)',
     category: 'Godot Port / Real-Time Rendering',
     glanceNote: 'A playable native-client prototype with dedicated graphics labs. Godot follows authoritative state from the original Node.js server; the GL Compatibility renderer handles the presentation.',
@@ -379,7 +379,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#2563eb', // Process Ultramarine
     secondaryInkHex: '#7c3aed', // Violet Halftone
-    pullQuote: 'CoCS-Godot keeps the protocol and the math honest: the Node server still owns the match, and the native client is presentation built on exact, closed-form springs.',
+    pullQuote: 'Keep match authority in the server; let the native client own the presentation.',
     bodyCopy:
       'CoCS-Godot is a native Godot 4.5 port of COCS: DESTINATIONS, and it keeps the original Node.js simulation authoritative over movement, weapons, damage and objectives. The client opens a WebSocketPeer and speaks the same JSON wire protocol as the browser build, so the server does not care which front end connects. Presentation is rebuilt from scratch: an exact critically damped spring drives recoil recovery and sway, custom .gdshader materials light the shields and weapon effects, and a standalone particle lab exposes selectable 8K–1M counts across GPU and analytic backends. The four-chapter Quiet Relay campaign runs against a bundled local Node server. It is a playable prototype, still in active development.',
     fieldNotes: ['Status: actively developed, playable prototype.', 'No Vulkan Forward+ or SDFGI — the project targets the GL Compatibility renderer.', 'The Node.js simulation stays authoritative; Godot is the client.'],
@@ -438,8 +438,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 106,
     title: 'RouteTok',
     kicker: 'Zero Runtime Dependencies. No Spliced Streams.',
-    headline: 'A Local Gateway with a Three-State Circuit Breaker',
-    deck: 'When an upstream provider rate-limits or stalls, RouteTok opens a closed / open / half-open circuit on that route and retries another before output commits—it never splices two models into one stream.',
+    headline: 'A Gateway That Knows When to Switch',
+    deck: 'Route between model providers, watch their health and retry failures before output starts. No mid-stream model splicing.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.) · github.com/mojomast',
     category: 'Local LLM Routing / Observability',
     glanceNote: 'A local gateway with zero runtime npm dependencies. Configuration, route health and Prometheus metrics make provider selection inspectable; fallback only happens before an answer starts streaming.',
@@ -451,7 +451,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#047857', // Emerald Relay Ink
     secondaryInkHex: '#0369a1', // Technical Cyan
-    pullQuote: 'RouteTok’s discipline is refusal: it re-routes before output begins, then tells the truth with a stream_interrupted frame rather than splice two models into one voice.',
+    pullQuote: 'Fail over before the first word. Never disguise a broken stream.',
     bodyCopy:
       'RouteTok is a local-first router that puts OpenAI- and Anthropic-compatible APIs in front of many providers. A `HealthRouter` keeps explicit provider order, virtual routes (`auto`, `best`, `free`) and custom cascades, then ranks candidates by success rate, consecutive failures, in-flight count and latency EWMA. A three-state circuit—closed, open, half-open—keeps a failing route out of the chain for a cooldown and admits a single probe on the way back. Fallback happens only before semantic or tool output commits; once a stream is committed the proxy emits a truthful `stream_interrupted` frame instead of switching models mid-sentence. The runtime core uses only Node built-ins, with TypeScript, tsx and @types/node as the sole devDependencies.',
     fieldNotes: ['Fallback is pre-output only; a committed stream ends with `stream_interrupted`, never a splice.', 'Circuit opens on consecutive failures or a ≥50% failure window; half-open admits one in-flight probe.', 'Zero runtime npm dependencies; devDependencies are TypeScript, tsx and @types/node.', 'Legacy `agentrouter_router_*` Prometheus families are retained alongside planned `routetok_*` names.'],
@@ -517,8 +517,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 107,
     title: 'RGBAgentFlightIndicator',
     kicker: 'One Lamp Per Agent Session. No Alt-Tab.',
-    headline: 'Turning an RGB Keyboard into an Agent Annunciator Panel',
-    deck: 'A local daemon maps each agent session to one key—green while it works, white when it lands, blinking red when a human is needed—so a dozen sessions are legible from across the room.',
+    headline: 'Your Keyboard, an Agent Status Board',
+    deck: 'One session per light: green for work, white for done, blinking red for attention. Read the room at a glance.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.) · github.com/mojomast',
     category: 'Hardware Telemetry / Ambient Interfaces',
     glanceNote: 'The twelve-lane default is configurable, and physical lamp indices depend on the device. The web UI includes a colour-blind-safe preset and colour-vision simulations.',
@@ -526,7 +526,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#d97706', // Caution Amber
     secondaryInkHex: '#0284c7', // Avionics Cyan
-    pullQuote: 'The panel refuses to pretend: a device that can show only one colour lights its most urgent lane rather than faking twelve lamps it does not have.',
+    pullQuote: 'Useful status should be visible before you open another dashboard.',
     bodyCopy:
       'RGBAgentFlightIndicator is a Python daemon that turns an RGB keyboard into an annunciator panel for AI agent sessions. Each session claims one lane, and every connected keyboard maps lanes onto its own lamps; agents report over a local HTTP API, so a plugin, a CI job or a shell script can light a key. Four states carry the meaning—green while working, white when done, blinking red when a human is needed, dark when idle. The project is unusually honest about hardware: the Sinowealth and EVision backends are verified on real boards, while the OpenRGB, sysfs and QMK/VIA backends are implemented to their documented protocols but have not yet been run against a physical board. The render loop repaints only the devices whose frame actually changed.',
     fieldNotes: ['Default 12 lanes (`--count`), configurable; each device maps lanes to its own lamp indices.', 'Verified on hardware: Sinowealth 258A:0049 and the EVision/SONiX Magic Refiner MK 17.', 'QMK is per-key on Vial firmware; stock QMK+VIA exposes one colour.', 'The web UI ships a colour-blind-safe preset and protanopia/deuteranopia/tritanopia simulation; the default palette is green/white/red.'],
@@ -600,8 +600,8 @@ export const USSY_PROJECTS = [
     readerServiceNo: 108,
     title: 'MothBake',
     kicker: 'Content-Addressed Baking With Zero Runtime Dependencies',
-    headline: 'A Local-First Asset Baker That Keeps Every Bake Reviewable',
-    deck: 'How an offline-first Node.js pipeline turns a manifest of local or Moth-backed jobs into SHA-256-identified candidates, reviewable bakes and transactional exports — with every decoder written in-repo and no runtime dependencies.',
+    headline: 'Every Bake Leaves a Trail',
+    deck: 'An offline-first asset pipeline with content identities, archived inputs and reviewable exports. No runtime npm dependencies.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Build Systems / Binary Serialization',
     glanceNote: 'Raw results are archived so built-in bakers can be rebuilt offline. Candidates stay reviewable before export, while live, billable calls are disabled by default.',
@@ -613,7 +613,7 @@ export const USSY_PROJECTS = [
     liveUrl: null,
     spotInkHex: '#ea580c', // Rust Orange
     secondaryInkHex: '#334155', // Graphite Ink
-    pullQuote: 'Determinism is not a vibe; it is a property you can test. MothBake’s bet is that a bake should be a content-addressed record you can diff, approve and rebuild offline — not an opaque blob you hope is reproducible.',
+    pullQuote: 'An asset is more useful when you can trace how it was made.',
     bodyCopy:
       'MothBake is a local-first asset variation workbench with zero runtime dependencies. A recipe names an engine, its inputs and parameters, and the bake that turns the result into a portable record; the tool then decodes the result itself (PNG, GIF, ZIP, Radiance HDR, WAV, Standard MIDI) and runs emitters that write what a project consumes — decoded files, sprite-sheet atlases, a JSON bundle, a generated ES module, a Godot export, or a custom emitter. Content identity is layered rather than overloaded: recipe, generation instance, raw artifact, local bake and export each carry their own SHA-256 fingerprint. Determinism is tested where it matters — the ESM emitter is compared byte-for-byte against a committed golden file, and the ZIP writer pins a fixed 1980 MS-DOS epoch so archives are byte-deterministic.',
     fieldNotes: ['Zero runtime dependencies: every decoder (PNG, GIF, ZIP, HDR, WAV, MIDI) lives in-repo and installs air-gapped.', 'Determinism is tested per emitter/decoder (byte-for-byte ESM golden; fixed-epoch ZIP), not asserted as a global bit-exact guarantee.', 'Offline rebuild: `mothbake repair` rebuilds built-in bakers from archived raw results; billable live calls are approval-gated and off by default.'],
@@ -626,10 +626,10 @@ export const USSY_PROJECTS = [
       'Approval-gated live execution: exact spending-plan fingerprints, a durable single-host run journal, and offline repair of built-in bakers from archived raw outputs.'
     ],
     verifiedCapabilities: [
-      'Zero-runtime-dependency Node.js (>=20) pipeline that runs fully offline against recorded fixtures',
-      'In-repo decoders for PNG, GIF, ZIP, Radiance HDR, WAV and Standard MIDI, with a byte-for-byte golden test for the ESM emitter',
-      'Layered SHA-256 content identities with content-pinned approvals and transactional, versioned export packs',
-      'Verified offline rebuild of every built-in baker from archived raw results (legacy archives are readable but labelled unverified)'
+      'Offline fixture runs on Node.js 20+, without runtime dependencies',
+      'In-repo PNG, GIF, ZIP, HDR, WAV and MIDI decoders',
+      'SHA-256 identities, pinned approvals and versioned export packs',
+      'Verified rebuilds from raw results; legacy archives marked unverified'
     ],
     techStack: ['Node.js (ESM, zero runtime deps)', 'Python (optional local backends)', 'In-repo binary decoders', 'SHA-256 content identities', 'MIT'],
     metrics: [
@@ -672,8 +672,8 @@ export function hashBytes(bytes) {
     readerServiceNo: 109,
     title: 'Warpi',
     kicker: 'A Local Pi Agent Backend Behind Warp’s Block UI',
-    headline: 'Bring Your Own Model to Warp’s Terminal — Without a Warp Account',
-    deck: 'An independent fork of Warp that keeps the native terminal, block UI, approval cards, and diffs, and replaces the cloud agent with a local Pi coding-agent helper pointed at any OpenAI-compatible endpoint you choose — no Warp account in the agent path.',
+    headline: 'Warp’s Terminal. Your Model.',
+    deck: 'An independent Warp fork with a local Pi-agent bridge and your chosen OpenAI-compatible endpoint. No Warp account in the agent path.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Systems Programming / AI Terminal',
     glanceNote: 'Warp supplies the terminal and block interface. This fork adds the Pi-agent bridge, configurable provider credentials, and replacement of the Warp account gate in the agent path.',
@@ -681,7 +681,7 @@ export function hashBytes(bytes) {
     liveUrl: null,
     spotInkHex: '#15803d', // Phosphor Green
     secondaryInkHex: '#1e293b', // Terminal Charcoal
-    pullQuote: 'Warpi is Warp’s terminal and block UI with the cloud agent swapped for a local Pi backend: you configure the endpoint and the key, and the shell never asks Warp for an account.',
+    pullQuote: 'Keep the terminal. Choose the model. Credit the foundations.',
     bodyCopy:
       'Warpi is not a new terminal. The terminal, block UI, approval card, diff review, and persistence are upstream Warp, left intact; the fork adds `crates/standalone_agent` and `standalone/pi-helper` to put a local model loop behind them. The private Node helper owns the conversation transcript and drives the pinned Pi coding-agent SDK, while the Rust bridge validates every frame and renders helper events as the same response events Warp’s servers would send — so Warp’s native approval, allowlist, redirection, and read-only checks still decide every side effect. A provider profile carries a base URL, model id, limits, and a credential reference; the key itself stays in the OS secret store, and inference goes only from your machine to your endpoint.',
     fieldNotes: [
@@ -690,7 +690,7 @@ export function hashBytes(bytes) {
       'Upstream-unverified areas (macOS packaging, hosted providers beyond DeepSeek, provider retry) are not claimed here.'
     ],
     editorialLead:
-      'Warp’s block terminal is loved for isolating each command’s stdout, stderr, duration, and exit code into foldable cards — but the agent that lives inside it runs through Warp’s servers behind a Warp account. Warpi is an independent fork that keeps the native Warp UI and replaces that backend with a local one: a Rust adapter supervises a private Node helper built on the Pi coding-agent SDK, and inference runs against any OpenAI-compatible endpoint you configure. No Warp login, no Warp server in the agent path.',
+      'Warp provides the native terminal, blocks, approval cards and diffs. Warpi’s contribution is the backend: a Rust adapter supervises a local Pi coding-agent helper and replaces the Warp account gate. You choose the Chat Completions endpoint and credentials; it can be local or hosted.',
     architecture: [
       'Warp owns the terminal, block UI, approval cards, diffs, history, and every workspace side effect — all inherited from upstream Warp.',
       'New fork code in `crates/standalone_agent` holds provider profiles, resolves credentials, supervises the helper, and translates its events into Warp’s native response events.',
@@ -698,10 +698,10 @@ export function hashBytes(bytes) {
       'Agent inference goes only to the user-configured OpenAI-compatible Chat Completions endpoint; Warp sign-in, credits, and cloud agent surfaces are hidden while standalone mode is active.'
     ],
     verifiedCapabilities: [
-      'No Warp account required — configuring a provider enables the local backend and skips the account gate',
-      'Bring your own model: any OpenAI-compatible Chat Completions endpoint, local or hosted, with an optional API key kept in the OS secret store',
-      'Native Warp approval, diff, and tool-card surfaces still decide and execute every workspace side effect the model proposes',
-      'OpenAI Chat Completions is the only accepted v1 wire protocol; Responses and Anthropic Messages are rejected, not emulated'
+      'Provider configuration replaces the Warp account gate',
+      'Local or hosted Chat Completions endpoints; keys in the OS secret store',
+      'Inherited Warp approval, diff and tool-card controls',
+      'Chat Completions only; no Responses or Anthropic Messages emulation'
     ],
     techStack: ['Rust (fork adapter: crates/standalone_agent)', 'Node.js ≥22.19 (private stdio helper)', 'Pi coding-agent SDK 0.84.2', 'OpenAI Chat Completions', 'Upstream Warp terminal & block UI'],
     metrics: [
@@ -751,8 +751,8 @@ pub enum CredentialRef {
     readerServiceNo: 110,
     title: 'HermesDashboard',
     kicker: 'Operator Console for Hermes Sessions',
-    headline: 'Live Session Views and a Graph of the Agent Fleet',
-    deck: 'A standalone dashboard for an existing Hermes install: streaming chat, a scannable sessions browser, a live subagent drawer, and a canvas graph across sessions, files, tools, models and skills.',
+    headline: 'A Clearer View of the Agent Fleet',
+    deck: 'Streaming chat, session history and a live subagent drawer, connected by a resource graph. Requires an existing Hermes installation.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Agent Observability / Operator Console',
     glanceNote: 'Works alongside an existing Hermes installation. Session browsing, a live child-agent drawer, resource relationships, and per-session token and cost views expose the work already running there.',
@@ -760,7 +760,7 @@ pub enum CredentialRef {
     liveUrl: null,
     spotInkHex: '#6d28d9', // Royal Violet Ink
     secondaryInkHex: '#be185d', // Magenta Trace
-    pullQuote: 'An agent fleet is unreadable as a wall of logs; a live, inspectable view of each run is what makes long autonomous work worth trusting.',
+    pullQuote: 'Follow the work across sessions, not just the latest log line.',
     bodyCopy:
       'HermesDashboard packages the Hermes dashboard as a standalone Python web app for people who already run Hermes. Chat streams over Server-Sent Events, tool activity collapses into single-line rows that expand on demand, and a floating “Live view” drawer follows a `delegate_task` child session as it works. A canvas graph ties sessions to the files, tools, models and skills they touched, and per-session token and cost badges make the economics visible. It is explicitly not a standalone Hermes runtime: it depends on a working Hermes install, its home directory and `state.db`.',
     fieldNotes: ['Requires an existing Hermes install—not a standalone runtime.', 'Streaming chat over Server-Sent Events, with WebSocket terminals.', 'Live subagent drawer streams a delegate_task child session.', 'Per-session token and cost accounting.'],
@@ -827,8 +827,8 @@ pub enum CredentialRef {
     readerServiceNo: 111,
     title: 'Becomussy',
     kicker: 'How an Agent Remembers, Reflects, and Revises Itself',
-    headline: 'A Governed Continuity System for Agent Self-Development',
-    deck: 'Five kinds of memory, reflection journals, active threads and commitments, a versioned self-model with semantic diffing, and identity revisions that high-risk changes route through human approval.',
+    headline: 'Memory That Carries Forward',
+    deck: 'Typed memories, reflection and a versioned self-model. High-risk identity changes go through human review.',
     byline: 'By SLOPTIMUS PRIME · SLOP ILLUSTRATED (Si.)',
     category: 'Agent Identity / Memory Architecture',
     glanceNote: 'The repository combines memory, reflection, threads, a self-model and revision proposals. Keyword search is implemented; vector/hybrid retrieval and drift detection remain planned work.',
@@ -836,7 +836,7 @@ pub enum CredentialRef {
     liveUrl: null,
     spotInkHex: '#b45309', // Archival Gold-Ochre
     secondaryInkHex: '#0f766e', // Deep Verdigris
-    pullQuote: 'Continuity is not context-window hoarding; it is memory with provenance, reflection that compounds, and a self-model a human has agreed to.',
+    pullQuote: 'Continuity needs provenance, not just a larger context window.',
     bodyCopy:
       'Becomussy is a governed continuity platform that lets an agent remember across sessions, resume unfinished work, reflect over time, and route meaningful self-revisions through human review. Durable memory items are typed—episodic, semantic, autobiographical, working, and relational—and carry provenance, salience, reinforce, and contradict operations. A versioned self-model stores the agent’s self-understanding across four facets (descriptive, aspirational, constrained, relational) and compares versions with a structured semantic diff engine. Revision proposals are risk-classified: low-risk thread or project changes may auto-approve, while constrained/value identity changes require approval, with policy checks and an emergency freeze. Every durable write records an audit event, and a context compiler assembles a resume bundle at session start.',
     fieldNotes: ['Five typed memory kinds, each provenanced and searchable.', 'High-risk identity changes require human approval; low-risk changes may auto-approve.', 'MVP auth is header-based (X-User-Id / X-User-Role) and should be replaced with OAuth/JWT.', 'Drift detection and vector/hybrid search are planned, not shipped; search is keyword-based today.'],
