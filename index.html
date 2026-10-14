@@ -293,7 +293,10 @@
       <label class="sr-only" for="page-reader-jump">Go to folio</label>
       <div class="page-reader-selector">
         <select id="page-reader-jump"></select>
-        <button id="page-reader-fit" type="button" aria-pressed="true" title="Show the sheet at actual size">Fit sheet</button>
+        <div class="page-reader-zoom" role="group" aria-label="Sheet zoom">
+          <button id="page-reader-fit" type="button" aria-pressed="true" title="Zoom out to fit the whole sheet">Fit sheet</button>
+          <button id="page-reader-fill" type="button" aria-pressed="false" title="Zoom in to fill the reading area">Fill view <span aria-hidden="true">↗</span></button>
+        </div>
       </div>
       <p class="page-reader-hint" id="page-reader-hint">Whole sheet · scroll or ← → to turn</p>
     </div>
