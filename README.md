@@ -54,16 +54,22 @@ When updating copy, review implementation as well as documentation, pin the revi
 
 ### Blender artwork
 
-The cover and editorial still lifes are original procedural Blender scenes rendered
-with Cycles, denoising, and AgX. The browser loads compressed local WebP images;
-each asset directory includes the Python scene and rebuild instructions.
+The cover, table-of-contents frontispiece, and all eleven feature spreads are original procedural Blender 5.2 scenes rendered with Cycles, denoising, and AgX. The browser loads compressed local 1600 × 1200 WebP images; each asset directory includes the deterministic Python scene (`render-scene.py`) and rebuild instructions (`README.md`).
 
 | Location | Artwork | Source and rebuild notes |
 | --- | --- | --- |
 | Cover | *The Machine Beneath the Skin* | [`assets/cover/`](assets/cover/README.md) |
 | Contents | *After Hours at the Proof Desk* — a lamp-lit CRT editorial workspace | [`assets/editorial/contents/`](assets/editorial/contents/README.md) |
-| CoCS | *A Reasonable Amount of Caution* — Claude, the Safety Officer, protecting a tiny teacup | [`assets/editorial/cocs/`](assets/editorial/cocs/README.md) |
+| OrbitDesktop | *The Concierge of the Curved Arc* — five glass window panes clamped on a semicircular brass optical arc beside a padlocked mutation switch | [`assets/editorial/orbitdesktop/`](assets/editorial/orbitdesktop/README.md) |
 | VelvetRP | *An Improbable Turn of the Page* — a book theatre, floating die, and crowned snail | [`assets/editorial/velvetrp/`](assets/editorial/velvetrp/README.md) |
+| JamMate | *Waiting for the Downbeat* — mechanical brass arms holding drumsticks politely behind a bar-boundary gate wired to a copper ring buffer | [`assets/editorial/jammate/`](assets/editorial/jammate/README.md) |
+| CoCS | *A Reasonable Amount of Caution* — Claude, the Safety Officer, protecting a tiny teacup | [`assets/editorial/cocs/`](assets/editorial/cocs/README.md) |
+| CoCS-Godot | *The Critically Damped Umbilical* — a chrome coil-spring rig and faceted particle dome tethered to an authoritative cast-iron server weight | [`assets/editorial/cocs-godot/`](assets/editorial/cocs-godot/README.md) |
+| RouteTok | *Never Splice Mid-Sentence* — a three-domed brass circuit-breaker switchboard beside an uncut ticker tape and wax-sealed shears | [`assets/editorial/routetok/`](assets/editorial/routetok/README.md) |
+| RGB Agent Flight Indicator | *Peripheral-Vision Control Tower* — an oversized four-keycap brass annunciator with a ruby lighthouse beacon under a poised porcelain hand | [`assets/editorial/rgbagentflightindicator/`](assets/editorial/rgbagentflightindicator/README.md) |
+| Mothbake | *Specimen Under Checksum Glass* — a copper-and-porcelain moth with PBR swatch wings pinned with five wax-sealed SHA-256 provenance tags | [`assets/editorial/mothbake/`](assets/editorial/mothbake/README.md) |
+| Warpi | *The Unlicensed Sidecar* — an aluminum terminal monolith bypassed at its turnstile and plumbed via copper stdio pipes to a brass Pi sidecar | [`assets/editorial/warpi/`](assets/editorial/warpi/README.md) |
+| Hermes Dashboard | *The Drawer of Little Assistants* — a walnut session-orrery cabinet with its illuminated subagent drawer pulled open | [`assets/editorial/hermesdashboard/`](assets/editorial/hermesdashboard/README.md) |
 | Becomussy | *The Bureau of Becoming* — a porcelain memory archive pouring a paper recollection into a teacup | [`assets/editorial/becomussy/`](assets/editorial/becomussy/README.md) |
 
 ## Quickstart
