@@ -3226,7 +3226,8 @@ html:not([data-print-mode="cream-press"]) .article-lead-paragraph::first-letter 
     gap: 0 1.25rem;
     align-items: start;
   }
-  .article-prose-column {
+  .article-prose-column,
+  .article-spread:nth-child(even) .article-prose-column {
     display: contents;
   }
   .article-lead-paragraph {
@@ -3382,6 +3383,7 @@ html:not([data-print-mode="cream-press"]) .article-lead-paragraph::first-letter 
   }
   .article-body-workbench,
   .article-spread:nth-child(even) .article-body-workbench {
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.95rem;
   }
   .article-sources ul {
