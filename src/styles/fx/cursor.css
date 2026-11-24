@@ -1,1 +1,284 @@
-/* Wave 9 · cursor. Owned by the cursor track; see DESIGN.md §9. Gate motion on html[data-fx] and prefers-reduced-motion. */
+/* ==========================================================================
+   WAVE 9 · CURSOR & MICRO-INTERACTIONS (src/styles/fx/cursor.css)
+   Strict CSP, zero inline styles, compositor-only animations.
+   Gated by @media (prefers-reduced-motion: no-preference), html[data-fx],
+   and html[data-pointer]. Preserves existing hover styles under reduced motion.
+   ========================================================================== */
+
+.fx-cursor-canvas {
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--fx-z-cursor);
+}
+
+.fx-mag-label {
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+  pointer-events: none;
+}
+
+@media print {
+  .fx-cursor-canvas {
+    display: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   1. FULL TIER + FINE POINTER: Ink canvas, magnetic buttons, 3D tilt + glare
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx='full'][data-pointer='fine']:not([data-cursor-kb='on']) .fx-cursor-canvas {
+    display: block;
+  }
+
+  /* Magnetic targets: translate composes cleanly with motion.css :hover/:active transforms */
+  html[data-fx='full'][data-pointer='fine'] .btn-primary[data-magnet-id],
+  html[data-fx='full'][data-pointer='fine'] .btn-secondary[data-magnet-id] {
+    translate: var(--mx, 0px) var(--my, 0px);
+    transition:
+      translate var(--spring-bouncy-dur) var(--spring-bouncy),
+      transform var(--spring-snappy-dur) var(--spring-snappy),
+      background var(--dur-fast) var(--ease-carbon),
+      color var(--dur-fast) var(--ease-carbon),
+      border-color var(--dur-fast) var(--ease-carbon),
+      box-shadow var(--dur-fast) var(--ease-carbon);
+  }
+
+  html[data-fx='full'][data-pointer='fine'] .ctrl-btn[data-magnet-id],
+  html[data-fx='full'][data-pointer='fine'] .neon-chip-btn[data-magnet-id],
+  html[data-fx='full'][data-pointer='fine'] .sha-pill[data-magnet-id],
+  html[data-fx='full'][data-pointer='fine'] .nav-link[data-magnet-id] {
+    translate: var(--mx, 0px) var(--my, 0px);
+    transition:
+      translate var(--spring-snappy-dur) var(--spring-snappy),
+      transform var(--spring-snappy-dur) var(--spring-snappy),
+      background var(--dur-fast) var(--ease-carbon),
+      color var(--dur-fast) var(--ease-carbon),
+      border-color var(--dur-fast) var(--ease-carbon),
+      box-shadow var(--dur-fast) var(--ease-carbon);
+  }
+
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-id][data-magnet-active='on'] {
+    will-change: transform;
+    transition:
+      translate 80ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform var(--spring-snappy-dur) var(--spring-snappy),
+      background var(--dur-fast) var(--ease-carbon),
+      color var(--dur-fast) var(--ease-carbon),
+      border-color var(--dur-fast) var(--ease-carbon),
+      box-shadow var(--dur-fast) var(--ease-carbon);
+  }
+
+  /* Inner label parallax depth: label leans further than its button frame */
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-id] > .fx-mag-label {
+    translate: calc(var(--mx, 0px) * 0.38) calc(var(--my, 0px) * 0.38);
+    transition: translate var(--spring-bouncy-dur) var(--spring-bouncy);
+  }
+
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-id] > span:not(.fx-mag-label),
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-id] > kbd {
+    display: inline-block;
+    translate: calc(var(--mx, 0px) * 0.34) calc(var(--my, 0px) * 0.34);
+    transition: translate var(--spring-snappy-dur) var(--spring-snappy);
+  }
+
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-active='on'] > .fx-mag-label,
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-active='on'] > span:not(.fx-mag-label),
+  html[data-fx='full'][data-pointer='fine'] [data-magnet-active='on'] > kbd {
+    transition: translate 75ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Max rizz: deeper inner label offset + gilt hairline halo on engaged magnets */
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] [data-magnet-id] > .fx-mag-label {
+    translate: calc(var(--mx, 0px) * 0.48) calc(var(--my, 0px) * 0.48);
+  }
+
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] [data-magnet-active='on'] {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--fx-gold) 65%, transparent),
+      0 8px 22px color-mix(in srgb, var(--fx-gold) 18%, transparent);
+  }
+
+  /* 3D Perspective Tilt + Specular Glare on cards & plates */
+  html[data-fx='full'][data-pointer='fine'] .issue-folio-card,
+  html[data-fx='full'][data-pointer='fine'] .cover-stage-frame,
+  html[data-fx='full'][data-pointer='fine'] .plate-figure,
+  html[data-fx='full'][data-pointer='fine'] .dispatch-cell {
+    position: relative;
+    overflow: hidden;
+    transform: perspective(1050px) rotateX(var(--tilt-rx, 0deg)) rotateY(var(--tilt-ry, 0deg));
+    transition:
+      transform var(--spring-soft-dur) var(--spring-soft),
+      border-color var(--dur-fast) var(--ease-carbon),
+      box-shadow var(--dur-med) var(--ease-carbon);
+  }
+
+  html[data-fx='full'][data-pointer='fine'] [data-tilt-id][data-tilt-active='on'] {
+    will-change: transform;
+    transition:
+      transform 90ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color var(--dur-fast) var(--ease-carbon),
+      box-shadow var(--dur-med) var(--ease-carbon);
+    border-color: color-mix(in srgb, var(--fx-gold) 48%, var(--rule-strong));
+  }
+
+  html[data-fx='full'][data-pointer='fine'] .issue-folio-card::after,
+  html[data-fx='full'][data-pointer='fine'] .cover-stage-frame::after,
+  html[data-fx='full'][data-pointer='fine'] .plate-figure::after,
+  html[data-fx='full'][data-pointer='fine'] .dispatch-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 6;
+    opacity: var(--glare-o, 0);
+    background:
+      radial-gradient(
+        circle 340px at var(--glare-x, 50%) var(--glare-y, 50%),
+        rgba(255, 249, 235, 0.22) 0%,
+        color-mix(in srgb, var(--fx-gold) 14%, transparent) 34%,
+        color-mix(in srgb, var(--fx-signal) 6%, transparent) 58%,
+        transparent 76%
+      ),
+      linear-gradient(
+        125deg,
+        transparent 22%,
+        rgba(255, 255, 255, 0.05) 48%,
+        transparent 72%
+      );
+    transition: opacity 280ms var(--ease-carbon);
+  }
+
+  html[data-fx='full'][data-pointer='fine'][data-stock='rag'] .issue-folio-card::after,
+  html[data-fx='full'][data-pointer='fine'][data-stock='rag'] .cover-stage-frame::after,
+  html[data-fx='full'][data-pointer='fine'][data-stock='rag'] .plate-figure::after,
+  html[data-fx='full'][data-pointer='fine'][data-stock='rag'] .dispatch-cell::after {
+    background:
+      radial-gradient(
+        circle 340px at var(--glare-x, 50%) var(--glare-y, 50%),
+        rgba(255, 255, 255, 0.48) 0%,
+        color-mix(in srgb, var(--fx-gold) 18%, transparent) 36%,
+        transparent 74%
+      );
+  }
+
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] .issue-folio-card::after,
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] .cover-stage-frame::after,
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] .plate-figure::after,
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] .dispatch-cell::after {
+    background:
+      radial-gradient(
+        circle 380px at var(--glare-x, 50%) var(--glare-y, 50%),
+        rgba(255, 250, 232, 0.3) 0%,
+        color-mix(in srgb, var(--fx-gold) 24%, transparent) 34%,
+        color-mix(in srgb, var(--fx-signal) 12%, transparent) 60%,
+        transparent 78%
+      );
+  }
+
+  /* Directional proof-ink sheen across Contents ledger rows (no transform conflict with mo-row-in) */
+  html[data-fx='full'][data-pointer='fine'] .article-ledger-row {
+    position: relative;
+    overflow: hidden;
+  }
+
+  html[data-fx='full'][data-pointer='fine'] .article-ledger-row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    opacity: var(--glare-o, 0);
+    background: radial-gradient(
+      ellipse 340px 96px at var(--glare-x, 50%) var(--glare-y, 50%),
+      color-mix(in srgb, var(--fx-ink) 12%, transparent) 0%,
+      color-mix(in srgb, var(--fx-gold) 6%, transparent) 45%,
+      transparent 75%
+    );
+    transition: opacity 220ms var(--ease-carbon);
+  }
+
+  /* --------------------------------------------------------------------------
+     2. LITE TIER / COARSE POINTER: CSS-only click/tap ripple on buttons
+     (Leaves .nav-link::after untouched for motion.css spring underlines)
+     -------------------------------------------------------------------------- */
+
+  html[data-fx='lite'] .btn-primary,
+  html[data-fx='lite'] .btn-secondary,
+  html[data-fx='lite'] .ctrl-btn,
+  html[data-fx='lite'] .neon-chip-btn,
+  html[data-fx='lite'] .sha-pill,
+  html[data-pointer='coarse']:not([data-fx='off']) .btn-primary,
+  html[data-pointer='coarse']:not([data-fx='off']) .btn-secondary,
+  html[data-pointer='coarse']:not([data-fx='off']) .ctrl-btn,
+  html[data-pointer='coarse']:not([data-fx='off']) .neon-chip-btn,
+  html[data-pointer='coarse']:not([data-fx='off']) .sha-pill {
+    position: relative;
+    overflow: hidden;
+  }
+
+  html[data-fx='lite'] .btn-primary::after,
+  html[data-fx='lite'] .btn-secondary::after,
+  html[data-fx='lite'] .ctrl-btn::after,
+  html[data-fx='lite'] .neon-chip-btn::after,
+  html[data-fx='lite'] .sha-pill::after,
+  html[data-pointer='coarse']:not([data-fx='off']) .btn-primary::after,
+  html[data-pointer='coarse']:not([data-fx='off']) .btn-secondary::after,
+  html[data-pointer='coarse']:not([data-fx='off']) .ctrl-btn::after,
+  html[data-pointer='coarse']:not([data-fx='off']) .neon-chip-btn::after,
+  html[data-pointer='coarse']:not([data-fx='off']) .sha-pill::after {
+    content: '';
+    position: absolute;
+    left: var(--rx, 50%);
+    top: var(--ry, 50%);
+    width: 170%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--fx-ink) 42%, transparent) 0%,
+      color-mix(in srgb, var(--fx-gold) 20%, transparent) 55%,
+      transparent 72%
+    );
+  }
+
+  html[data-fx='lite'] [data-ripple-phase='a']::after,
+  html[data-pointer='coarse']:not([data-fx='off']) [data-ripple-phase='a']::after {
+    animation: fx-ripple-a 480ms var(--ease-out-expo) forwards;
+  }
+
+  html[data-fx='lite'] [data-ripple-phase='b']::after,
+  html[data-pointer='coarse']:not([data-fx='off']) [data-ripple-phase='b']::after {
+    animation: fx-ripple-b 480ms var(--ease-out-expo) forwards;
+  }
+}
+
+@keyframes fx-ripple-a {
+  0% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+@keyframes fx-ripple-b {
+  0% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.08);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
