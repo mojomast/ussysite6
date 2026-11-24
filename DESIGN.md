@@ -133,3 +133,44 @@
 5. **Syndication (`/rss.xml`)**:
    - Static RSS 2.0 feed generated at build time (`src/pages/rss.xml.ts`) exposing all published issues and commit-pinned monographs.
 
+
+---
+
+## 7. Opus Layer (`Au·79`, gold leaf): Voice & Signature Moments
+
+**Layer author:** Claude Opus 5.5. Carbon set the type and Neon wired the instruments. Opus does the finishing: the words, and a few moments people will remember. Gold leaf goes on last and sparingly.
+
+### 7.1 Voice guide
+
+The magazine sounds like a good editor who has read the code: dry on the surface, warm underneath, and never vague.
+
+- **Specific beats general.** Name the file, the number and the commit: `gear_steer.py`, 2 of 18, `@b8cd1fe`. If a sentence would fit any project, cut it.
+- **The joke always points at something true.** "A coin-pusher game that miscounts coins is just a sad sculpture" works because the latest commit checks the bankroll against every announced change. A joke that is not anchored to a fact gets cut.
+- **Credit before cleverness.** Upstream work is named in the first paragraph: Warp, Guitar Companion, God's Eye View, colsto, Terry A. Davis.
+- **Say the limits in plain words.** "It doesn't do X yet" beats "X is on the roadmap." The sidebar is titled *What it doesn't do (yet)*.
+- **Short declaratives.** One idea per sentence. Em dashes are rationed; colons and full stops do the work.
+- **Pull quotes are pulled.** Every pull quote appears verbatim in its own article, and a test enforces it. Quotes from READMEs are attributed to the README. We never invent people, quotes or numbers.
+- **Self-aware about slop, never smug about it.** The tagline admits what most machine writing is; the Corrections column admits what ours got wrong.
+- **Banned phrasing** (enforced by `test/copy.test.mjs`): delve, tapestry, testament to, seamless, leverage, unlock, elevate, game-changer, cutting/bleeding-edge, "in today's…", fast-paced, state-of-the-art, world-class, filler "robust", empower, revolutionize. No hollow triads, no "not just X, but Y".
+- **Microcopy talks like a person.** "Save for later", "Copy citation", "Hold still", "Leave the light on". Empty states say what to do next.
+
+### 7.2 Tokens (`src/styles/opus.css`)
+
+| Token | `graphite` | `rag` | `oxide` | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| `--gilt` | `#e8c36a` | `#7a5600` | `#f3d27f` | Gold leaf, reserved for the editor's signature, the cold-open seal, the last page, and "read cover to cover" |
+| `--gilt-soft` / `--gilt-glow` | 14% / hairline + 36px | 10% / hairline + 22px | 15% / hairline + 36px | Beds and halos for gilt moments only |
+| `--proof-ink` | `#ff5a3c` | `#b3230a` | `#ff7a5c` | Proofreader's red: read ticks, Corrections numbering, the end-of-article mark |
+
+### 7.3 Signature moments
+
+1. **The cold open** (`ColdOpen.svelte`, Issue 02 cover). A 6.6-second press-run log built only from true lines (`W4-weakened-tests: tests_tampered ··· rejected`, `2 of 18 ··· printed anyway`), then the masthead slams in under a gilt `Si.` seal. Once per session; replay via the button or `/issues/02#opening`. It mounts only after hydration, so without JavaScript you go straight to the cover. Skip with a click, Enter, Space, Esc or the focused Skip button, and focus returns to `#main-content`. Under `prefers-reduced-motion` it never autoplays, and a replay shows the finished frame with no timer.
+2. **Corrections** (front page). A magazine written with machines publishes what it got wrong, including errors from earlier drafts of this very issue. The list is content (`corrections:` in issue frontmatter), so future issues inherit the habit.
+3. **Proofreader's ticks** (`src/scripts/reading-tracker.ts`). Reaching the end mark of a feature stamps "✓ Marked read · n of 11" in red ink, and every contents list on the site strikes it through. Read all eleven and the counter turns gilt and thanks you. It is stored in localStorage only.
+4. **The last page** (`/issues/[issue]/last-page`). The final feature's "next" turns to it. It holds a slow, large-type sign-off, the list of everything this domain used to be marked *still public* ("Nothing was deleted. That's the whole policy."), and a reading lamp that dims as you scroll to the end (a scroll-driven `view()` timeline). **Leave the light on** keeps it lit, and remembers.
+5. **Sound, opt-in** (`carbon-synth.ts`). A **Sound off** toggle in the masthead is off by default, and the choice persists. With it on you get a pen tick on saves and study steps, a page turn on `j`/`k`, a press thunk under the cold-open seal, and the lamp's click and hum. Play buttons still play chords, because pressing Play is consent. Everything is synthesized, with no audio files.
+6. **Small delights.** The `Si.` badge's full stop drips like wet ink on hover; the 404 is a proof note that strikes through the missing page; the `u-s-s-y` basement now reads like a family album; Ask the Editor answers "from the archive" in the magazine's voice when the live model is off.
+
+### 7.4 Guardrails Opus kept
+
+Strict CSP is unchanged: no inline styles or scripts, and timing lives in CSS `nth-child` delays, never `style=""`. The WebGPU > WebGL2 > SVG cover chain is untouched. The Gemini endpoints stay behind `FEATURE_*` flags, off by default, with no keys committed. The new islands are small (`ColdOpen`, `PressLamp`) and the tracker is a few kilobytes; none of them pulls in Three.js.

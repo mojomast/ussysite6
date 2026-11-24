@@ -56,3 +56,17 @@ Pick the highest-impact items below to layer your **Neon** interactive craft ont
 3. `npm test` — Runs `node --test test/*.test.mjs` covering catalog provenance, Hono + SQLite per-reader isolation, strict CSP headers, and `issue:draft` offline generation.
 4. Browser check — Verify `0` `securitypolicyviolation` or console errors in Headless Chromium on desktop and mobile viewports.
 5. **Never deploy, never touch remote hosts, and never merge.**
+
+---
+
+## 4. Phase 3 (Claude Opus) — Done
+
+- Rewrote every visitor-facing word: both issues, all 22 features, dispatches, captions, studies, chrome, colophon, RSS, meta descriptions. Added About and 404.
+- Signature moments: Issue 02 cold open, Corrections column, proofreader's read ticks, the last page with its lamp, opt-in sound. See `DESIGN.md` §7.
+- New guards: `test/copy.test.mjs` (pull quotes must be verbatim, banned slop phrasing, last pages present) and a real 404 page served with status 404.
+
+### Ideas left on the bench
+
+1. Corrections could get their own page with dates once there are more than five.
+2. A per-issue cold open for future issues: `npm run issue:draft` could propose `coldOpen` lines from the commits it reads (a person still approves them).
+3. A print stylesheet pass for the last page, so the lamp prints as a line drawing.

@@ -1,6 +1,6 @@
 # SLOP ILLUSTRATED (Si.) · Living Edition
 
-**A source-linked software magazine that keeps publishing.** Edited by **SLOPTIMUS PRIME** ([github.com/mojomast](https://github.com/mojomast)). Art-directed in the **Gemini 4 Carbon (`C·06`) × Gemini 4 Neon (`Ne·10`)** visual system on Astro 7, Svelte 5 islands, Three.js (`WebGPU` TSL node shader with `WebGL2` & SVG fallbacks), and a Hono + Drizzle + SQLite Source Room API.
+**A source-linked software magazine that keeps publishing.** Edited by **SLOPTIMUS PRIME** ([github.com/mojomast](https://github.com/mojomast)). Art-directed in three passes, **Gemini 4 Carbon (`C·06`)**, **Gemini 4 Neon (`Ne·10`)** and **Claude Opus (`Au·79`)**, on Astro 7, Svelte 5 islands, Three.js (`WebGPU` TSL node shader with `WebGL2` & SVG fallbacks), and a Hono + Drizzle + SQLite Source Room API.
 
 ---
 
@@ -8,8 +8,8 @@
 
 | Issue | Date | Status | Theme | Coverage |
 | :--- | :--- | :--- | :--- | :--- |
-| **[Issue 02](/src/content/issues/issue-02.md)** | November 2026 | `current` | *The Autonomous Shift & The Shared Pane* | 11 new monographs (`#201`–`#211`: `workflow`/`rizzstack`, `bundlebees`, `hyvv`, `orbit-control-plane`, `uirizz`, `open-higgsfield-skills`, `hermes-aircraft-doppler-geolocation`, `EOH`, `hermes-photo-to-part`, `hermes-templeos`, `jackpotsyndicate`) + 4 bench dispatches |
-| **[Issue 01](/src/content/issues/issue-01.md)** | October 2026 | `archived` | *Software. Shown & Explained.* | All 11 inaugural monographs (`#101`–`#111`) preserved verbatim with their 13 original 1600×1200 Cycles Blender WebP still lifes and screenshots |
+| **[Issue 02](/src/content/issues/issue-02.md)** | November 2026 | `current` | *Who Watches the Bees?* | 11 new monographs (`#201`–`#211`: `workflow`/`rizzstack`, `bundlebees`, `hyvv`, `orbit-control-plane`, `uirizz`, `open-higgsfield-skills`, `hermes-aircraft-doppler-geolocation`, `EOH`, `hermes-photo-to-part`, `hermes-templeos`, `jackpotsyndicate`) + 4 bench dispatches |
+| **[Issue 01](/src/content/issues/issue-01.md)** | October 2026 | `archived` | *Show Your Work* | All 11 inaugural monographs (`#101`–`#111`) preserved verbatim with their 13 original 1600×1200 Cycles Blender WebP still lifes and screenshots |
 
 Every monograph pins an exact 40-character Git commit SHA (`sourceRevision`), links every architectural claim and line-numbered source excerpt to that revision, and explicitly separates verified behavior from planned or experimental work.
 
@@ -61,7 +61,8 @@ npm run issue:draft -- --issue 03 --limit 6 --apply
 ## Architecture & Key Documents
 
 - [`DESIGN.md`](DESIGN.md) — **Gemini 4 Carbon (`C·06`)** base press system + **Gemini 4 Neon (`Ne·10`)** interactive/motion layer, paper stock tokens (`graphite`, `rag`, `oxide`), 4-voice typography, and strict CSP guardrails.
-- [`PLAN.md`](PLAN.md) — Phase 1 -> Phase 2 roadmap & verification checklist.
+- [`PLAN.md`](PLAN.md) — Phase 1 to Phase 3 roadmap & verification checklist.
+- [`DESIGN.md` §7](DESIGN.md) — the Opus voice guide (house style, banned phrasing, pulled pull quotes) and the signature moments: cold open, Corrections, proofreader's ticks, the last page and its lamp, opt-in sound.
 - [`src/components/islands/InteractiveStudy.svelte`](src/components/islands/InteractiveStudy.svelte) — 10 keyboard-accessible interactive step-through monograph studies across Issues 01 & 02.
 - [`src/pages/rss.xml.ts`](src/pages/rss.xml.ts) — Static RSS 2.0 syndication feed (`/rss.xml`) listing all commit-pinned monographs.
 - [`src/server/app.ts`](src/server/app.ts) — Hono + Drizzle + SQLite WAL API (`/api/health`, `/api/issues`, per-reader `/api/press/state`, `/api/source-room/*`, multi-turn Ask the Editor defaulting to `gemini-3.5-flash-lite` behind `FEATURE_ASK_EDITOR`, and flagged Audio Edition / AI Illustration stubs).

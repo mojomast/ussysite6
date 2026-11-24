@@ -184,8 +184,21 @@ test('Static Astro routes enforce strict CSP without unsafe-inline and block ser
     assert.ok((rssRes.headers.get('content-type') || '').includes('rss+xml'));
     const rssXml = await rssRes.text();
     assert.ok(rssXml.includes('<rss version="2.0"'));
-    assert.ok(rssXml.includes('Rizzstack'));
+    assert.ok(rssXml.includes('Worker Four Deleted the Assertions'));
     assert.ok(rssXml.includes('OrbitDesktop'));
+
+    const lastPage = await fetch(`${baseUrl}/issues/02/last-page`);
+    assert.equal(lastPage.status, 200);
+    assert.ok((await lastPage.text()).includes('The press is off.'));
+
+    const about = await fetch(`${baseUrl}/about`);
+    assert.equal(about.status, 200);
+
+    const missing = await fetch(`${baseUrl}/issues/02/a-page-we-never-printed`);
+    assert.equal(missing.status, 404);
+    assert.ok((missing.headers.get('content-type') || '').includes('text/html'));
+    assert.ok((missing.headers.get('content-security-policy') || '').includes("script-src 'self'"));
+    assert.ok((await missing.text()).includes('We didn’t print this page.'));
 
     const deniedServer = await fetch(`${baseUrl}/server.mjs`);
     assert.equal(deniedServer.status, 404);
