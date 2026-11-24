@@ -240,7 +240,8 @@ html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
 .fx-rizz-card {
   position: relative;
   z-index: 2;
-  width: min(100%, 760px);
+  width: min(100%, 820px);
+  overflow: hidden;
   border: 2px solid var(--gilt);
   background: linear-gradient(155deg, rgba(16, 20, 28, 0.97), rgba(8, 10, 14, 0.98));
   color: #f3efe6;
@@ -298,8 +299,8 @@ html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
   display: block;
   font-family: var(--font-structural);
   font-weight: 800;
-  font-size: clamp(2.4rem, 7.6vw, 5.4rem);
-  letter-spacing: 0.12em;
+  font-size: clamp(1.75rem, 5.1vw, 3.85rem);
+  letter-spacing: 0.08em;
   color: #f3efe6;
   text-shadow:
     0 0 22px color-mix(in srgb, var(--fx-rizz-accent, #22f3e6) 72%, transparent),
@@ -312,7 +313,7 @@ html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(3.4rem, 11vw, 7.4rem);
+  font-size: clamp(3rem, 9.2vw, 6.4rem);
   letter-spacing: -0.02em;
   color: var(--gilt);
   text-shadow:
@@ -352,10 +353,24 @@ html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
   transform: translate(-50%, -50%) scale(0.2);
 }
 
-.fx-rizz-bit:nth-child(3n) { color: #22f3e6; font-size: 1.7rem; }
-.fx-rizz-bit:nth-child(3n + 1) { color: #e8c36a; font-size: 1.55rem; }
-.fx-rizz-bit:nth-child(3n + 2) { color: #ff5a3c; font-size: 1.35rem; }
-.fx-rizz-bit:nth-child(4n) { font-size: 2rem; }
+.fx-rizz-bit:nth-child(3n) { color: #22f3e6; font-size: 1.75rem; }
+.fx-rizz-bit:nth-child(3n + 1) { color: #e8c36a; font-size: 1.65rem; }
+.fx-rizz-bit:nth-child(3n + 2) { color: #ff5a3c; font-size: 1.45rem; }
+.fx-rizz-bit:nth-child(4n) { font-size: 2.05rem; }
+
+.fx-rizz-foil {
+  width: 18px;
+  height: 8px;
+  background: var(--gilt);
+  box-shadow: 0 0 12px rgba(232, 195, 106, 0.72);
+}
+
+.fx-rizz-foil:nth-child(odd) {
+  width: 12px;
+  height: 12px;
+  background: #22f3e6;
+  box-shadow: 0 0 12px rgba(34, 243, 230, 0.75);
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .fx-rizz-stage.is-entering {
@@ -367,37 +382,43 @@ html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
   }
 
   .fx-rizz-stage.is-entering .fx-rizz-bit {
-    animation: fx-rizz-burst 2100ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+    animation: fx-rizz-burst 2100ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) var(--bd, 0ms) forwards;
   }
 
-  .fx-rizz-bit:nth-child(1)  { --bx: -42vw; --by: -36vh; --br: -240deg; animation-delay: 20ms; }
-  .fx-rizz-bit:nth-child(2)  { --bx: -28vw; --by: -42vh; --br: 180deg;  animation-delay: 40ms; }
-  .fx-rizz-bit:nth-child(3)  { --bx: -10vw; --by: -44vh; --br: -160deg; animation-delay: 10ms; }
-  .fx-rizz-bit:nth-child(4)  { --bx: 12vw;  --by: -43vh; --br: 210deg;  animation-delay: 50ms; }
-  .fx-rizz-bit:nth-child(5)  { --bx: 29vw;  --by: -39vh; --br: -195deg; animation-delay: 30ms; }
-  .fx-rizz-bit:nth-child(6)  { --bx: 43vw;  --by: -34vh; --br: 250deg;  animation-delay: 60ms; }
-  .fx-rizz-bit:nth-child(7)  { --bx: -46vw; --by: -12vh; --br: 170deg;  animation-delay: 35ms; }
-  .fx-rizz-bit:nth-child(8)  { --bx: 46vw;  --by: -14vh; --br: -220deg; animation-delay: 45ms; }
-  .fx-rizz-bit:nth-child(9)  { --bx: -45vw; --by: 14vh;  --br: -185deg; animation-delay: 25ms; }
-  .fx-rizz-bit:nth-child(10) { --bx: 45vw;  --by: 16vh;  --br: 190deg;  animation-delay: 55ms; }
-  .fx-rizz-bit:nth-child(11) { --bx: -40vw; --by: 36vh;  --br: 230deg;  animation-delay: 70ms; }
-  .fx-rizz-bit:nth-child(12) { --bx: -24vw; --by: 42vh;  --br: -210deg; animation-delay: 30ms; }
-  .fx-rizz-bit:nth-child(13) { --bx: -6vw;  --by: 44vh;  --br: 150deg;  animation-delay: 65ms; }
-  .fx-rizz-bit:nth-child(14) { --bx: 11vw;  --by: 43vh;  --br: -175deg; animation-delay: 15ms; }
-  .fx-rizz-bit:nth-child(15) { --bx: 28vw;  --by: 40vh;  --br: 205deg;  animation-delay: 40ms; }
-  .fx-rizz-bit:nth-child(16) { --bx: 41vw;  --by: 35vh;  --br: -245deg; animation-delay: 50ms; }
-  .fx-rizz-bit:nth-child(17) { --bx: -34vw; --by: -24vh; --br: 140deg;  animation-delay: 80ms; }
-  .fx-rizz-bit:nth-child(18) { --bx: 35vw;  --by: -22vh; --br: -155deg; animation-delay: 90ms; }
-  .fx-rizz-bit:nth-child(19) { --bx: -36vw; --by: 24vh;  --br: -130deg; animation-delay: 85ms; }
-  .fx-rizz-bit:nth-child(20) { --bx: 36vw;  --by: 25vh;  --br: 165deg;  animation-delay: 75ms; }
-  .fx-rizz-bit:nth-child(21) { --bx: -20vw; --by: -31vh; --br: -270deg; animation-delay: 110ms; }
-  .fx-rizz-bit:nth-child(22) { --bx: 21vw;  --by: -30vh; --br: 260deg;  animation-delay: 100ms; }
-  .fx-rizz-bit:nth-child(23) { --bx: -22vw; --by: 31vh;  --br: 240deg;  animation-delay: 115ms; }
-  .fx-rizz-bit:nth-child(24) { --bx: 22vw;  --by: 32vh;  --br: -235deg; animation-delay: 105ms; }
-  .fx-rizz-bit:nth-child(25) { --bx: -48vw; --by: 0vh;   --br: -190deg; animation-delay: 60ms; }
-  .fx-rizz-bit:nth-child(26) { --bx: 48vw;  --by: 2vh;   --br: 195deg;  animation-delay: 65ms; }
-  .fx-rizz-bit:nth-child(27) { --bx: 0vw;   --by: -46vh; --br: 320deg;  animation-delay: 20ms; }
-  .fx-rizz-bit:nth-child(28) { --bx: 2vw;   --by: 46vh;  --br: -310deg; animation-delay: 25ms; }
+  .fx-rizz-bit:nth-child(1)  { --bx: -42vw; --by: -36vh; --br: -240deg; --bd: 20ms; }
+  .fx-rizz-bit:nth-child(2)  { --bx: -28vw; --by: -42vh; --br: 180deg;  --bd: 40ms; }
+  .fx-rizz-bit:nth-child(3)  { --bx: -10vw; --by: -44vh; --br: -160deg; --bd: 10ms; }
+  .fx-rizz-bit:nth-child(4)  { --bx: 12vw;  --by: -43vh; --br: 210deg;  --bd: 50ms; }
+  .fx-rizz-bit:nth-child(5)  { --bx: 29vw;  --by: -39vh; --br: -195deg; --bd: 30ms; }
+  .fx-rizz-bit:nth-child(6)  { --bx: 43vw;  --by: -34vh; --br: 250deg;  --bd: 60ms; }
+  .fx-rizz-bit:nth-child(7)  { --bx: -46vw; --by: -12vh; --br: 170deg;  --bd: 35ms; }
+  .fx-rizz-bit:nth-child(8)  { --bx: 46vw;  --by: -14vh; --br: -220deg; --bd: 45ms; }
+  .fx-rizz-bit:nth-child(9)  { --bx: -45vw; --by: 14vh;  --br: -185deg; --bd: 25ms; }
+  .fx-rizz-bit:nth-child(10) { --bx: 45vw;  --by: 16vh;  --br: 190deg;  --bd: 55ms; }
+  .fx-rizz-bit:nth-child(11) { --bx: -40vw; --by: 36vh;  --br: 230deg;  --bd: 70ms; }
+  .fx-rizz-bit:nth-child(12) { --bx: -24vw; --by: 42vh;  --br: -210deg; --bd: 30ms; }
+  .fx-rizz-bit:nth-child(13) { --bx: -6vw;  --by: 44vh;  --br: 150deg;  --bd: 65ms; }
+  .fx-rizz-bit:nth-child(14) { --bx: 11vw;  --by: 43vh;  --br: -175deg; --bd: 15ms; }
+  .fx-rizz-bit:nth-child(15) { --bx: 28vw;  --by: 40vh;  --br: 205deg;  --bd: 40ms; }
+  .fx-rizz-bit:nth-child(16) { --bx: 41vw;  --by: 35vh;  --br: -245deg; --bd: 50ms; }
+  .fx-rizz-bit:nth-child(17) { --bx: -34vw; --by: -24vh; --br: 140deg;  --bd: 80ms; }
+  .fx-rizz-bit:nth-child(18) { --bx: 35vw;  --by: -22vh; --br: -155deg; --bd: 90ms; }
+  .fx-rizz-bit:nth-child(19) { --bx: -36vw; --by: 24vh;  --br: -130deg; --bd: 85ms; }
+  .fx-rizz-bit:nth-child(20) { --bx: 36vw;  --by: 25vh;  --br: 165deg;  --bd: 75ms; }
+  .fx-rizz-bit:nth-child(21) { --bx: -20vw; --by: -31vh; --br: -270deg; --bd: 110ms; }
+  .fx-rizz-bit:nth-child(22) { --bx: 21vw;  --by: -30vh; --br: 260deg;  --bd: 100ms; }
+  .fx-rizz-bit:nth-child(23) { --bx: -22vw; --by: 31vh;  --br: 240deg;  --bd: 115ms; }
+  .fx-rizz-bit:nth-child(24) { --bx: 22vw;  --by: 32vh;  --br: -235deg; --bd: 105ms; }
+  .fx-rizz-bit:nth-child(25) { --bx: -48vw; --by: 0vh;   --br: -190deg; --bd: 60ms; }
+  .fx-rizz-bit:nth-child(26) { --bx: 48vw;  --by: 2vh;   --br: 195deg;  --bd: 65ms; }
+  .fx-rizz-bit:nth-child(27) { --bx: 0vw;   --by: -46vh; --br: 320deg;  --bd: 20ms; }
+  .fx-rizz-bit:nth-child(28) { --bx: 2vw;   --by: 46vh;  --br: -310deg; --bd: 25ms; }
+  .fx-rizz-bit:nth-child(29) { --bx: -38vw; --by: -32vh; --br: 340deg;  --bd: 45ms; }
+  .fx-rizz-bit:nth-child(30) { --bx: 39vw;  --by: -31vh; --br: -320deg; --bd: 55ms; }
+  .fx-rizz-bit:nth-child(31) { --bx: -41vw; --by: 28vh;  --br: -290deg; --bd: 35ms; }
+  .fx-rizz-bit:nth-child(32) { --bx: 40vw;  --by: 29vh;  --br: 310deg;  --bd: 70ms; }
+  .fx-rizz-bit:nth-child(33) { --bx: -15vw; --by: -39vh; --br: 220deg;  --bd: 60ms; }
+  .fx-rizz-bit:nth-child(34) { --bx: 16vw;  --by: 39vh;  --br: -250deg; --bd: 50ms; }
 }
 
 @keyframes fx-rizz-stage-life {
@@ -670,10 +691,10 @@ html[data-fx-press-day='on'] .fx-press-day-ribbon {
   position: fixed;
   left: 0;
   top: 0;
-  z-index: var(--fx-z-overlay);
+  z-index: 105;
   pointer-events: none;
   color: var(--proof-ink);
-  transform: translate(calc(var(--blot-x, 48px) - 100px), calc(var(--blot-y, 44px) - 52px));
+  transform: translate(calc(var(--blot-x, 48px) - 100px), calc(var(--blot-y, 44px) - 62px));
   filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.36));
 }
 

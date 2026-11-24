@@ -5,7 +5,8 @@
  */
 const confettiGlyphs = [
   '¶', '★', '§', '✦', '†', '◆', '※', '‡', '★', '¶', '✦', '§', '◆', '※',
-  '★', '¶', '‡', '✦', '§', '◆', '†', '★', '※', '¶', '✦', '§', '◆', '★'
+  '★', '¶', '‡', '✦', '§', '◆', '†', '★', '※', '¶', '✦', '§', '◆', '★',
+  '', '', '', '', '', ''
 ];
 const leftSorts = ['S', 'i', '¶', '§', 'C', '6', '※'];
 const rightSorts = ['g', 'e', 'm', 'a', '4', '†', '★'];
@@ -22,7 +23,7 @@ const rightSorts = ['g', 'e', 'm', 'a', '4', '†', '★'];
   <div class="fx-rizz-stage" data-fx-rizz-card aria-hidden="true" hidden>
     <div class="fx-rizz-confetti">
       {confettiGlyphs.map((glyph) => (
-        <span class="fx-rizz-bit">{glyph}</span>
+        <span class={glyph ? 'fx-rizz-bit' : 'fx-rizz-bit fx-rizz-foil'}>{glyph}</span>
       ))}
     </div>
     <div class="fx-rizz-card">
