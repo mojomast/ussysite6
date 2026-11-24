@@ -478,7 +478,12 @@
       <strong>{spec.title}</strong>
     </div>
     <span class="datum-tag">
-      STEP {String(activeIndex + 1).padStart(2, '0')} / {String(spec.steps.length).padStart(2, '0')} · {activeStep.badge}
+      STEP {String(activeIndex + 1).padStart(2, '0')} / {String(spec.steps.length).padStart(2, '0')} ·
+      <span class="neon-study-badges">
+        {#each spec.steps as step, idx}
+          <span class:is-active={idx === activeIndex}>{step.badge}</span>
+        {/each}
+      </span>
     </span>
   </div>
 

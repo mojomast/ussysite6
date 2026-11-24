@@ -1161,6 +1161,21 @@
   flex-wrap: wrap;
 }
 
+/* Every badge sits in one grid cell, so the slot is always as wide as the longest and the
+   header never re-wraps between steps. Hidden badges are out of the accessibility tree. */
+.neon-study-badges {
+  display: inline-grid;
+}
+
+.neon-study-badges > span {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+
+.neon-study-badges > span.is-active {
+  visibility: visible;
+}
+
 .neon-pill {
   display: inline-flex;
   align-items: center;
