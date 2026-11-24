@@ -1,133 +1,199 @@
 /**
- * CARBON TONEWHEEL & 33⅓ RPM FLEXI-DISC SYNTHESIZER
+ * The press-room sound kit. Everything is synthesized with WebAudio: no samples, no downloads.
  *
- * Pure WebAudio procedural synthesizer uniting Issue 01's vinyl flexi-disc crackle
- * with harmonic voicings from Ussyverse Eras II–VI (Helix Organum stops & Solaris ninths).
+ * Two kinds of sound:
+ * - Explicit sounds (playChord) play when the reader presses a Play button. That press is consent.
+ * - Interface sounds (tick, thunk, pageTurn, lamp, click) are ambient. They stay silent until the
+ *   reader turns Sound on, and that choice persists. Default is off.
  */
+
+const PREF_KEY = 'si.sound.v1';
+
+type Listener = (enabled: boolean) => void;
 
 class CarbonSynthEngine {
   private ctx: AudioContext | null = null;
-  private masterGain: GainNode | null = null;
-  private active = false;
+  private master: GainNode | null = null;
+  private enabled = false;
+  private chordActive = false;
+  private loadedPref = false;
+  private listeners = new Set<Listener>();
+
+  private loadPref(): void {
+    if (this.loadedPref || typeof window === 'undefined') return;
+    this.loadedPref = true;
+    try {
+      this.enabled = localStorage.getItem(PREF_KEY) === 'on';
+    } catch {
+      this.enabled = false;
+    }
+    if (this.enabled) {
+      // Browsers only start audio after a gesture, so wake up on the first one.
+      const wake = () => {
+        this.ensureContext();
+        window.removeEventListener('pointerdown', wake);
+        window.removeEventListener('keydown', wake);
+      };
+      window.addEventListener('pointerdown', wake, { once: true });
+      window.addEventListener('keydown', wake, { once: true });
+    }
+  }
 
   private ensureContext(): boolean {
     if (typeof window === 'undefined') return false;
-    if (this.ctx) return true;
-    const AudioCtor = window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtor) return false;
-
-    this.ctx = new AudioCtor();
-    this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.value = 0.0;
-    this.masterGain.connect(this.ctx.destination);
-    this.startSurfaceBed();
+    if (!this.ctx) {
+      const AudioCtor =
+        window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioCtor) return false;
+      this.ctx = new AudioCtor();
+      this.master = this.ctx.createGain();
+      this.master.gain.value = 0.42;
+      this.master.connect(this.ctx.destination);
+    }
+    if (this.ctx.state === 'suspended') void this.ctx.resume();
     return true;
   }
 
-  private startSurfaceBed(): void {
-    if (!this.ctx || !this.masterGain) return;
-    const rate = this.ctx.sampleRate;
-    const length = rate * 2.5;
-    const buffer = this.ctx.createBuffer(1, length, rate);
-    const channel = buffer.getChannelData(0);
+  isEnabled(): boolean {
+    this.loadPref();
+    return this.enabled;
+  }
 
-    for (let i = 0; i < length; i++) {
-      const pop = Math.random() > 0.9988 ? (Math.random() * 2 - 1) * 0.32 : 0;
-      channel[i] = (Math.random() * 2 - 1) * 0.008 + pop;
+  setEnabled(on: boolean): void {
+    this.loadPref();
+    this.enabled = on;
+    try {
+      localStorage.setItem(PREF_KEY, on ? 'on' : 'off');
+    } catch {
+      // Private browsing: the choice lasts for this page only.
     }
+    if (on) {
+      this.ensureContext();
+      this.tick(980);
+    }
+    for (const fn of this.listeners) fn(on);
+  }
 
-    const src = this.ctx.createBufferSource();
-    src.buffer = buffer;
-    src.loop = true;
-
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1750;
-    filter.Q.value = 0.85;
-
-    const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.2;
-
-    src.connect(filter);
-    filter.connect(bedGain);
-    bedGain.connect(this.masterGain);
-    src.start();
+  subscribe(fn: Listener): () => void {
+    this.listeners.add(fn);
+    return () => this.listeners.delete(fn);
   }
 
   isPlaying(): boolean {
-    return this.active;
+    return this.chordActive;
   }
 
-  toggle(force?: boolean): boolean {
-    if (!this.ensureContext() || !this.ctx || !this.masterGain) return false;
-    this.active = typeof force === 'boolean' ? force : !this.active;
-    if (this.ctx.state === 'suspended' && this.active) {
-      void this.ctx.resume();
-    }
-    const now = this.ctx.currentTime;
-    this.masterGain.gain.cancelScheduledValues(now);
-    this.masterGain.gain.setTargetAtTime(this.active ? 0.45 : 0.0, now, 0.12);
-    if (this.active) {
-      this.playChord([261.63, 329.63, 440.0, 587.33]);
-    }
-    return this.active;
+  private ambient(): boolean {
+    this.loadPref();
+    return this.enabled && this.ensureContext() && Boolean(this.ctx && this.master);
   }
 
-  playChord(freqs: number[] = [261.63, 329.63, 392.0, 523.25]): void {
-    if (!this.ensureContext() || !this.ctx || !this.masterGain) return;
-    if (!this.active) {
-      this.active = true;
-      this.masterGain.gain.setTargetAtTime(0.45, this.ctx.currentTime, 0.08);
-    }
-    if (this.ctx.state === 'suspended') {
-      void this.ctx.resume();
-    }
-
-    const now = this.ctx.currentTime;
-    freqs.forEach((freq, idx) => {
-      if (!this.ctx || !this.masterGain) return;
-      const start = now + idx * 0.11;
-      const osc = this.ctx.createOscillator();
-      const sub = this.ctx.createOscillator();
-      osc.type = 'triangle';
-      sub.type = 'sine';
-
-      osc.frequency.setValueAtTime(freq, start);
-      osc.frequency.linearRampToValueAtTime(freq * 1.0025, start + 0.5);
-      sub.frequency.setValueAtTime(freq * 0.5, start);
-
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.linearRampToValueAtTime(0.13, start + 0.025);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.05);
-
-      osc.connect(gain);
-      sub.connect(gain);
-      gain.connect(this.masterGain);
-
-      osc.start(start);
-      sub.start(start);
-      osc.stop(start + 1.1);
-      sub.stop(start + 1.1);
-    });
-  }
-
-  click(pitch = 640): void {
-    if (!this.ctx || !this.masterGain || !this.active) return;
-    const now = this.ctx.currentTime;
-    const osc = this.ctx.createOscillator();
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(pitch, now);
-    osc.frequency.exponentialRampToValueAtTime(pitch * 0.42, now + 0.03);
-
+  private noiseBurst(duration: number, from: number, to: number, gainPeak: number, delay = 0): void {
+    if (!this.ctx || !this.master) return;
+    const start = this.ctx.currentTime + delay;
+    const len = Math.max(1, Math.floor(this.ctx.sampleRate * duration));
+    const buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const band = this.ctx.createBiquadFilter();
+    band.type = 'bandpass';
+    band.Q.value = 1.1;
+    band.frequency.setValueAtTime(from, start);
+    band.frequency.exponentialRampToValueAtTime(to, start + duration);
     const g = this.ctx.createGain();
-    g.gain.setValueAtTime(0.06, now);
-    g.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.linearRampToValueAtTime(gainPeak, start + duration * 0.25);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    src.connect(band);
+    band.connect(g);
+    g.connect(this.master);
+    src.start(start);
+    src.stop(start + duration + 0.02);
+  }
 
+  private tone(freq: number, type: OscillatorType, start: number, dur: number, peak: number, glideTo?: number): void {
+    if (!this.ctx || !this.master) return;
+    const osc = this.ctx.createOscillator();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    if (glideTo) osc.frequency.exponentialRampToValueAtTime(glideTo, start + dur);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.linearRampToValueAtTime(peak, start + Math.min(0.02, dur * 0.2));
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
     osc.connect(g);
-    g.connect(this.masterGain);
-    osc.start(now);
-    osc.stop(now + 0.04);
+    g.connect(this.master);
+    osc.start(start);
+    osc.stop(start + dur + 0.02);
+  }
+
+  /** A chord the reader asked for. Plays even with interface sounds off. */
+  playChord(freqs: number[] = [261.63, 329.63, 392.0, 523.25]): void {
+    if (!this.ensureContext() || !this.ctx) return;
+    this.chordActive = true;
+    const now = this.ctx.currentTime;
+    this.noiseBurst(0.35, 2400, 1400, 0.025);
+    freqs.forEach((f, idx) => {
+      const start = now + 0.04 + idx * 0.11;
+      this.tone(f, 'triangle', start, 1.05, 0.12, f * 1.0025);
+      this.tone(f * 0.5, 'sine', start, 1.05, 0.07);
+    });
+    window.setTimeout(() => {
+      this.chordActive = false;
+    }, 1500);
+  }
+
+  /** Legacy transport control used by the flexi-disc dock. */
+  toggle(force?: boolean): boolean {
+    const next = typeof force === 'boolean' ? force : !this.chordActive;
+    if (!next && this.ctx && this.master) {
+      const now = this.ctx.currentTime;
+      this.master.gain.cancelScheduledValues(now);
+      this.master.gain.setTargetAtTime(0.0001, now, 0.05);
+      this.master.gain.setTargetAtTime(0.42, now + 0.4, 0.05);
+      this.chordActive = false;
+    }
+    return next;
+  }
+
+  /** A pen tick on paper. */
+  tick(pitch = 1400): void {
+    if (!this.ambient() || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.tone(pitch, 'square', now, 0.03, 0.035, pitch * 0.5);
+  }
+
+  /** Kept for older callers: a relay click, now routed through tick. */
+  click(pitch = 680): void {
+    this.tick(pitch * 1.6);
+  }
+
+  /** The press coming down on the sheet. */
+  thunk(): void {
+    if (!this.ambient() || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.tone(96, 'sine', now, 0.42, 0.32, 44);
+    this.noiseBurst(0.12, 900, 200, 0.12);
+  }
+
+  /** A page turning. */
+  pageTurn(forward = true): void {
+    if (!this.ambient()) return;
+    this.noiseBurst(0.28, forward ? 900 : 3600, forward ? 3600 : 900, 0.09);
+  }
+
+  /** The reading lamp clicking on, with a warm hum behind it. */
+  lamp(on = true): void {
+    if (!this.ambient() || !this.ctx) return;
+    const now = this.ctx.currentTime;
+    this.tone(on ? 1900 : 1500, 'square', now, 0.025, 0.04);
+    if (on) {
+      [196.0, 293.66, 392.0].forEach((f, i) => this.tone(f, 'sine', now + 0.05 + i * 0.06, 1.6, 0.05));
+    } else {
+      this.tone(120, 'sine', now + 0.02, 0.9, 0.06, 60);
+    }
   }
 }
 

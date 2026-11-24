@@ -38,7 +38,8 @@ export async function getStaticPaths() {
           folioCode: folioEntry?.folioCode || '03',
           totalFolios: folios.length,
           prevArticle: prev ? { slug: prev.data.articleSlug, title: prev.data.title } : null,
-          nextArticle: next ? { slug: next.data.articleSlug, title: next.data.title } : null
+          nextArticle: next ? { slug: next.data.articleSlug, title: next.data.title } : null,
+          issueArticleCount: sorted.length
         }
       });
     }
@@ -46,30 +47,44 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { entry, folioCode, totalFolios, prevArticle, nextArticle } = Astro.props;
+const { entry, folioCode, totalFolios, prevArticle, nextArticle, issueArticleCount } = Astro.props;
 const { Content } = await render(entry);
 const d = entry.data;
+const cleanGuide = (line: string) => line.replace(/^(READING GUIDE\s*(\/\/|:)\s*|\[[a-z ]+\]\s*|NOTE\s*\/\/\s*)/i, '');
+const endHref = `/issues/${d.issueNumber}/last-page`;
 ---
 
 <BaseLayout
-  title={`${d.title} — Issue ${d.issueNumber} Folio ${folioCode} · SLOP ILLUSTRATED (Si.)`}
-  description={`${d.headline}: ${d.deck}`}
+  title={`${d.headline} · ${d.title} · Slop Illustrated ${d.issueNumber}`}
+  description={d.deck}
 >
-  <article class="article-monograph carbon-sheet" data-variant={d.layoutVariant} data-article={d.articleSlug}>
+  <article
+    class="article-monograph carbon-sheet"
+    data-variant={d.layoutVariant}
+    data-article={d.articleSlug}
+    data-read-article={`${d.issueNumber}/${d.articleSlug}`}
+    data-read-total={issueArticleCount}
+  >
     <!-- TOP FOLIO BREADCRUMB -->
     <div class="article-breadcrumb-bar">
       <div class="press-controls-bar">
         <a class="datum-tag" href={`/issues/${d.issueNumber}`}>
-          ← ISSUE {d.issueNumber} CONTENTS
+          ← Issue {d.issueNumber} contents
         </a>
         <span class="datum-tag">
-          // FOLIO {folioCode} OF {String(totalFolios).padStart(2, '0')}
+          · Folio {folioCode} of {String(totalFolios).padStart(2, '0')}
         </span>
       </div>
       <div class="press-controls-bar">
-        <span class="datum-tag">RESEARCHED {d.researchedAt}</span>
-        <a class="sha-pill" href={`${d.repoUrl}/tree/${d.sourceRevision}`} target="_blank" rel="noopener">
-          PINNED @{d.sourceRevision.slice(0, 10)} ↗
+        <span class="datum-tag">Checked {d.researchedAt}</span>
+        <a
+          class="sha-pill"
+          href={`${d.repoUrl}/tree/${d.sourceRevision}`}
+          target="_blank"
+          rel="noopener"
+          aria-label={`Everything here is pinned to commit ${d.sourceRevision.slice(0, 10)}`}
+        >
+          pinned @{d.sourceRevision.slice(0, 10)} ↗
         </a>
       </div>
     </div>
@@ -77,9 +92,8 @@ const d = entry.data;
     <!-- MONOGRAPH OPENER HEADER -->
     <header class="article-opener-header">
       <div class="article-kicker-row">
-        <span class="service-stamp">READER SERVICE #{d.readerServiceNo}</span>
-        <span class="datum-tag">{d.section}</span>
-        <span class="datum-tag">· {d.kicker}</span>
+        <span class="service-stamp">No. {d.readerServiceNo}</span>
+        <span class="datum-tag">{d.kicker}</span>
       </div>
 
       <h1 class="article-headline vt-article-headline">{d.headline}</h1>
@@ -91,7 +105,7 @@ const d = entry.data;
           <span class="datum-tag"> · {d.byline}</span>
           {d.liveUrl && (
             <span>
-              {' '}· <a class="sha-pill" href={d.liveUrl} target="_blank" rel="noopener">Live Deployment ↗</a>
+              {' '}· <a class="sha-pill" href={d.liveUrl} target="_blank" rel="noopener">Play it live ↗</a>
             </span>
           )}
         </div>
@@ -110,7 +124,7 @@ const d = entry.data;
     </header>
 
     <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
-    <section class="article-hero-media" aria-label="Editorial Plate & Technical Specifications">
+    <section class="article-hero-media" aria-label="Plate and the short version">
       <figure class="plate-figure vt-article-plate">
         <div class="plate-art-box">
           {d.plate.kind === 'blender-webp' && d.plate.src ? (
@@ -130,13 +144,13 @@ const d = entry.data;
           )}
         </div>
         <figcaption class="plate-figcaption">
-          <span><strong>“{d.plate.title}”</strong> — {d.plate.alt}</span>
+          <span><strong>{d.plate.title}.</strong> {d.plate.kind === 'blender-webp' ? 'A Blender still life. Art, not evidence.' : 'A drawing of the idea. Not live data.'}</span>
           <span class="datum-tag">{d.plate.medium}</span>
         </figcaption>
       </figure>
 
       <aside class="glance-ledger-box">
-        <h2>At a Glance // {d.category}</h2>
+        <h2>The short version</h2>
         <dl class="metrics-dl">
           {d.metrics.map((m) => (
             <div>
@@ -146,7 +160,7 @@ const d = entry.data;
           ))}
         </dl>
         <p class="datum-tag">{d.glanceNote}</p>
-        <ul class="stack-pills" aria-label="Technology stack">
+        <ul class="stack-pills" aria-label="Built with">
           {d.techStack.map((tech) => (
             <li>{tech}</li>
           ))}
@@ -178,7 +192,7 @@ const d = entry.data;
             </div>
             <figcaption class="plate-figcaption">
               <span>{d.secondaryMedia.caption}</span>
-              <span class="datum-tag">DOCUMENTED CAPTURE</span>
+              <span class="datum-tag">Screenshot from the repo</span>
             </figcaption>
           </figure>
         )}
@@ -193,7 +207,7 @@ const d = entry.data;
         )}
 
         <section class="under-hood-section" aria-labelledby="under-hood-heading">
-          <h2 id="under-hood-heading">Under the Hood // Verified Architecture</h2>
+          <h2 id="under-hood-heading">Under the hood</h2>
           <ul class="arch-list">
             {d.architecture.map((item) => (
               <li>{item}</li>
@@ -212,9 +226,9 @@ const d = entry.data;
         </section>
       </div>
 
-      <aside aria-label="Provenance, Boundaries & Pinned Sources">
+      <aside aria-label="What it does, what it doesn’t, and the receipts">
         <div class="sidebar-panel">
-          <h3>Verified Capabilities</h3>
+          <h3>What it actually does</h3>
           <ul class="sidebar-list">
             {d.verifiedCapabilities.map((cap) => (
               <li>{cap}</li>
@@ -223,7 +237,7 @@ const d = entry.data;
         </div>
 
         <div class="sidebar-panel caveat-panel">
-          <h3>Field Notes &amp; Honest Boundaries</h3>
+          <h3>What it doesn’t do (yet)</h3>
           <ul class="sidebar-list">
             {d.fieldNotes.map((note) => (
               <li>{note}</li>
@@ -233,17 +247,17 @@ const d = entry.data;
 
         {d.readingGuide.length > 0 && (
           <div class="sidebar-panel">
-            <h3>Source Reading Guide</h3>
+            <h3>If you open the repo, start here</h3>
             <ul class="sidebar-list">
               {d.readingGuide.map((line) => (
-                <li class="datum-tag">{line}</li>
+                <li class="datum-tag">{cleanGuide(line)}</li>
               ))}
             </ul>
           </div>
         )}
 
         <div class="sidebar-panel">
-          <h3>Commit-Pinned Sources ({d.sources.length})</h3>
+          <h3>Receipts ({d.sources.length})</h3>
           <ul class="sources-list">
             {d.sources.map((src) => (
               <li>
@@ -258,41 +272,40 @@ const d = entry.data;
     </div>
 
     <!-- FOLIO PAGER -->
+    <div class="opus-end-mark" data-read-end aria-hidden="true">■</div>
+
     <nav
       class="folio-pager"
-      aria-label="Folio Navigation"
+      aria-label="Turn the page"
       data-folio-prev={prevArticle ? `/issues/${d.issueNumber}/${prevArticle.slug}` : `/issues/${d.issueNumber}`}
-      data-folio-next={nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : `/source-room?issue=${d.issueNumber}`}
-      data-folio-prev-label={prevArticle ? prevArticle.title : `Issue ${d.issueNumber} Cover`}
-      data-folio-next-label={nextArticle ? nextArticle.title : 'The Source Room'}
+      data-folio-next={nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : endHref}
+      data-folio-prev-label={prevArticle ? prevArticle.title : `the Issue ${d.issueNumber} cover`}
+      data-folio-next-label={nextArticle ? nextArticle.title : 'the last page'}
     >
       <div>
         {prevArticle ? (
           <a class="btn-secondary" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
-            ← Prev: {prevArticle.title}
+            ← {prevArticle.title}
           </a>
         ) : (
           <a class="btn-secondary" href={`/issues/${d.issueNumber}`}>
-            ← Issue {d.issueNumber} Cover
+            ← Back to the cover
           </a>
         )}
       </div>
       <div class="press-controls-bar">
-        <span class="folio-shortcut-hint" aria-label="Keyboard shortcuts: k previous folio, j next folio">
-          <kbd class="ctrl-kbd">k</kbd> Prev · <kbd class="ctrl-kbd">j</kbd> Next · <kbd class="ctrl-kbd">?</kbd> Keys
+        <span class="folio-shortcut-hint" aria-label="Keyboard: k for the previous page, j for the next">
+          <kbd class="ctrl-kbd">k</kbd> back · <kbd class="ctrl-kbd">j</kbd> next · <kbd class="ctrl-kbd">?</kbd> all keys
         </span>
-        <a class="datum-tag" href={`/source-room?issue=${d.issueNumber}`}>
-          SOURCE ROOM ↗
-        </a>
       </div>
       <div class="pager-next">
         {nextArticle ? (
           <a class="btn-primary" href={`/issues/${d.issueNumber}/${nextArticle.slug}`}>
-            Next: {nextArticle.title} →
+            {nextArticle.title} →
           </a>
         ) : (
-          <a class="btn-primary" href={`/source-room?issue=${d.issueNumber}`}>
-            Finish in Source Room →
+          <a class="btn-primary" href={endHref}>
+            Turn to the last page →
           </a>
         )}
       </div>

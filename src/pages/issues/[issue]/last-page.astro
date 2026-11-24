@@ -1,0 +1,93 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PressLamp from '../../../components/islands/PressLamp.svelte';
+import { USSYVERSE_STRATIGRAPHY } from '../../../lib/folio';
+
+export async function getStaticPaths() {
+  const issues = await getCollection('issues');
+  const articles = await getCollection('articles');
+  return issues
+    .filter((i) => i.data.lastPage)
+    .map((issueEntry) => {
+      const issueArticles = articles
+        .filter((a) => a.data.issueNumber === issueEntry.data.issueNumber)
+        .sort((a, b) => a.data.index - b.data.index);
+      const last = issueArticles[issueArticles.length - 1];
+      return {
+        params: { issue: issueEntry.data.issueNumber },
+        props: {
+          issueEntry,
+          lastArticle: last ? { slug: last.data.articleSlug, title: last.data.title } : null,
+          count: issueArticles.length
+        }
+      };
+    });
+}
+
+const { issueEntry, lastArticle, count } = Astro.props;
+const d = issueEntry.data;
+const lastPage = d.lastPage!;
+const isCurrent = d.status === 'current';
+---
+
+<BaseLayout
+  title={`The Last Page · Issue ${d.issueNumber} · Slop Illustrated`}
+  description={`The end of Issue ${d.issueNumber}, ${d.title}. ${lastPage.lines[0]}`}
+>
+  <article
+    class="opus-last-page"
+    data-folio-prev={lastArticle ? `/issues/${d.issueNumber}/${lastArticle.slug}` : `/issues/${d.issueNumber}`}
+    data-folio-prev-label={lastArticle ? lastArticle.title : 'the cover'}
+    data-folio-next={`/source-room?issue=${d.issueNumber}`}
+    data-folio-next-label="the Source Room"
+  >
+    <div class="carbon-sheet opus-last-page-inner">
+      <p class="datum-tag opus-last-kicker">Issue {d.issueNumber} · {d.coverDate} · The last page</p>
+
+      <h1 class="opus-last-headline">{lastPage.headline}</h1>
+
+      <div class="opus-last-lines">
+        {lastPage.lines.map((line) => (
+          <p class="opus-last-line scroll-reveal">{line}</p>
+        ))}
+      </div>
+
+      {isCurrent && (
+        <section class="opus-strata scroll-reveal" aria-labelledby="strata-heading">
+          <h2 id="strata-heading" class="opus-strata-heading">Everything this site used to be is still out there.</h2>
+          <ol class="opus-strata-list">
+            {USSYVERSE_STRATIGRAPHY.slice(0, -1).map((era) => (
+              <li>
+                <span class="opus-strata-era">{era.era}</span>
+                <a href={era.repoUrl} target="_blank" rel="noopener">{era.title}</a>
+                <span class="opus-strata-still">still public</span>
+              </li>
+            ))}
+          </ol>
+          <p class="opus-strata-coda">Nothing was deleted. That’s the whole policy.</p>
+        </section>
+      )}
+
+      <PressLamp client:visible />
+
+      <p class="opus-last-final scroll-reveal">
+        The next issue arrives as a pull request. A person reads it before it prints.
+      </p>
+
+      <p class="opus-read-counter" data-read-counter={d.issueNumber} data-read-total={count}>
+        {count} features in this issue.
+      </p>
+
+      <nav class="cta-row opus-last-nav" aria-label="Where to go from here">
+        <a class="btn-primary" href={`/source-room?issue=${d.issueNumber}`}>Take the sources with you →</a>
+        <a class="btn-secondary" href={`/issues/${d.issueNumber}`}>Back to the cover</a>
+        <a class="btn-secondary" href={isCurrent ? '/issues/01' : '/issues/02'}>
+          {isCurrent ? 'Read Issue 01' : 'Read Issue 02'}
+        </a>
+      </nav>
+
+      <p class="opus-last-sign">Slop, Illustrated.</p>
+    </div>
+  </article>
+</BaseLayout>

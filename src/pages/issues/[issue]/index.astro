@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CarbonCoverStage from '../../../components/islands/CarbonCoverStage.svelte';
 import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
+import ColdOpen from '../../../components/islands/ColdOpen.svelte';
 import { buildIssueFolios } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -41,20 +42,26 @@ const coverCells = issueArticles.map((a) => ({
 ---
 
 <BaseLayout
-  title={`Issue ${issueData.issueNumber}: ${issueData.title} · SLOP ILLUSTRATED (Si.)`}
-  description={`${issueData.subtitle} — ${issueData.coverDate} (${issueData.status} issue).`}
+  title={`Issue ${issueData.issueNumber}: ${issueData.title} · Slop Illustrated`}
+  description={`Issue ${issueData.issueNumber}, ${issueData.coverDate}. ${issueData.subtitle}`}
 >
   <!-- FOLIO 01: FRONT COVER -->
   <section id="cover" class="issue-cover-spread">
     <div class="carbon-sheet">
       <div class="masthead-datum-strip">
         <span class="live-issue-pill">
-          FOLIO 01 / COVER · ISSUE {issueData.issueNumber} ({issueData.status.toUpperCase()})
+          Folio 01 · The cover · Issue {issueData.issueNumber} {issueData.status === 'current' ? '· On the stands' : '· From the archive'}
         </span>
         <span class="datum-tag">
-          {issueData.coverDate} · {folios.length} DIGITAL FOLIOS · EDITED BY {issueData.editorInChief}
+          {issueData.coverDate} · {folios.length} folios · Edited by {issueData.editorInChief}
         </span>
       </div>
+
+      {issueData.coldOpen.length > 0 && (
+        <div class="opus-cold-open-slot">
+          <ColdOpen client:load lines={issueData.coldOpen} issueNumber={issueData.issueNumber} issueTitle={issueData.title} />
+        </div>
+      )}
 
       <h1 class="masthead-monument vt-issue-title">
         <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}</span>
@@ -65,9 +72,9 @@ const coverCells = issueArticles.map((a) => ({
       <div
         class="issue-cover-grid"
         data-folio-prev="/"
-        data-folio-prev-label="Newsstand"
+        data-folio-prev-label="the front page"
         data-folio-next={issueArticles[0] ? `/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}` : '/source-room'}
-        data-folio-next-label={issueArticles[0] ? issueArticles[0].data.title : 'Source Room'}
+        data-folio-next-label={issueArticles[0] ? issueArticles[0].data.title : 'the Source Room'}
       >
         <div class="vt-issue-stage">
           {issueData.coverArt.kind === 'webgl-carbon-hive' ? (
@@ -87,15 +94,15 @@ const coverCells = issueArticles.map((a) => ({
                 )}
               </div>
               <figcaption class="plate-figcaption">
-                <span><strong>{issueData.coverArt.title}</strong> — {issueData.coverArt.caption}</span>
+                <span><strong>{issueData.coverArt.title}.</strong> {issueData.coverArt.caption}</span>
                 <span class="datum-tag">{issueData.coverArt.medium}</span>
               </figcaption>
             </figure>
           )}
         </div>
 
-        <aside class="glance-ledger-box" aria-label="Cover Highlights & Quick Jump">
-          <h2>Cover Lines // Issue {issueData.issueNumber}</h2>
+        <aside class="glance-ledger-box" aria-label="On the cover">
+          <h2>On the cover</h2>
           <dl class="metrics-dl">
             {issueData.highlights.map((h) => (
               <div>
@@ -108,22 +115,22 @@ const coverCells = issueArticles.map((a) => ({
           <ul class="sources-list">
             {issueArticles.slice(0, 6).map((art) => (
               <li>
-                <span class="datum-tag">FOLIO {folioBySlug.get(art.data.articleSlug)} · </span>
+                <span class="datum-tag">{folioBySlug.get(art.data.articleSlug)} · </span>
                 <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>
                   <strong>{art.data.title}</strong>
                 </a>
-                <div class="datum-tag">{art.data.kicker}</div>
+                <div class="datum-tag">{art.data.headline}</div>
               </li>
             ))}
           </ul>
 
           <div class="cta-row">
-            <a class="btn-primary" href="#contents">Jump to Contents ↓</a>
             {issueArticles[0] && (
-              <a class="btn-secondary" href={`/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}`}>
-                Begin Folio 03 ↗
+              <a class="btn-primary" href={`/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}`}>
+                Start reading ↗
               </a>
             )}
+            <a class="btn-secondary" href="#contents">The editor’s letter ↓</a>
           </div>
         </aside>
       </div>
@@ -133,7 +140,7 @@ const coverCells = issueArticles.map((a) => ({
   <!-- FOLIO 02: EDITOR'S LETTER & FRONTISPIECE -->
   <section id="contents" class="carbon-sheet editor-letter-spread scroll-reveal">
     <div>
-      <span class="datum-tag">FOLIO 02 // FRONTISPIECE &amp; IMPRINT</span>
+      <span class="datum-tag">Folio 02 · Frontispiece</span>
       {issueData.frontispiece && (
         <figure class="plate-figure">
           <div class="plate-art-box">
@@ -161,13 +168,14 @@ const coverCells = issueArticles.map((a) => ({
     </div>
 
     <div>
-      <span class="service-stamp">FROM THE EDITOR’S DESK</span>
+      <span class="service-stamp">A letter from the editor</span>
       <h2 class="hero-issue-headline">{issueData.editorLetterHeadline}</h2>
-      <div class="editor-prose">
+      <div class="editor-prose opus-letter">
         <Content />
       </div>
-      <p class="datum-tag">
-        — {issueData.editorInChief} · Si. Issue {issueData.issueNumber} ({issueData.coverDate})
+      <p class="opus-signature">
+        <span class="opus-signature-name">{issueData.editorInChief}</span>
+        <span class="datum-tag">Editor, Slop Illustrated · {issueData.coverDate}</span>
       </p>
     </div>
   </section>
@@ -177,23 +185,28 @@ const coverCells = issueArticles.map((a) => ({
     <div class="carbon-sheet">
       <div class="section-header-row">
         <div>
-          <span class="datum-tag">COMPLETE TABLE OF CONTENTS // FOLIOS 01–{String(folios.length).padStart(2, '0')}</span>
-          <h2 class="section-heading">Feature <em>Monographs</em></h2>
+          <span class="datum-tag">Contents · Folios 01 to {String(folios.length).padStart(2, '0')}</span>
+          <h2 class="section-heading">The <em>Features</em></h2>
         </div>
         <a class="btn-secondary" href={`/source-room?issue=${issueData.issueNumber}`}>
-          Open Issue {issueData.issueNumber} in Source Room ↗
+          Every source in this issue ↗
         </a>
       </div>
 
+      <p class="opus-read-counter" data-read-counter={issueData.issueNumber} data-read-total={issueArticles.length}>
+        {issueArticles.length} features in this issue.
+      </p>
+
       <ol class="article-ledger">
         {issueArticles.map((art) => (
-          <li class="article-ledger-row">
+          <li class="article-ledger-row" data-read-id={`${issueData.issueNumber}/${art.data.articleSlug}`}>
             <div class="ledger-folio-col">{folioBySlug.get(art.data.articleSlug)}</div>
             <div class="ledger-title-col">
-              <span class="datum-tag">{art.data.section}</span>
+              <span class="datum-tag">{art.data.kicker}</span>
               <h3>
                 <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>{art.data.title}</a>
               </h3>
+              <span class="opus-read-mark"></span>
             </div>
             <div class="ledger-deck-col">
               <strong>{art.data.headline}</strong>
@@ -206,6 +219,7 @@ const coverCells = issueArticles.map((a) => ({
                 href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
                 target="_blank"
                 rel="noopener"
+                aria-label={`${art.data.title} source, commit ${art.data.sourceRevision.slice(0, 7)}`}
               >
                 @{art.data.sourceRevision.slice(0, 7)} ↗
               </a>
@@ -213,6 +227,12 @@ const coverCells = issueArticles.map((a) => ({
           </li>
         ))}
       </ol>
+
+      {issueData.lastPage && (
+        <p class="opus-last-page-link">
+          <a class="btn-secondary" href={`/issues/${issueData.issueNumber}/last-page`}>Skip to the last page →</a>
+        </p>
+      )}
     </div>
   </section>
 </BaseLayout>

@@ -2,6 +2,7 @@
 import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/editorial.css';
+import '../styles/opus.css';
 import Masthead from '../components/Masthead.astro';
 import FooterColophon from '../components/FooterColophon.astro';
 
@@ -13,7 +14,7 @@ interface Props {
 
 const {
   title,
-  description = 'SLOP ILLUSTRATED (Si.) Living Edition — A source-linked digital magazine of software projects, protocols, and honest engineering receipts by SLOPTIMUS PRIME.',
+  description = 'Slop Illustrated is a magazine about software made by one person and a crew of agents. Every claim links to the commit it came from. It knows it is written with AI, and it checks.',
   canonicalPath = Astro.url.pathname
 } = Astro.props;
 
@@ -27,9 +28,10 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b0c0e" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="SLOP ILLUSTRATED (Si.) RSS Feed" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Slop Illustrated" href="/rss.xml" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -43,17 +45,20 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     />
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <a class="skip-link" href="#main-content">Skip to the reading</a>
     <div class="scroll-progress-track" aria-hidden="true">
       <div class="scroll-progress-bar"></div>
     </div>
 
     <Masthead currentPath={Astro.url.pathname} />
 
-    <main id="main-content">
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
 
     <FooterColophon />
+    <script>
+      import '../scripts/reading-tracker.ts';
+    </script>
   </body>
 </html>

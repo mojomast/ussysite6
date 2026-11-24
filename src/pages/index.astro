@@ -34,22 +34,22 @@ const coverCells = currentArticles.map((a) => ({
 }));
 
 const leadArticle = currentArticles[0];
+const num = currentIssue.data.issueNumber;
 ---
 
 <BaseLayout
-  title={`SLOP ILLUSTRATED (Si.) · Living Edition — Issue ${currentIssue.data.issueNumber} (${currentIssue.data.coverDate})`}
-  description={`${currentIssue.data.title}: ${currentIssue.data.subtitle}. Edited by ${currentIssue.data.editorInChief}.`}
+  title={`Slop Illustrated · Issue ${num}: ${currentIssue.data.title}`}
+  description={`Issue ${num} of Slop Illustrated: ${currentIssue.data.subtitle} Eleven features, every claim linked to its commit.`}
 >
-  <!-- NEWSSTAND MONUMENTAL HERO -->
   <section class="newsstand-hero">
     <div class="carbon-sheet">
       <div class="masthead-datum-strip">
         <span class="live-issue-pill">
           <span class="live-dot" aria-hidden="true"></span>
-          LIVING EDITION // ISSUE {currentIssue.data.issueNumber} · {currentIssue.data.coverDate}
+          On the stands · Issue {num} · {currentIssue.data.coverDate}
         </span>
         <span class="datum-tag">
-          EDITED BY {currentIssue.data.editorInChief} · ALL CLAIMS COMMIT-SHA PINNED · {allArticles.length} TOTAL MONOGRAPHS
+          {allArticles.length} features so far · Every claim pinned to a commit · Written with AI, checked by hand
         </span>
       </div>
 
@@ -60,19 +60,24 @@ const leadArticle = currentArticles[0];
             <span class="word-illustrated">Illustrated<span class="period-mark">.</span></span>
           </h1>
 
+          <p class="opus-tagline">
+            A magazine about software made by one person and a crew of machines. We know what most machine writing is.
+            That’s why we check.
+          </p>
+
           <span class="hero-issue-kicker">{currentIssue.data.themeTag}</span>
           <h2 class="hero-issue-headline vt-issue-title">{currentIssue.data.title}</h2>
           <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
 
           <div class="cta-row">
-            <a class="btn-primary" href={`/issues/${currentIssue.data.issueNumber}`}>
-              Open Issue {currentIssue.data.issueNumber} Cover &amp; Contents ↗
+            <a class="btn-primary" href={`/issues/${num}`}>
+              Open Issue {num} ↗
             </a>
-            <a class="btn-secondary" href={`/issues/${currentIssue.data.issueNumber}/${leadArticle.data.articleSlug}`}>
-              Cover Story: {leadArticle.data.title}
+            <a class="btn-secondary" href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
+              Cover story: {leadArticle.data.title}
             </a>
-            <a class="btn-secondary" href="/issues/01">
-              Issue 01 Archive
+            <a class="btn-secondary" href={`/issues/${num}#opening`}>
+              ▶ Watch the opening
             </a>
           </div>
 
@@ -88,55 +93,54 @@ const leadArticle = currentArticles[0];
 
         <div
           class="vt-issue-stage"
-          data-folio-next={`/issues/${currentIssue.data.issueNumber}`}
-          data-folio-next-label={`Issue ${currentIssue.data.issueNumber} Cover`}
+          data-folio-next={`/issues/${num}`}
+          data-folio-next-label={`the Issue ${num} cover`}
         >
-          <CarbonCoverStage client:load items={coverCells} issueNumber={currentIssue.data.issueNumber} />
+          <CarbonCoverStage client:load items={coverCells} issueNumber={num} />
         </div>
       </div>
     </div>
   </section>
 
-  <!-- COVER STORY SPOTLIGHT & ISSUE 02 LEDGER -->
   <section class="section-block scroll-reveal">
     <div class="carbon-sheet">
       <div class="section-header-row">
         <div>
-          <span class="datum-tag">IN THIS ISSUE // {currentArticles.length} SOURCE-VERIFIED MONOGRAPHS</span>
-          <h2 class="section-heading">Issue {currentIssue.data.issueNumber} <em>Table of Dispatches</em></h2>
+          <span class="datum-tag">In this issue</span>
+          <h2 class="section-heading">Eleven Features, <em>One Question</em></h2>
         </div>
-        <a class="btn-secondary" href={`/issues/${currentIssue.data.issueNumber}`}>
-          Read Editor’s Letter &amp; Full Folio Map ↗
+        <a class="btn-secondary" href={`/issues/${num}#contents`}>
+          Read the editor’s letter ↗
         </a>
       </div>
 
       <article class="cover-story-banner">
         <div>
           <div class="article-kicker-row">
-            <span class="service-stamp">COVER STORY · #{leadArticle.data.readerServiceNo}</span>
-            <span class="datum-tag">FOLIO {folioBySlug.get(leadArticle.data.articleSlug)}</span>
+            <span class="service-stamp">Cover story · #{leadArticle.data.readerServiceNo}</span>
             <a
               class="sha-pill"
               href={`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`}
               target="_blank"
               rel="noopener"
+              aria-label={`Source pinned at commit ${leadArticle.data.sourceRevision.slice(0, 7)}`}
             >
               @{leadArticle.data.sourceRevision.slice(0, 7)} ↗
             </a>
           </div>
           <h3 class="hero-issue-headline">
-            <a href={`/issues/${leadArticle.data.issueNumber}/${leadArticle.data.articleSlug}`}>
+            <a href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
               {leadArticle.data.headline}
             </a>
           </h3>
           <p class="hero-issue-deck">{leadArticle.data.deck}</p>
           <blockquote class="editorial-pullquote">“{leadArticle.data.pullQuote}”</blockquote>
           <div class="cta-row">
-            <a class="btn-primary" href={`/issues/${leadArticle.data.issueNumber}/${leadArticle.data.articleSlug}`}>
-              Read Cover Monograph ↗
+            <a class="btn-primary" href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
+              Read the cover story ↗
             </a>
             <a class="btn-secondary" href={leadArticle.data.repoUrl} target="_blank" rel="noopener">
-              Inspect Repository ↗
+              Open the repo ↗
             </a>
           </div>
         </div>
@@ -156,15 +160,20 @@ const leadArticle = currentArticles[0];
         </div>
       </article>
 
+      <p class="opus-read-counter" data-read-counter={num} data-read-total={currentArticles.length}>
+        {currentArticles.length} features in this issue.
+      </p>
+
       <ol class="article-ledger">
         {currentArticles.map((art) => (
-          <li class="article-ledger-row">
+          <li class="article-ledger-row" data-read-id={`${num}/${art.data.articleSlug}`}>
             <div class="ledger-folio-col">{folioBySlug.get(art.data.articleSlug)}</div>
             <div class="ledger-title-col">
-              <span class="datum-tag">{art.data.section}</span>
+              <span class="datum-tag">{art.data.kicker}</span>
               <h3>
-                <a href={`/issues/${art.data.issueNumber}/${art.data.articleSlug}`}>{art.data.title}</a>
+                <a href={`/issues/${num}/${art.data.articleSlug}`}>{art.data.title}</a>
               </h3>
+              <span class="opus-read-mark" aria-live="off"></span>
             </div>
             <div class="ledger-deck-col">
               <strong>{art.data.headline}</strong>
@@ -177,6 +186,7 @@ const leadArticle = currentArticles[0];
                 href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
                 target="_blank"
                 rel="noopener"
+                aria-label={`${art.data.title} source, commit ${art.data.sourceRevision.slice(0, 7)}`}
               >
                 @{art.data.sourceRevision.slice(0, 7)} ↗
               </a>
@@ -187,23 +197,48 @@ const leadArticle = currentArticles[0];
     </div>
   </section>
 
-  <!-- WORKBENCH SHORT DISPATCHES -->
+  {currentIssue.data.corrections.length > 0 && (
+    <section class="section-block scroll-reveal" aria-labelledby="corrections-heading">
+      <div class="carbon-sheet opus-corrections-grid">
+        <div>
+          <span class="datum-tag">Corrections &amp; clarifications</span>
+          <h2 id="corrections-heading" class="section-heading">We Got <em>These</em> Wrong</h2>
+          <p class="hero-issue-deck">
+            A magazine written with machines should be the first to admit what the machines, and the people, got wrong. Here
+            is our list. It will grow.
+          </p>
+        </div>
+        <ol class="opus-corrections">
+          {currentIssue.data.corrections.map((c) => (
+            <li>{c}</li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
   {currentIssue.data.dispatches.length > 0 && (
     <section class="section-block scroll-reveal">
       <div class="carbon-sheet">
         <div class="section-header-row">
           <div>
-            <span class="datum-tag">BENCH NOTES // NOUS HERMES HACKATHON &amp; FILM TOOLS</span>
-            <h2 class="section-heading">Also Shipping on the <em>November Wire</em></h2>
+            <span class="datum-tag">Dispatches</span>
+            <h2 class="section-heading">Also on <em>the Bench</em></h2>
           </div>
-          <span class="datum-tag">4 ADDITIONAL PINNED REPOSITORIES</span>
+          <span class="datum-tag">Four more that didn’t get a full feature. No reflection on their character.</span>
         </div>
 
         <div class="dispatches-grid">
           {currentIssue.data.dispatches.map((d) => (
             <article class="dispatch-cell">
               <div>
-                <a class="sha-pill" href={`${d.repoUrl}/tree/${d.commitSha}`} target="_blank" rel="noopener">
+                <a
+                  class="sha-pill"
+                  href={`${d.repoUrl}/tree/${d.commitSha}`}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${d.title}, commit ${d.commitSha.slice(0, 7)}`}
+                >
                   @{d.commitSha.slice(0, 7)} ↗
                 </a>
                 <h3>
@@ -211,9 +246,6 @@ const leadArticle = currentArticles[0];
                 </h3>
                 <p>{d.note}</p>
               </div>
-              <a class="datum-tag" href={d.repoUrl} target="_blank" rel="noopener">
-                {d.repoUrl.replace('https://', '')} ↗
-              </a>
             </article>
           ))}
         </div>
@@ -221,15 +253,14 @@ const leadArticle = currentArticles[0];
     </section>
   )}
 
-  <!-- NEWSSTAND ARCHIVE RACK: ISSUE 02 + ARCHIVED ISSUE 01 -->
   <section class="section-block scroll-reveal">
     <div class="carbon-sheet">
       <div class="section-header-row">
         <div>
-          <span class="datum-tag">BACK-ISSUE VAULT &amp; CONTINUOUS PRESS</span>
-          <h2 class="section-heading">Every Issue Remains <em>On Press</em></h2>
+          <span class="datum-tag">Back issues</span>
+          <h2 class="section-heading">Every Issue Stays <em>in Print</em></h2>
         </div>
-        <span class="datum-tag">DRAFT NEXT ISSUE VIA: npm run issue:draft</span>
+        <span class="datum-tag">The next one arrives as a pull request. A person reads it before it prints.</span>
       </div>
 
       <div class="issues-rack">
@@ -240,7 +271,7 @@ const leadArticle = currentArticles[0];
               <div>
                 <div class="issue-card-top">
                   <span class="service-stamp">
-                    ISSUE {iss.data.issueNumber} · {iss.data.status.toUpperCase()}
+                    Issue {iss.data.issueNumber} · {iss.data.status === 'current' ? 'On the stands' : 'In the archive'}
                   </span>
                   <span class="datum-tag">{iss.data.coverDate}</span>
                 </div>
@@ -252,6 +283,7 @@ const leadArticle = currentArticles[0];
                       height={iss.data.coverArt.height || 1200}
                       alt={iss.data.coverArt.alt}
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <CarbonPlateSvg svgId={iss.data.coverArt.svgId || 'cover-carbon-hive'} title={iss.data.coverArt.title} />
@@ -263,12 +295,15 @@ const leadArticle = currentArticles[0];
                     <a href={`/issues/${iss.data.issueNumber}`}>{iss.data.title}</a>
                   </h3>
                   <p>{iss.data.subtitle}</p>
+                  <p class="opus-read-counter" data-read-counter={iss.data.issueNumber} data-read-total={count}>
+                    {count} features.
+                  </p>
                   <div class="cta-row">
                     <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
-                      Open Issue {iss.data.issueNumber} ({count} Features) ↗
+                      Open Issue {iss.data.issueNumber} ↗
                     </a>
                     <a class="btn-secondary" href={`/source-room?issue=${iss.data.issueNumber}`}>
-                      Issue {iss.data.issueNumber} Sources
+                      Its sources
                     </a>
                   </div>
                 </div>
