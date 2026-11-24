@@ -541,7 +541,7 @@
           <text x="138" y={y + 4} fill={isActive ? col : '#9aa4b4'} font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">
             {['W1-PRICING', 'W2-LABELS', 'W3-OUT-OF-SCOPE', 'W4-WEAK-TESTS'][row]}
           </text>
-          <path
+          <path pathLength="1"
             d={`M228 ${y}H342`}
             fill="none"
             stroke={isActive ? col : '#263040'}
@@ -566,7 +566,7 @@
         </text>
 
         <!-- Pass rail -->
-        <path
+        <path pathLength="1"
           d="M484 192H565"
           fill="none"
           stroke={activeIndex < 2 ? '#b8ff3c' : '#263040'}
@@ -589,7 +589,7 @@
         </text>
 
         <!-- Quarantine rail -->
-        <path
+        <path pathLength="1"
           d="M472 252L565 316"
           fill="none"
           stroke={activeIndex >= 2 ? toneColor(activeStep.tone) : '#263040'}
@@ -645,7 +645,7 @@
           [ CLICK ACTION ]
         </text>
 
-        <path
+        <path pathLength="1"
           d="M262 295H354"
           fill="none"
           stroke={activeIndex >= 1 ? '#f5a623' : '#2c3648'}
@@ -672,7 +672,7 @@
           {activeIndex === 2 ? 'FAIL-CLOSED REFUSAL' : 'REDACTED ARGS LOGGED'}
         </text>
 
-        <path
+        <path pathLength="1"
           d="M520 234H582"
           fill="none"
           stroke={activeIndex === 3 ? '#b8ff3c' : '#2c3648'}
@@ -702,11 +702,11 @@
         <rect x="52" y="76" width="696" height="290" fill="#060e16" stroke="#22f3e6" stroke-width="1.5" />
         {#if activeIndex === 0}
           {#each [0, 1, 2, 3, 4, 5, 6] as n}
-            <line x1="64" y1={108 + n * 38} x2="736" y2={108 + n * 38} stroke="#2a3b4d" stroke-width="14" opacity="0.32" />
+            <line pathLength="1" x1="64" y1={108 + n * 38} x2="736" y2={108 + n * 38} stroke="#2a3b4d" stroke-width="14" opacity="0.32" />
           {/each}
         {/if}
         {#each [0, 1, 2, 3, 4] as h}
-          <path
+          <path pathLength="1"
             d={`M 82 ${114 + h * 40} C 280 ${118 + h * 40}, 410 ${178 + h * 40}, 714 ${184 + h * 40}`}
             fill="none"
             stroke={activeIndex >= 2 && h === 0 ? '#22f3e6' : activeIndex >= 1 ? '#b8ff3c' : '#566b7d'}
@@ -844,7 +844,7 @@
           {@const isActive = idx === activeIndex}
           {@const col = toneColor(st.tone)}
           {#if idx > 0}
-            <line
+            <line pathLength="1"
               x1={x - 16}
               y1="222"
               x2={x}

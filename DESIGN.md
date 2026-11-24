@@ -201,9 +201,10 @@ Springs are CSS `linear()` curves sampled from a damped spring simulation (mass 
 
 | Curve / duration | Value | Used for |
 | :--- | :--- | :--- |
-| `--ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | Arrivals, reveals, the ink flood |
+| `--ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | Arrivals and reveals |
 | `--ease-in-out-quint` | `cubic-bezier(0.83, 0, 0.17, 1)` | The outgoing page, the plates opening |
 | `--ease-press` | `cubic-bezier(0.7, 0, 0.84, 0)` | The cold-open plates slamming shut |
+| `--ease-ink` | `cubic-bezier(0.45, 0, 0.15, 1)` | Ink: the stock flood and study lines drawing (`pathLength="1"`), a slow start and then it soaks in |
 | `--dur-micro` / `-short` / `-medium` / `-long` / `-scene` | 120 / 240 / 420 / 700 / 1100ms | Hover, press, reveal, page turn, cinematic beats |
 | `--stagger` | 45ms | Per-word and per-letter cascades |
 
@@ -211,7 +212,7 @@ Springs are CSS `linear()` curves sampled from a damped spring simulation (mass 
 
 1. **Page turns** (every route). Cross-document View Transitions: the old page swings away on its spine (`rotateY(-22deg)`) while the new one slides in from the fore-edge. Direction is real, not cosmetic. `public/motion-boot.js` (524 B, render-blocking by design) reads `data-dir="backward"` links, the j/k folio keys and `navigation.activation` (so the browser Back button turns pages backwards), then adds a `forward`/`backward` view-transition type.
 2. **Shared-element morphs.** Headlines (`hl-{issue}-{slug}`), feature plates (`plate-…`) and issue covers (`issue-art-n`) carry the same name on every page they appear, so cover → contents → feature → back, and the archive → issue, morph in place on the soft spring. `<link rel="expect" blocking="render">` holds the first frame until all named elements are parsed. Names are unique per page, and both the built stylesheet and a headless sweep of all 30 routes check this.
-3. **Ink flood.** Changing paper stock (Graphite, Rag, Oxide) is a same-document view transition of type `ink`: the new stock spreads out from the stock controls as a `clip-path` circle.
+3. **Ink flood.** Changing paper stock (Graphite, Rag, Oxide) is a same-document view transition of type `ink`: the new stock spreads out from the stock controls as a `clip-path` circle over 1.1s. For its duration `html.is-inking` strips the shared-element names, so the page takes the ink as one sheet instead of crossfading in pieces.
 4. **Kinetic type.** `Kinetic.astro` splits headlines into words at build time (the sentence stays whole for screen readers and search). Words rise out of their own baseline in a 45ms cascade, held back on page-turn arrival so they land after the morph. The masthead drops S-L-O-P letter by letter while the Syne `wght` axis presses from 420 to 800; *Illustrated* bleeds in like wet ink and the full stop drops last. On hover the letters breathe on the weight axis.
 5. **Scroll-driven reading.** Plates parallax inside their frames, contents rows and side panels rise in, the drop cap settles, and the pull quote slides in, all on `view()` timelines. The hero and issue masthead drift on `scroll(root)`.
 6. **Pinned scrollytelling** (Issue 02 front page, "If you let machines write the code…"). A sticky question with a progress meter driven by a named `view-timeline`; five verbatim lines from the editor's letter come into focus one at a time, each linked to its feature, ending on the gilt coda.

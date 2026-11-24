@@ -23,6 +23,7 @@
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
   --ease-press: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-ink: cubic-bezier(0.45, 0, 0.15, 1);
 
   /* Durations */
   --dur-micro: 120ms;
@@ -82,15 +83,17 @@
     animation-duration: 0s;
   }
 
-  /* Paper stock change: ink floods the page from the controls */
-  html:active-view-transition-type(ink)::view-transition-old(root),
-  html:active-view-transition-type(ink)::view-transition-old(si-masthead) {
+  /* Paper stock change: ink floods the whole sheet out from the stock controls */
+  html.is-inking :not(:root) {
+    view-transition-name: none !important;
+  }
+
+  html:active-view-transition-type(ink)::view-transition-old(root) {
     animation: none;
   }
 
-  html:active-view-transition-type(ink)::view-transition-new(root),
-  html:active-view-transition-type(ink)::view-transition-new(si-masthead) {
-    animation: mo-ink-flood 900ms var(--ease-out-expo) both;
+  html:active-view-transition-type(ink)::view-transition-new(root) {
+    animation: mo-ink-flood 1100ms var(--ease-ink) both;
   }
 }
 
@@ -122,9 +125,33 @@
   }
 }
 
+/* Ink origin: the pressed stock button, on a 10% grid (set as classes by PressControls) */
+html.ink-x-0 { --ink-x: 0%; }
+html.ink-x-1 { --ink-x: 10%; }
+html.ink-x-2 { --ink-x: 20%; }
+html.ink-x-3 { --ink-x: 30%; }
+html.ink-x-4 { --ink-x: 40%; }
+html.ink-x-5 { --ink-x: 50%; }
+html.ink-x-6 { --ink-x: 60%; }
+html.ink-x-7 { --ink-x: 70%; }
+html.ink-x-8 { --ink-x: 80%; }
+html.ink-x-9 { --ink-x: 90%; }
+html.ink-x-10 { --ink-x: 100%; }
+html.ink-y-0 { --ink-y: 0%; }
+html.ink-y-1 { --ink-y: 10%; }
+html.ink-y-2 { --ink-y: 20%; }
+html.ink-y-3 { --ink-y: 30%; }
+html.ink-y-4 { --ink-y: 40%; }
+html.ink-y-5 { --ink-y: 50%; }
+html.ink-y-6 { --ink-y: 60%; }
+html.ink-y-7 { --ink-y: 70%; }
+html.ink-y-8 { --ink-y: 80%; }
+html.ink-y-9 { --ink-y: 90%; }
+html.ink-y-10 { --ink-y: 100%; }
+
 @keyframes mo-ink-flood {
-  from { clip-path: circle(0% at 86% 2.5rem); }
-  to { clip-path: circle(150% at 86% 2.5rem); }
+  from { clip-path: circle(0% at var(--ink-x, 90%) var(--ink-y, 0%)); }
+  to { clip-path: circle(150% at var(--ink-x, 90%) var(--ink-y, 0%)); }
 }
 
 /* --------------------------------------------------------------------------
@@ -574,9 +601,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .mo-scene :is(path, line):not([stroke-dasharray]) {
-    stroke-dasharray: 1400;
-    animation: mo-draw 900ms var(--ease-out-expo) both;
+  /* Solid strokes carry pathLength="1", so every line draws over its whole length */
+  .mo-scene [pathLength] {
+    stroke-dasharray: 1;
+    animation: mo-draw 900ms var(--ease-ink) both;
   }
 
   .mo-scene rect,
@@ -604,7 +632,7 @@
 }
 
 @keyframes mo-draw {
-  from { stroke-dashoffset: 1400; }
+  from { stroke-dashoffset: 1; }
   to { stroke-dashoffset: 0; }
 }
 

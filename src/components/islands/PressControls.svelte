@@ -210,15 +210,30 @@
     };
   });
 
-  function chooseStock(next: PaperStock) {
+  function chooseStock(next: PaperStock, from?: HTMLElement) {
     const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     const start = (document as Document & {
       startViewTransition?: (o: { update: () => void; types: string[] }) => unknown;
     }).startViewTransition;
     if (start && !calm && next !== stock) {
+      // One sheet of paper: shared-element names would split the page into groups that
+      // crossfade on their own instead of taking the ink.
+      const root = document.documentElement;
+      // The flood starts at the button that was pressed, snapped to a 10% grid of classes
+      // because strict CSP rules out setting the origin as an inline style.
+      const box = from?.getBoundingClientRect();
+      const bx = box ? Math.round(((box.left + box.width / 2) / window.innerWidth) * 10) : 9;
+      const by = box ? Math.round(((box.top + box.height / 2) / window.innerHeight) * 10) : 0;
+      const inkClasses = ['is-inking', `ink-x-${Math.min(10, Math.max(0, bx))}`, `ink-y-${Math.min(10, Math.max(0, by))}`];
+      root.classList.add(...inkClasses);
       try {
-        start.call(document, { update: () => pressClient.setStock(next), types: ['ink'] });
+        const vt = start.call(document, { update: () => pressClient.setStock(next), types: ['ink'] }) as
+          | { finished?: Promise<void> }
+          | undefined;
+        if (vt?.finished) vt.finished.finally(() => root.classList.remove(...inkClasses));
+        else root.classList.remove(...inkClasses);
       } catch {
+        root.classList.remove(...inkClasses);
         pressClient.setStock(next);
       }
     } else {
@@ -324,7 +339,7 @@
       type="button"
       class="ctrl-btn"
       aria-pressed={stock === 'graphite'}
-      onclick={() => chooseStock('graphite')}
+      onclick={(e) => chooseStock('graphite', e.currentTarget)}
       title="Pyrolytic Graphite dark stock"
     >
       Graphite
@@ -333,7 +348,7 @@
       type="button"
       class="ctrl-btn"
       aria-pressed={stock === 'rag'}
-      onclick={() => chooseStock('rag')}
+      onclick={(e) => chooseStock('rag', e.currentTarget)}
       title="Unbleached Cotton Rag daylight stock"
     >
       Rag
@@ -342,7 +357,7 @@
       type="button"
       class="ctrl-btn"
       aria-pressed={stock === 'oxide'}
-      onclick={() => chooseStock('oxide')}
+      onclick={(e) => chooseStock('oxide', e.currentTarget)}
       title="Ferric Blueprint inspection stock"
     >
       Oxide
