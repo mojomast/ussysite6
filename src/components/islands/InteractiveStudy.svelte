@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { carbonSynth } from '../../lib/carbon-synth';
 
   interface StudyStep {
@@ -377,6 +378,60 @@
 
   const spec = $derived(STUDIES[studyId] || STUDIES.rizzstack);
   let activeIndex = $state(0);
+  let motionOk = $state(false);
+  let offscreen = $state(false);
+  let stageEl = $state<HTMLDivElement | null>(null);
+  let svgEl = $state<SVGSVGElement | null>(null);
+
+  onMount(() => {
+    const mq = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+    const sync = () => (motionOk = !mq?.matches);
+    sync();
+    mq?.addEventListener('change', sync);
+    let io: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver === 'function' && stageEl) {
+      io = new IntersectionObserver(([entry]) => {
+        offscreen = !entry.isIntersecting;
+        if (offscreen) svgEl?.pauseAnimations?.();
+        else svgEl?.unpauseAnimations?.();
+      });
+      io.observe(stageEl);
+    }
+    return () => {
+      mq?.removeEventListener('change', sync);
+      io?.disconnect();
+    };
+  });
+
+  const genericGeom = $derived.by(() => {
+    const count = spec.steps.length;
+    const boxW = Math.floor(660 / count) - 16;
+    const cx = (i: number) => 70 + i * (boxW + 16) + boxW / 2;
+    return { from: cx(0), to: cx(activeIndex) };
+  });
+
+  const packetPath = $derived.by(() => {
+    const i = activeIndex;
+    if (studyId === 'rizzstack') {
+      const y = 110 + i * 68;
+      const tail = i < 2 ? 'L484 192 H565 H700' : 'L472 252 L565 316 H700';
+      return `M138 ${y} H342 L412 212 ${tail}`;
+    }
+    if (studyId === 'uirizz') {
+      return ['M157 160 V245', 'M157 295 H437 V234', 'M157 295 H437 V234 L437 300 H157', 'M157 295 H437 V234 H668'][i] || '';
+    }
+    if (studyId === 'doppler') return 'M 82 114 C 280 118, 410 178, 714 184';
+    if (studyId === 'photopart') return ['M150 225 H150', 'M212 225 H265 H212', 'M455 225 H523', 'M523 225 H615'][i] || '';
+    if (studyId === 'jackpot') {
+      return [
+        'M220 111 H580',
+        'M400 144 L330 184 L400 226 L360 264',
+        'M200 289 H600 H200',
+        'M400 144 L330 184 L400 226 L400 289 L400 348 L400 420'
+      ][i] || '';
+    }
+    return genericGeom.from === genericGeom.to ? '' : `M${genericGeom.from} 222 H${genericGeom.to}`;
+  });
 
   const activeStep = $derived(spec.steps[activeIndex] || spec.steps[0]);
 
@@ -430,7 +485,8 @@
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <div
-    class="neon-study-stage"
+    class={`neon-study-stage ${offscreen ? 'is-offscreen' : ''}`}
+    bind:this={stageEl}
     role="region"
     tabindex="0"
     aria-label={`${spec.title}, step ${activeIndex + 1} of ${spec.steps.length}: ${activeStep.label}. Use the left and right arrow keys to step.`}
@@ -438,6 +494,7 @@
     onclick={() => setStep(activeIndex + 1)}
   >
     <svg
+      bind:this={svgEl}
       class="neon-study-svg"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 800 450"
@@ -464,6 +521,8 @@
         STATE: {activeStep.badge}
       </text>
 
+      {#key activeIndex}
+      <g class="mo-scene">
       {#if studyId === 'rizzstack'}
         <!-- 4 worker tracks -> bwrap gate -> integrated or quarantine -->
         {#each [0, 1, 2, 3] as row}
@@ -662,6 +721,11 @@
             t_CPA · VITERBI JOINT FIT
           </text>
         {/if}
+        {#if motionOk && activeIndex >= 1}
+          <line x1="82" y1="80" x2="82" y2="362" stroke="#22f3e6" stroke-width="1.2" stroke-dasharray="2 3" opacity="0.7">
+            <animateTransform attributeName="transform" type="translate" from="0 0" to="632 0" dur="3.2s" repeatCount="indefinite" />
+          </line>
+        {/if}
         {#if activeIndex === 3}
           <rect x="492" y="246" width="236" height="102" fill="#18120c" stroke="#f5a623" stroke-width="2" />
           <text x="610" y="276" fill="#f5a623" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">
@@ -710,6 +774,7 @@
           {activeIndex === 1 ? 'USE spur_gear FIRST' : 'r17 / r18 GUARD'}
         </text>
 
+        <g class={activeIndex >= 2 ? 'mo-spin' : ''}>
         <circle
           cx="615"
           cy="225"
@@ -721,6 +786,7 @@
         />
         <circle cx="615" cy="225" r="64" fill="#070a0f" stroke={activeIndex === 3 ? '#f5a623' : '#22f3e6'} stroke-width="1.8" />
         <circle cx="615" cy="225" r="24" fill="#070a0f" stroke="#f3efe6" stroke-width="1.8" />
+        </g>
         <text x="615" y="348" fill={activeIndex >= 2 ? '#b8ff3c' : '#8b96a8'} font-family="JetBrains Mono, monospace" font-size="11" text-anchor="middle">
           {activeIndex === 3 ? 'IOU OVERLAY + BUDGET GATE' : 'WATERTIGHT spur_gear STL'}
         </text>
@@ -808,6 +874,17 @@
         {/each}
       {/if}
 
+      {#if motionOk && packetPath}
+        <circle class="mo-packet" r="11" fill={toneColor(activeStep.tone)} opacity="0.22">
+          <animateMotion dur="2.4s" repeatCount="indefinite" path={packetPath} calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.2 1" />
+        </circle>
+        <circle class="mo-packet" r="4.5" fill={toneColor(activeStep.tone)}>
+          <animateMotion dur="2.4s" repeatCount="indefinite" path={packetPath} calcMode="spline" keyTimes="0;1" keySplines="0.45 0 0.2 1" />
+        </circle>
+      {/if}
+      </g>
+      {/key}
+
       <text x="34" y="418" fill="#8b96a8" font-family="JetBrains Mono, monospace" font-size="10">
         A DRAWING OF THE IDEA, NOT LIVE DATA · CLICK OR USE ← →
       </text>
@@ -834,11 +911,15 @@
 
   <div class="neon-study-footer">
     <p class="neon-study-readout" role="status" aria-live="polite">
-      <strong>{activeStep.label}:</strong>
-      {activeStep.summary}
-      {#if caption}
-        <span class="datum-tag"> — {caption}</span>
-      {/if}
+      {#key activeIndex}
+        <span class="mo-readout-inner">
+          <strong>{activeStep.label}:</strong>
+          {activeStep.summary}
+          {#if caption}
+            <span class="datum-tag"> — {caption}</span>
+          {/if}
+        </span>
+      {/key}
     </p>
 
     <div class="neon-study-controls">
