@@ -225,3 +225,32 @@ Springs are CSS `linear()` curves sampled from a damped spring simulation (mass 
 ### 8.4 Measured (headless Chrome 157, 4× CPU throttle, SwiftShader software GPU)
 
 Feature pages, studies and the last page hold 59.5–60fps on both phone and desktop profiles with zero long tasks; the page-turn arrival holds 60fps on the phone profile. The live 3D cover is the expensive part, and only because this machine has no GPU: WebGL2 runs it at 45–60fps, while WebGPU on SwiftShader reaches about 49fps on the phone and 13fps at desktop size (it was 17fps before the swarm, so the existing scene is most of that cost). On real hardware it is GPU-bound and cheap: 0.3–0.6ms of main-thread JavaScript per frame even under 4× throttle.
+
+## 9. Wave 9: Over the Top (`Fx·∞`)
+
+**Layer author:** Claude Opus 5.5 as orchestrator, with six Gemini 4 Neon implementers (one per track, each in its own worktree and branch, merged after review). Everything lives under `src/scripts/fx/`, `src/styles/fx/` and `src/components/fx/`, loaded after idle by `src/scripts/fx/index.ts`.
+
+### 9.1 The gate
+`src/scripts/fx/capability.ts` publishes `html[data-fx="off|lite|full"]` and `data-pointer`. **off** = reduced motion: nothing moves. **lite** = coarse pointer, under 4 GB memory, under 4 cores, Save-Data, or a software GPU (SwiftShader/llvmpipe, probed once and cached as `si.gpu` for the boot script): CSS effects only, no per-frame JS, no full-viewport layers. **full** = everything, paused offscreen and in hidden tabs. Per-frame values go through `setVars()` (one adopted constructable stylesheet: CSSOM, which `style-src` doesn't govern; no `style` attributes anywhere).
+
+### 9.2 Effects by track
+- **Shader:** ink-in-water backdrop (TSL → WebGL2 → CSS gradient), film grain and vignette, cover chromatic aberration, glow and selection shockwave, plate hover ripple.
+- **Typography:** decoding mono labels, Syne `wght` pressure wave under the cursor, per-glyph section reveals, ink-sweep gradient text, rate-limited glitch, outlined marquee band.
+- **Cursor:** ink-nib trail with READ/OPEN/PLAY/loupe/caret states, magnetic buttons, 3D tilt with glare, click ink splats, opt-in sound ticks.
+- **Transitions:** route-aware page turns (`press` to a feature, `ink-wipe` to a cover, `fold` home, `dusk` to the last page), registration-mark overlay, more shared morphs (brand, chips, folio codes, read stamps), dialog unfold and study slides.
+- **Scrollytelling:** the Press Run (pinned horizontal sheet feed on each cover), depth parallax in features, scroll-driven counters, reading-progress ink with chapter ticks, corrections strike-in, archive fan-out, alternating strata.
+- **Delight:** MAXIMUM RIZZ (Konami or type `rizz`; Esc or the pill to leave), printer's devils, night lamplight, December type sorts, press-day ribbon, Shift-click ink blot, `proof` overlay, console greeting.
+- **Polish (orchestrator):** `scroll-state()` masthead rule, `sibling-index()` nav set-in.
+
+### 9.3 Rules this wave added
+1. No `mix-blend-mode`, `backdrop-filter` or animated `filter` on fixed full-viewport layers; no fixed layer that isn't drawing something.
+2. Large background gradients cover a bounded area (the ink wash is the first 140vh), never the whole body.
+3. Font-weight animations are time-based and one-shot, never scroll-linked.
+4. Anything per-glyph or per-label (splits, decodes) is full tier only.
+5. The heavy page turns are full tier only; lite gets the §8 page turn.
+
+### 9.4 What measurement found
+Merged as built, the wave took a 4×-throttled 390px feature scroll from 60 to ~22fps and a desktop one from 58 to ~8fps. Bisecting by track, then by layer, then by property found: whole-body color-mix gradients re-rasterized on every repaint; blended full-viewport grain; an empty fixed backdrop forcing the body into one giant composited layer; section-tall parallax textures; and scroll-linked weight changes. After the rules above, mobile feature scroll is back to 60fps. The full tier was profiled only on a software GPU here; its main-thread cost (pressure wave ~1.4 ms/frame unthrottled, cursor trail ~1.4 ms/frame) is the number that transfers to real hardware.
+
+### 9.5 Research sources
+Three.js WebGPURenderer and RenderPipeline docs; Codrops (2026): dual-scene fluid X-ray, GoodGrowth flow-map smear, shader stamp loupe, GSAP clip-path wipes, EXAT variable-type showcase, mineral-collection halftone; Chrome for Developers: View Transitions in 2025, element-scoped view transitions, `scroll-state()` queries, `shape()`, scrollability affordances; web.dev Baseline 2026 and WebGPU support; MDN `style-src`.
