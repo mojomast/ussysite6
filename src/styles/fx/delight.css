@@ -1,1 +1,905 @@
-/* Wave 9 · delight. Owned by the delight track; see DESIGN.md §9. Gate motion on html[data-fx] and prefers-reduced-motion. */
+/* ==========================================================================
+   WAVE 9 · DELIGHT LAYER (Easter Eggs, Maximum Rizz, Devils, Seasons, Proof)
+   Strict CSP: zero inline styles. Motion gated on prefers-reduced-motion and
+   html[data-fx]. Decorative layers are aria-hidden + pointer-events: none.
+   ========================================================================== */
+
+@property --fx-rizz-hue {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+/* --------------------------------------------------------------------------
+   1. MAXIMUM RIZZ MODE — Overdrive Palette, Gilt Rules, Hue Drift & Scanlines
+   Works in all tiers; under reduced motion, renders static overdrive palette.
+   -------------------------------------------------------------------------- */
+
+html[data-rizz='max'] {
+  --fx-rizz-hue: 0deg;
+  --fx-rizz-accent: hsl(calc(176deg + var(--fx-rizz-hue)) 96% 62%);
+  --fx-rizz-hot: hsl(calc(346deg + var(--fx-rizz-hue)) 96% 62%);
+  --fx-rizz-gilt: var(--gilt);
+  --fx-rizz-glow:
+    0 0 0 1px color-mix(in srgb, var(--fx-rizz-accent) 78%, transparent),
+    0 0 24px color-mix(in srgb, var(--fx-rizz-accent) 26%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--fx-rizz-gilt) 40%, transparent);
+  --fx-rizz-gilt-rule: color-mix(in srgb, var(--fx-rizz-gilt) 85%, var(--fx-rizz-accent));
+  --signal-vermilion: var(--fx-rizz-hot);
+  --neon-cyan: var(--fx-rizz-accent);
+  --rule-hairline: color-mix(in srgb, var(--fx-rizz-gilt) 48%, #2a3040);
+  --rule-strong: var(--fx-rizz-gilt);
+}
+
+html[data-rizz='max'][data-stock='rag'] {
+  --fx-rizz-accent: hsl(calc(184deg + var(--fx-rizz-hue)) 88% 32%);
+  --fx-rizz-hot: hsl(calc(348deg + var(--fx-rizz-hue)) 84% 38%);
+  --fx-rizz-glow:
+    0 0 0 1px color-mix(in srgb, var(--fx-rizz-accent) 70%, transparent),
+    0 6px 20px color-mix(in srgb, var(--fx-rizz-accent) 18%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--fx-rizz-gilt) 45%, transparent);
+  --rule-hairline: color-mix(in srgb, var(--fx-rizz-gilt) 44%, #cfc8b6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-rizz='max'] {
+    animation: fx-rizz-hue-drift 18s linear infinite;
+  }
+}
+
+@keyframes fx-rizz-hue-drift {
+  from { --fx-rizz-hue: 0deg; }
+  to { --fx-rizz-hue: 360deg; }
+}
+
+/* Neon edges on editorial frames */
+html[data-rizz='max'] .cover-stage-frame,
+html[data-rizz='max'] .cover-story-banner,
+html[data-rizz='max'] .plate-figure,
+html[data-rizz='max'] .sidebar-panel,
+html[data-rizz='max'] .issue-folio-card,
+html[data-rizz='max'] .strata-card,
+html[data-rizz='max'] .dispatch-cell,
+html[data-rizz='max'] .neon-study-bench,
+html[data-rizz='max'] .carbon-modal {
+  border-color: var(--fx-rizz-accent);
+  box-shadow: var(--fx-rizz-glow);
+}
+
+/* Gilt structural rules & overdrive accents */
+html[data-rizz='max'] .press-masthead {
+  border-bottom: 2px solid var(--fx-rizz-gilt-rule);
+  box-shadow: 0 2px 24px color-mix(in srgb, var(--fx-rizz-accent) 22%, transparent);
+}
+
+html[data-rizz='max'] .section-header-row,
+html[data-rizz='max'] .under-hood-section,
+html[data-rizz='max'] .opus-corrections,
+html[data-rizz='max'] .site-colophon {
+  border-color: var(--fx-rizz-gilt-rule);
+}
+
+html[data-rizz='max'] .newsstand-hero {
+  border-bottom-color: var(--fx-rizz-gilt-rule);
+  background-image:
+    radial-gradient(65% 50% at 85% 10%, color-mix(in srgb, var(--fx-rizz-accent) 13%, transparent), transparent 68%),
+    radial-gradient(50% 45% at 12% 85%, color-mix(in srgb, var(--fx-rizz-gilt) 11%, transparent), transparent 72%);
+}
+
+html[data-rizz='max'] .si-badge {
+  background: var(--fx-rizz-gilt);
+  color: #0b0c0e;
+  box-shadow: 0 0 0 1px var(--fx-rizz-accent), 0 0 18px color-mix(in srgb, var(--fx-rizz-accent) 45%, transparent);
+}
+
+html[data-rizz='max'] .si-badge span,
+html[data-rizz='max'] .masthead-monument .period-mark,
+html[data-rizz='max'] .section-heading em {
+  color: var(--fx-rizz-hot);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--fx-rizz-hot) 55%, transparent);
+}
+
+html[data-rizz='max'] .service-stamp,
+html[data-rizz='max'] .hero-issue-kicker {
+  border-color: var(--fx-rizz-gilt);
+  color: var(--fx-rizz-gilt);
+  background: color-mix(in srgb, var(--fx-rizz-gilt) 14%, transparent);
+}
+
+html[data-rizz='max'] .btn-primary {
+  background: var(--bg-panel);
+  border-color: var(--fx-rizz-gilt);
+  color: var(--fx-rizz-gilt);
+  box-shadow:
+    0 0 0 1px var(--fx-rizz-accent),
+    0 0 22px color-mix(in srgb, var(--fx-rizz-accent) 34%, transparent);
+}
+
+html[data-rizz='max'] .btn-primary:hover {
+  background: var(--fx-rizz-gilt);
+  border-color: var(--fx-rizz-accent);
+  color: #0b0c0e;
+}
+
+html[data-rizz='max'] .article-ledger-row {
+  border-bottom-color: color-mix(in srgb, var(--fx-rizz-gilt) 36%, transparent);
+}
+
+html[data-rizz='max'] .editorial-pullquote {
+  border-left-color: var(--fx-rizz-gilt);
+  box-shadow: inset 3px 0 18px -6px color-mix(in srgb, var(--fx-rizz-accent) 45%, transparent);
+}
+
+/* Scanlines overlay (visible only in Max Rizz) */
+.fx-rizz-scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.032) 0 1px,
+      transparent 1px 4px
+    ),
+    radial-gradient(
+      110% 95% at 50% 50%,
+      transparent 58%,
+      color-mix(in srgb, var(--fx-rizz-accent, #22f3e6) 14%, transparent) 100%
+    );
+}
+
+html[data-rizz='max'] .fx-rizz-scanlines {
+  opacity: 1;
+  visibility: visible;
+}
+
+html[data-rizz='max'][data-stock='rag'] .fx-rizz-scanlines {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(18, 19, 22, 0.04) 0 1px,
+      transparent 1px 4px
+    ),
+    radial-gradient(
+      110% 95% at 50% 50%,
+      transparent 60%,
+      color-mix(in srgb, var(--fx-rizz-accent, #006b76) 12%, transparent) 100%
+    );
+}
+
+/* Persistent exit pill ('Max rizz · Esc to calm down') */
+.fx-rizz-pill-wrap {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: var(--fx-z-toast);
+}
+
+.fx-rizz-pill-wrap[hidden] {
+  display: none;
+}
+
+.fx-rizz-pill {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 36px;
+  padding: 0.42rem 0.78rem;
+  border: 1px solid var(--fx-rizz-gilt, var(--gilt));
+  background: color-mix(in srgb, var(--bg-panel) 94%, transparent);
+  color: var(--ink-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--fx-rizz-accent, var(--neon-cyan)) 60%, transparent),
+    0 8px 26px rgba(0, 0, 0, 0.42),
+    0 0 22px color-mix(in srgb, var(--fx-rizz-accent, var(--neon-cyan)) 26%, transparent);
+  transition: transform var(--dur-micro, 120ms) var(--ease-snap),
+    border-color var(--dur-fast) var(--ease-carbon),
+    background var(--dur-fast) var(--ease-carbon);
+}
+
+.fx-rizz-pill:hover {
+  background: var(--bg-canvas);
+  border-color: var(--fx-rizz-accent, var(--neon-cyan));
+  transform: translateY(-1px);
+}
+
+.fx-rizz-pill:focus-visible {
+  outline: 2px solid var(--fx-rizz-accent, var(--neon-cyan));
+  outline-offset: 3px;
+}
+
+.fx-rizz-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fx-rizz-hot, var(--proof-ink));
+  box-shadow: 0 0 10px var(--fx-rizz-hot, var(--proof-ink));
+  flex: 0 0 auto;
+}
+
+/* Full-screen MAXIMUM RIZZ title card & burst (motion-allowed only) */
+.fx-rizz-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 155;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 4px),
+    radial-gradient(85% 70% at 50% 45%, rgba(16, 24, 34, 0.92) 0%, rgba(5, 6, 9, 0.96) 75%);
+}
+
+.fx-rizz-stage[hidden] {
+  display: none;
+}
+
+.fx-rizz-card {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 820px);
+  overflow: hidden;
+  border: 2px solid var(--gilt);
+  background: linear-gradient(155deg, rgba(16, 20, 28, 0.97), rgba(8, 10, 14, 0.98));
+  color: #f3efe6;
+  box-shadow:
+    0 0 0 1px var(--fx-rizz-accent, #22f3e6),
+    0 0 48px color-mix(in srgb, var(--fx-rizz-accent, #22f3e6) 38%, transparent),
+    0 0 90px color-mix(in srgb, var(--gilt) 26%, transparent),
+    0 24px 64px rgba(0, 0, 0, 0.72);
+}
+
+.fx-rizz-card-bar,
+.fx-rizz-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.65rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.fx-rizz-card-bar {
+  border-bottom: 1px solid color-mix(in srgb, var(--gilt) 65%, transparent);
+  color: var(--fx-rizz-accent, #22f3e6);
+}
+
+.fx-rizz-card-foot {
+  border-top: 1px solid color-mix(in srgb, var(--gilt) 55%, transparent);
+  color: var(--gilt);
+}
+
+.fx-rizz-card-body {
+  padding: clamp(1.6rem, 4.5vw, 3rem) clamp(1.25rem, 4vw, 2.6rem);
+  text-align: center;
+}
+
+.fx-rizz-kicker {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gilt);
+}
+
+.fx-rizz-title {
+  margin: 0 0 var(--space-4);
+  line-height: 0.88;
+}
+
+.fx-rizz-title-top {
+  display: block;
+  font-family: var(--font-structural);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 5.1vw, 3.85rem);
+  letter-spacing: 0.08em;
+  color: #f3efe6;
+  text-shadow:
+    0 0 22px color-mix(in srgb, var(--fx-rizz-accent, #22f3e6) 72%, transparent),
+    3px 0 0 rgba(255, 68, 34, 0.55),
+    -3px 0 0 rgba(34, 243, 230, 0.55);
+}
+
+.fx-rizz-title-bot {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(3rem, 9.2vw, 6.4rem);
+  letter-spacing: -0.02em;
+  color: var(--gilt);
+  text-shadow:
+    0 0 32px rgba(232, 195, 106, 0.65),
+    0 0 14px color-mix(in srgb, var(--fx-rizz-hot, #ff4422) 55%, transparent);
+}
+
+.fx-rizz-note {
+  margin: 0 auto;
+  max-width: 46ch;
+  font-family: var(--font-prose);
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.22rem);
+  line-height: 1.5;
+  color: #d6d0c4;
+}
+
+/* Proof marks, stars & gilt confetti burst */
+.fx-rizz-confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.fx-rizz-bit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-family: var(--font-mono);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--gilt);
+  text-shadow: 0 0 12px currentColor;
+  transform: translate(-50%, -50%) scale(0.2);
+}
+
+.fx-rizz-bit:nth-child(3n) { color: #22f3e6; font-size: 1.75rem; }
+.fx-rizz-bit:nth-child(3n + 1) { color: #e8c36a; font-size: 1.65rem; }
+.fx-rizz-bit:nth-child(3n + 2) { color: #ff5a3c; font-size: 1.45rem; }
+.fx-rizz-bit:nth-child(4n) { font-size: 2.05rem; }
+
+.fx-rizz-foil {
+  width: 18px;
+  height: 8px;
+  background: var(--gilt);
+  box-shadow: 0 0 12px rgba(232, 195, 106, 0.72);
+}
+
+.fx-rizz-foil:nth-child(odd) {
+  width: 12px;
+  height: 12px;
+  background: #22f3e6;
+  box-shadow: 0 0 12px rgba(34, 243, 230, 0.75);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fx-rizz-stage.is-entering {
+    animation: fx-rizz-stage-life 2700ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+  }
+
+  .fx-rizz-stage.is-entering .fx-rizz-card {
+    animation: fx-rizz-card-slam 2700ms var(--spring-stamp, cubic-bezier(0.16, 1, 0.3, 1)) forwards;
+  }
+
+  .fx-rizz-stage.is-entering .fx-rizz-bit {
+    animation: fx-rizz-burst 2100ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) var(--bd, 0ms) forwards;
+  }
+
+  .fx-rizz-bit:nth-child(1)  { --bx: -42vw; --by: -36vh; --br: -240deg; --bd: 20ms; }
+  .fx-rizz-bit:nth-child(2)  { --bx: -28vw; --by: -42vh; --br: 180deg;  --bd: 40ms; }
+  .fx-rizz-bit:nth-child(3)  { --bx: -10vw; --by: -44vh; --br: -160deg; --bd: 10ms; }
+  .fx-rizz-bit:nth-child(4)  { --bx: 12vw;  --by: -43vh; --br: 210deg;  --bd: 50ms; }
+  .fx-rizz-bit:nth-child(5)  { --bx: 29vw;  --by: -39vh; --br: -195deg; --bd: 30ms; }
+  .fx-rizz-bit:nth-child(6)  { --bx: 43vw;  --by: -34vh; --br: 250deg;  --bd: 60ms; }
+  .fx-rizz-bit:nth-child(7)  { --bx: -46vw; --by: -12vh; --br: 170deg;  --bd: 35ms; }
+  .fx-rizz-bit:nth-child(8)  { --bx: 46vw;  --by: -14vh; --br: -220deg; --bd: 45ms; }
+  .fx-rizz-bit:nth-child(9)  { --bx: -45vw; --by: 14vh;  --br: -185deg; --bd: 25ms; }
+  .fx-rizz-bit:nth-child(10) { --bx: 45vw;  --by: 16vh;  --br: 190deg;  --bd: 55ms; }
+  .fx-rizz-bit:nth-child(11) { --bx: -40vw; --by: 36vh;  --br: 230deg;  --bd: 70ms; }
+  .fx-rizz-bit:nth-child(12) { --bx: -24vw; --by: 42vh;  --br: -210deg; --bd: 30ms; }
+  .fx-rizz-bit:nth-child(13) { --bx: -6vw;  --by: 44vh;  --br: 150deg;  --bd: 65ms; }
+  .fx-rizz-bit:nth-child(14) { --bx: 11vw;  --by: 43vh;  --br: -175deg; --bd: 15ms; }
+  .fx-rizz-bit:nth-child(15) { --bx: 28vw;  --by: 40vh;  --br: 205deg;  --bd: 40ms; }
+  .fx-rizz-bit:nth-child(16) { --bx: 41vw;  --by: 35vh;  --br: -245deg; --bd: 50ms; }
+  .fx-rizz-bit:nth-child(17) { --bx: -34vw; --by: -24vh; --br: 140deg;  --bd: 80ms; }
+  .fx-rizz-bit:nth-child(18) { --bx: 35vw;  --by: -22vh; --br: -155deg; --bd: 90ms; }
+  .fx-rizz-bit:nth-child(19) { --bx: -36vw; --by: 24vh;  --br: -130deg; --bd: 85ms; }
+  .fx-rizz-bit:nth-child(20) { --bx: 36vw;  --by: 25vh;  --br: 165deg;  --bd: 75ms; }
+  .fx-rizz-bit:nth-child(21) { --bx: -20vw; --by: -31vh; --br: -270deg; --bd: 110ms; }
+  .fx-rizz-bit:nth-child(22) { --bx: 21vw;  --by: -30vh; --br: 260deg;  --bd: 100ms; }
+  .fx-rizz-bit:nth-child(23) { --bx: -22vw; --by: 31vh;  --br: 240deg;  --bd: 115ms; }
+  .fx-rizz-bit:nth-child(24) { --bx: 22vw;  --by: 32vh;  --br: -235deg; --bd: 105ms; }
+  .fx-rizz-bit:nth-child(25) { --bx: -48vw; --by: 0vh;   --br: -190deg; --bd: 60ms; }
+  .fx-rizz-bit:nth-child(26) { --bx: 48vw;  --by: 2vh;   --br: 195deg;  --bd: 65ms; }
+  .fx-rizz-bit:nth-child(27) { --bx: 0vw;   --by: -46vh; --br: 320deg;  --bd: 20ms; }
+  .fx-rizz-bit:nth-child(28) { --bx: 2vw;   --by: 46vh;  --br: -310deg; --bd: 25ms; }
+  .fx-rizz-bit:nth-child(29) { --bx: -38vw; --by: -32vh; --br: 340deg;  --bd: 45ms; }
+  .fx-rizz-bit:nth-child(30) { --bx: 39vw;  --by: -31vh; --br: -320deg; --bd: 55ms; }
+  .fx-rizz-bit:nth-child(31) { --bx: -41vw; --by: 28vh;  --br: -290deg; --bd: 35ms; }
+  .fx-rizz-bit:nth-child(32) { --bx: 40vw;  --by: 29vh;  --br: 310deg;  --bd: 70ms; }
+  .fx-rizz-bit:nth-child(33) { --bx: -15vw; --by: -39vh; --br: 220deg;  --bd: 60ms; }
+  .fx-rizz-bit:nth-child(34) { --bx: 16vw;  --by: 39vh;  --br: -250deg; --bd: 50ms; }
+}
+
+@keyframes fx-rizz-stage-life {
+  0%   { opacity: 0; }
+  8%   { opacity: 1; }
+  84%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes fx-rizz-card-slam {
+  0%   { opacity: 0; transform: scale(1.16) rotate(-1.6deg); }
+  12%  { opacity: 1; transform: scale(0.99) rotate(0.4deg); }
+  20%  { opacity: 1; transform: scale(1) rotate(0deg); }
+  84%  { opacity: 1; transform: scale(1) translateY(0); }
+  100% { opacity: 0; transform: scale(0.96) translateY(-14px); }
+}
+
+@keyframes fx-rizz-burst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.25) rotate(0deg);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(calc(-50% + var(--bx, 0px) * 0.48), calc(-50% + var(--by, 0px) * 0.48)) scale(1.15) rotate(calc(var(--br, 180deg) * 0.4));
+  }
+  72% {
+    opacity: 0.95;
+    transform: translate(calc(-50% + var(--bx, 0px)), calc(-50% + var(--by, 0px) + 28px)) scale(0.95) rotate(var(--br, 180deg));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--bx, 0px) * 1.06), calc(-50% + var(--by, 0px) + 74px)) scale(0.6) rotate(calc(var(--br, 180deg) * 1.2));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. PRINTER'S DEVILS — Ambient margin sprite (full tier only, wide viewports)
+   -------------------------------------------------------------------------- */
+
+.fx-devil-lane {
+  position: fixed;
+  top: calc(var(--header-h) + 0.75rem);
+  right: 4px;
+  bottom: 4rem;
+  width: 52px;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  overflow: visible;
+}
+
+.fx-devil-lane[hidden] {
+  display: none;
+}
+
+.fx-devil-lane[data-side='left'] {
+  right: auto;
+  left: 4px;
+}
+
+@media (max-width: 1023px) {
+  .fx-devil-lane {
+    display: none;
+  }
+}
+
+.fx-devil-sprite {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 34px;
+  pointer-events: auto;
+  cursor: default;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
+}
+
+.fx-devil-svg {
+  width: 32px;
+  height: 32px;
+  overflow: visible;
+}
+
+.fx-devil-wings {
+  transform-origin: 18px 13px;
+}
+
+html[data-fx='full'] .fx-devil-lane.is-wandering .fx-devil-sprite {
+  offset-path: path('M 26 -24 C 42 110, 10 210, 34 340 C 48 450, 12 560, 28 760');
+  offset-rotate: auto 90deg;
+  animation: fx-devil-wander 14s linear forwards;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx='full'] .fx-devil-lane.is-wandering .fx-devil-wings {
+    animation: fx-devil-wing-bob 420ms ease-in-out infinite alternate;
+  }
+}
+
+.fx-devil-lane.is-fleeing .fx-devil-sprite {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(72px) scale(0.45);
+  transition: transform 320ms var(--ease-snap), opacity 280ms ease-out;
+}
+
+.fx-devil-lane[data-side='left'].is-fleeing .fx-devil-sprite {
+  transform: translateX(-72px) scale(0.45);
+}
+
+@keyframes fx-devil-wander {
+  0%   { offset-distance: 0%;   opacity: 0; }
+  7%   { offset-distance: 7%;   opacity: 0.94; }
+  90%  { offset-distance: 91%;  opacity: 0.94; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+@keyframes fx-devil-wing-bob {
+  from { transform: scaleY(0.74) translateY(0.5px); }
+  to   { transform: scaleY(1.08) translateY(-0.5px); }
+}
+
+/* --------------------------------------------------------------------------
+   3. SEASONAL & TIME-OF-DAY TOUCHES (calm, all tiers, decorative only)
+   -------------------------------------------------------------------------- */
+
+/* 3a. Late night (22:00 - 05:00 local): subtle lamplight warmth vignette */
+.fx-lamplight-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background: radial-gradient(
+    ellipse 86% 68% at 50% 16%,
+    rgba(232, 195, 106, 0.065) 0%,
+    rgba(232, 195, 106, 0.015) 48%,
+    rgba(10, 7, 3, 0.24) 100%
+  );
+}
+
+html[data-fx-night='on'] .fx-lamplight-vignette {
+  opacity: 1;
+  visibility: visible;
+}
+
+html[data-fx-night='on'][data-stock='rag'] .fx-lamplight-vignette {
+  background: radial-gradient(
+    ellipse 86% 68% at 50% 16%,
+    rgba(245, 182, 72, 0.09) 0%,
+    rgba(180, 128, 42, 0.03) 52%,
+    rgba(42, 26, 8, 0.14) 100%
+  );
+}
+
+/* 3b. December front page: gentle falling metal type sorts in outer margins */
+.fx-december-sorts {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  display: none;
+  overflow: hidden;
+}
+
+html[data-fx-december='on'] .fx-december-sorts {
+  display: block;
+}
+
+@media (max-width: 1023px) {
+  html[data-fx-december='on'] .fx-december-sorts {
+    display: none;
+  }
+}
+
+.fx-sorts-col {
+  position: absolute;
+  top: var(--header-h);
+  bottom: 0;
+  width: 52px;
+}
+
+.fx-sorts-col--left { left: 4px; }
+.fx-sorts-col--right { right: 4px; }
+
+.fx-type-sort {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 22px;
+  border: 1px solid color-mix(in srgb, var(--ink-muted) 35%, transparent);
+  background: color-mix(in srgb, var(--bg-panel) 55%, transparent);
+  color: color-mix(in srgb, var(--gilt) 70%, var(--ink-muted));
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.42;
+  /* Static resting positions (also serve as the calm reduced-motion fallback) */
+  top: 10%;
+  left: 12px;
+}
+
+.fx-type-sort:nth-child(2) { top: 24%; left: 26px; }
+.fx-type-sort:nth-child(3) { top: 38%; left: 8px; }
+.fx-type-sort:nth-child(4) { top: 52%; left: 24px; }
+.fx-type-sort:nth-child(5) { top: 66%; left: 10px; }
+.fx-type-sort:nth-child(6) { top: 79%; left: 26px; }
+.fx-type-sort:nth-child(7) { top: 90%; left: 14px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx-december='on'] .fx-type-sort {
+    top: -36px;
+    animation: fx-sort-fall 18s linear infinite;
+  }
+
+  html[data-fx-december='on'] .fx-type-sort:nth-child(1) { animation-duration: 16s; animation-delay: -2s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(2) { animation-duration: 21s; animation-delay: -7s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(3) { animation-duration: 18s; animation-delay: -11s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(4) { animation-duration: 24s; animation-delay: -4s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(5) { animation-duration: 17s; animation-delay: -14s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(6) { animation-duration: 22s; animation-delay: -9s; }
+  html[data-fx-december='on'] .fx-type-sort:nth-child(7) { animation-duration: 19s; animation-delay: -16s; }
+}
+
+@keyframes fx-sort-fall {
+  0%   { transform: translateY(-40px) rotate(-14deg); opacity: 0; }
+  10%  { opacity: 0.44; }
+  88%  { opacity: 0.36; }
+  100% { transform: translateY(calc(100vh + 40px)) rotate(28deg); opacity: 0; }
+}
+
+/* 3c. 23rd of each month: 'Press Day' gilt corner ribbon */
+.fx-press-day-ribbon {
+  position: fixed;
+  top: calc(var(--header-h) + 0.65rem);
+  right: 1rem;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.28rem 0.68rem;
+  border: 1px solid var(--gilt);
+  background: color-mix(in srgb, var(--bg-panel) 92%, var(--gilt) 8%);
+  color: var(--gilt);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: var(--gilt-glow);
+}
+
+html[data-fx-press-day='on'] .fx-press-day-ribbon {
+  display: inline-flex;
+}
+
+.fx-press-day-mark {
+  font-size: 0.62rem;
+}
+
+/* --------------------------------------------------------------------------
+   4a. HIDDEN MODE: Shift+click Si. badge ink blot & drip
+   Position set via CSP-safe setVars('.fx-ink-blot', { '--blot-x', '--blot-y' })
+   -------------------------------------------------------------------------- */
+
+.fx-ink-blot {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 105;
+  pointer-events: none;
+  color: var(--proof-ink);
+  transform: translate(calc(var(--blot-x, 48px) - 100px), calc(var(--blot-y, 44px) - 62px));
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.36));
+}
+
+.fx-ink-blot[hidden] {
+  display: none;
+}
+
+.fx-ink-blot-svg {
+  width: 200px;
+  height: 340px;
+  overflow: visible;
+}
+
+.fx-ink-core {
+  transform-origin: 100px 76px;
+}
+
+.fx-ink-drip {
+  transform-origin: 100px 96px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-ink-blot.is-active {
+    opacity: 0.85;
+  }
+
+  .fx-ink-blot.is-drying {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fx-ink-blot.is-active .fx-ink-core {
+    animation: fx-blot-splash 4800ms var(--ease-ink, cubic-bezier(0.45, 0, 0.15, 1)) forwards;
+  }
+
+  .fx-ink-blot.is-active .fx-ink-drip--1 {
+    animation: fx-drip-run 4800ms var(--ease-ink, cubic-bezier(0.45, 0, 0.15, 1)) 140ms both;
+  }
+
+  .fx-ink-blot.is-active .fx-ink-drip--2 {
+    animation: fx-drip-run 4800ms var(--ease-ink, cubic-bezier(0.45, 0, 0.15, 1)) 60ms both;
+  }
+
+  .fx-ink-blot.is-active .fx-ink-drip--3 {
+    animation: fx-drip-run 4800ms var(--ease-ink, cubic-bezier(0.45, 0, 0.15, 1)) 240ms both;
+  }
+
+  .fx-ink-blot.is-active .fx-ink-drip--4 {
+    animation: fx-drip-run 4800ms var(--ease-ink, cubic-bezier(0.45, 0, 0.15, 1)) 320ms both;
+  }
+}
+
+@keyframes fx-blot-splash {
+  0%   { opacity: 0;    transform: scale(0.18) rotate(-10deg); }
+  9%   { opacity: 0.96; transform: scale(1.06) rotate(2deg); }
+  18%  { opacity: 0.92; transform: scale(1) rotate(0deg); }
+  74%  { opacity: 0.62; transform: scale(1.02) rotate(0deg); }
+  100% { opacity: 0;    transform: scale(1.03) rotate(0deg); }
+}
+
+@keyframes fx-drip-run {
+  0%   { opacity: 0;    transform: scaleY(0.05); }
+  12%  { opacity: 0.92; transform: scaleY(0.28); }
+  58%  { opacity: 0.85; transform: scaleY(1.05); }
+  78%  { opacity: 0.52; transform: scaleY(1.1); }
+  100% { opacity: 0;    transform: scaleY(1.12); }
+}
+
+/* --------------------------------------------------------------------------
+   4b. HIDDEN MODE: Proofreader overlay (html.fx-proof)
+   Red margin marks, pilcrows at paragraph ends, and baseline rules.
+   -------------------------------------------------------------------------- */
+
+.fx-proof-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--fx-z-overlay);
+  pointer-events: none;
+  display: none;
+}
+
+html.fx-proof .fx-proof-overlay {
+  display: block;
+}
+
+.fx-proof-margin {
+  position: absolute;
+  top: var(--header-h);
+  bottom: 0;
+  width: 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-inline: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: var(--proof-ink);
+  opacity: 0.82;
+}
+
+.fx-proof-margin--left {
+  left: 0;
+  border-right: 1px dashed color-mix(in srgb, var(--proof-ink) 55%, transparent);
+  align-items: flex-end;
+}
+
+.fx-proof-margin--right {
+  right: 0;
+  border-left: 1px dashed color-mix(in srgb, var(--proof-ink) 55%, transparent);
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .fx-proof-margin {
+    width: 28px;
+    font-size: 0.62rem;
+    padding-inline: 3px;
+  }
+}
+
+/* Baseline rules across reading columns */
+html.fx-proof main {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    color-mix(in srgb, var(--proof-ink) 11%, transparent) 27px,
+    color-mix(in srgb, var(--proof-ink) 11%, transparent) 28px
+  );
+}
+
+html.fx-proof .article-prose-body {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(1.72em - 1px),
+    color-mix(in srgb, var(--proof-ink) 24%, transparent) calc(1.72em - 1px),
+    color-mix(in srgb, var(--proof-ink) 24%, transparent) 1.72em
+  );
+  border-left: 1px solid color-mix(in srgb, var(--proof-ink) 48%, transparent);
+  padding-left: var(--space-3);
+}
+
+/* Pilcrows at paragraph ends (CSS alt text "" keeps screen readers quiet) */
+html.fx-proof .article-prose-body p::after,
+html.fx-proof .hero-issue-deck::after,
+html.fx-proof .opus-tagline::after,
+html.fx-proof .opus-letter p::after,
+html.fx-proof .opus-404-deck::after,
+html.fx-proof .article-deck::after {
+  content: ' ¶' / '';
+  color: var(--proof-ink);
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  font-style: normal;
+  opacity: 0.85;
+}
+
+html.fx-proof .article-headline,
+html.fx-proof .section-heading,
+html.fx-proof .editorial-pullquote {
+  outline: 1px dashed color-mix(in srgb, var(--proof-ink) 45%, transparent);
+  outline-offset: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   5. SECRET MAXIMUM-RIZZ HINT — Faint, hover-only via existing selectors
+   (404 page proof note & colophon footer; zero page edits)
+   -------------------------------------------------------------------------- */
+
+.opus-404-proof::after,
+.site-colophon .colophon-bottom > .datum-tag::after {
+  content: ' · ↑↑↓↓←→←→BA' / '';
+  font-family: var(--font-mono);
+  letter-spacing: 0.12em;
+  color: var(--gilt);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .opus-404-proof::after,
+  .site-colophon .colophon-bottom > .datum-tag::after {
+    transition: opacity 420ms var(--ease-carbon);
+  }
+}
+
+.opus-404:hover .opus-404-proof::after,
+.site-colophon:hover .colophon-bottom > .datum-tag::after {
+  opacity: 0.36;
+}
+
+.opus-404-proof:hover::after,
+.site-colophon .colophon-bottom > .datum-tag:hover::after {
+  opacity: 0.72;
+}
