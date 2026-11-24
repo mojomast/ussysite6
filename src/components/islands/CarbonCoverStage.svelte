@@ -26,11 +26,13 @@
   let canvasEl = $state<HTMLCanvasElement | null>(null);
   let viewportEl = $state<HTMLDivElement | null>(null);
   let pointer = { x: 0, y: 0 };
+  let burstLevel = 0;
 
   const activeItem = $derived(items[selectedIdx] || items[0]);
 
   function selectCell(idx: number) {
     selectedIdx = idx;
+    burstLevel = 1;
     carbonSynth.tick(1100 + idx * 40);
   }
 
@@ -269,14 +271,142 @@
         rootGroup.add(new THREE.Line(lineGeo, lineMat));
       });
 
+      // The swarm: bees around the hive. Positions are computed on the GPU from a per-particle
+      // seed (angle, radius, speed, size), so the CPU only updates four uniforms per frame.
+      const small = window.innerWidth < 760;
+      const COUNT = small ? 700 : 1600;
+      const seeds = new Float32Array(COUNT * 4);
+      for (let i = 0; i < COUNT; i++) {
+        const r = Math.random();
+        seeds[i * 4] = Math.random() * Math.PI * 2;
+        seeds[i * 4 + 1] = 1.25 + Math.pow(Math.random(), 0.7) * 2.6;
+        seeds[i * 4 + 2] = (0.04 + Math.random() * 0.16) * (r < 0.5 ? -1 : 1);
+        seeds[i * 4 + 3] = 0.6 + Math.random() * 1.6;
+      }
+
+      let updateSwarm: (t: number, scatter: number, px: number, py: number, burst: number) => void = () => {};
+      let setSwarmCount: (n: number) => void = () => {};
+      let swarmDispose: () => void = () => {};
+
+      if (mode === 'WEBGPU · TSL' && webgpuMod?.SpriteNodeMaterial && tslMod) {
+        try {
+          const { instancedBufferAttribute, uniform, vec3, float, sin, cos, uv, smoothstep, mix, color, fract } = tslMod;
+          const seedAttr = new webgpuMod.InstancedBufferAttribute(seeds, 4);
+          const s4 = instancedBufferAttribute(seedAttr);
+          const uT = uniform(0);
+          const uScatter = uniform(0);
+          const uPx = uniform(0);
+          const uPy = uniform(0);
+          const uBurst = uniform(0);
+          const ang = s4.x.add(uT.mul(s4.z));
+          const radius = s4.y.mul(float(1).add(uScatter.mul(0.9)).add(uBurst.mul(0.45)));
+          const swarmMat = new webgpuMod.SpriteNodeMaterial({
+            transparent: true,
+            depthWrite: false,
+            blending: webgpuMod.AdditiveBlending
+          });
+          swarmMat.positionNode = vec3(
+            cos(ang).mul(radius).add(uPx.mul(s4.y).mul(0.14)),
+            sin(ang).mul(radius).mul(0.78).sub(uPy.mul(s4.y).mul(0.14)),
+            sin(ang.mul(2).add(s4.x)).mul(0.5)
+          );
+          swarmMat.scaleNode = s4.w.mul(0.03);
+          const falloff = float(1).sub(smoothstep(0.0, 0.5, uv().sub(0.5).length()));
+          swarmMat.colorNode = mix(color(0x22f3e6), color(0xe8c36a), fract(s4.x.mul(3.7)));
+          swarmMat.opacityNode = falloff.mul(0.85);
+          const swarm = new webgpuMod.Sprite(swarmMat);
+          swarm.count = COUNT;
+          swarm.frustumCulled = false;
+          rootGroup.add(swarm);
+          setSwarmCount = (n) => (swarm.count = n);
+          updateSwarm = (t, scatter, px, py, burst) => {
+            uT.value = t;
+            uScatter.value = scatter;
+            uPx.value = px;
+            uPy.value = py;
+            uBurst.value = burst;
+          };
+          swarmDispose = () => swarmMat.dispose();
+        } catch {
+          updateSwarm = () => {};
+        }
+      } else {
+        const swarmGeo = new THREE.BufferGeometry();
+        swarmGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(COUNT * 3), 3));
+        swarmGeo.setAttribute('aSeed', new THREE.BufferAttribute(seeds, 4));
+        const swarmMat = new THREE.ShaderMaterial({
+          transparent: true,
+          depthWrite: false,
+          blending: THREE.AdditiveBlending,
+          uniforms: {
+            uTime: { value: 0 },
+            uScatter: { value: 0 },
+            uPointer: { value: new THREE.Vector2() },
+            uBurst: { value: 0 },
+            uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, small ? 1.5 : 2) }
+          },
+          vertexShader: `
+            uniform float uTime;
+            uniform float uScatter;
+            uniform vec2 uPointer;
+            uniform float uBurst;
+            uniform float uPixelRatio;
+            attribute vec4 aSeed;
+            varying float vTone;
+            void main() {
+              float ang = aSeed.x + uTime * aSeed.z;
+              float r = aSeed.y * (1.0 + uScatter * 0.9 + uBurst * 0.45);
+              vec3 p = vec3(cos(ang) * r, sin(ang) * r * 0.78, sin(ang * 2.0 + aSeed.x) * 0.5);
+              p.xy += vec2(uPointer.x, -uPointer.y) * aSeed.y * 0.14;
+              vec4 mv = modelViewMatrix * vec4(p, 1.0);
+              gl_PointSize = aSeed.w * uPixelRatio * (21.0 / -mv.z);
+              gl_Position = projectionMatrix * mv;
+              vTone = fract(aSeed.x * 3.7);
+            }
+          `,
+          fragmentShader: `
+            varying float vTone;
+            void main() {
+              float d = length(gl_PointCoord - vec2(0.5));
+              float a = 1.0 - smoothstep(0.0, 0.5, d);
+              vec3 c = mix(vec3(0.133, 0.953, 0.902), vec3(0.91, 0.765, 0.416), vTone);
+              gl_FragColor = vec4(c, a * 0.85);
+            }
+          `
+        });
+        const swarm = new THREE.Points(swarmGeo, swarmMat);
+        swarm.frustumCulled = false;
+        rootGroup.add(swarm);
+        setSwarmCount = (n) => swarmGeo.setDrawRange(0, n);
+        updateSwarm = (t, scatter, px, py, burst) => {
+          swarmMat.uniforms.uTime.value = t;
+          swarmMat.uniforms.uScatter.value = scatter;
+          (swarmMat.uniforms.uPointer.value as InstanceType<typeof THREE.Vector2>).set(px, py);
+          swarmMat.uniforms.uBurst.value = burst;
+        };
+        swarmDispose = () => {
+          swarmGeo.dispose();
+          swarmMat.dispose();
+        };
+      }
+
+      // Scroll: as the reader leaves the cover, the hive tilts away and the swarm loosens.
+      let scrollMix = 0;
+      const onScroll = () => {
+        scrollMix = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.9)));
+      };
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
       rendererMode = mode;
 
+      let dprCap = small ? 1.5 : 2;
       const syncSize = () => {
         if (!viewportEl || !activeRenderer) return;
         const rect = viewportEl.getBoundingClientRect();
         const w = Math.max(320, Math.floor(rect.width));
         const h = Math.max(240, Math.floor(rect.height));
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         if (typeof activeRenderer.setPixelRatio === 'function') {
@@ -302,10 +432,33 @@
       const targetVec = new THREE.Vector3();
       const scaleVec = new THREE.Vector3();
 
+      // One-shot quality governor: if the live cover can't hold ~45fps on this device, halve
+      // the swarm and drop to 1x pixels. Only the canvas degrades; the page keeps its motion.
+      const frameSamples: number[] = [];
+      let lastLive = 0;
+      let degraded = false;
+
       const tick = (now: number) => {
         if (disposed) return;
         rafId = requestAnimationFrame(tick);
-        if (paused || !inView || document.hidden) return;
+        if (paused || !inView || document.hidden) {
+          lastLive = 0;
+          return;
+        }
+        if (!degraded) {
+          if (lastLive) frameSamples.push(now - lastLive);
+          lastLive = now;
+          if (frameSamples.length >= 40) {
+            const median = [...frameSamples].sort((a, b) => a - b)[20];
+            frameSamples.length = 0;
+            if (median > 22) {
+              degraded = true;
+              setSwarmCount(Math.floor(COUNT * 0.5));
+              dprCap = 1;
+              syncSize();
+            }
+          }
+        }
 
         const t = (now - startClock) * 0.001;
         if (tslPulseUniform) {
@@ -323,7 +476,11 @@
         cageMesh.rotation.x = t * 0.09;
 
         rootGroup.rotation.y += (pointer.x * 0.32 - rootGroup.rotation.y) * 0.06;
-        rootGroup.rotation.x += (-pointer.y * 0.24 - rootGroup.rotation.x) * 0.06;
+        rootGroup.rotation.x += (-pointer.y * 0.24 + scrollMix * 0.55 - rootGroup.rotation.x) * 0.06;
+        rootGroup.rotation.z += (scrollMix * 0.35 - rootGroup.rotation.z) * 0.06;
+        camera.position.z += (7.5 + scrollMix * 1.8 - camera.position.z) * 0.08;
+        burstLevel *= 0.94;
+        updateSwarm(t, scrollMix, pointer.x, pointer.y, burstLevel);
 
         cellMeshes.forEach((mesh, idx) => {
           const isHot = idx === selectedIdx;
@@ -350,6 +507,8 @@
         cancelAnimationFrame(rafId);
         ro.disconnect();
         io.disconnect();
+        window.removeEventListener('scroll', onScroll);
+        swarmDispose();
         hexGeo.dispose();
         coreGeo.dispose();
         ringGeo.dispose();
