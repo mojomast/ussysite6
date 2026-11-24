@@ -73,10 +73,10 @@ export interface CursorCanvasController {
   destroy(): void;
 }
 
-const TRAIL_CAP = 44;
-const TRAIL_TTL_MS = 560;
+const TRAIL_CAP = 38;
+const TRAIL_TTL_MS = 900;
 const IDLE_STOP_MS = 1500;
-const BEE_COUNT = 30;
+const BEE_COUNT = 28;
 const MAX_DROPLETS = 72;
 const MAX_RIPPLES = 8;
 
@@ -171,10 +171,10 @@ export function createCursorCanvas(canvas: HTMLCanvasElement): CursorCanvasContr
       y: -200,
       vx: 0,
       vy: 0,
-      orbitR: 12 + (i % 7) * 5.2,
+      orbitR: 16 + (i % 8) * 7.5,
       phase: phi * 2.3,
-      wingSpeed: 0.022 + (i % 5) * 0.005,
-      size: 1.8 + (i % 4) * 0.65,
+      wingSpeed: 0.024 + (i % 5) * 0.005,
+      size: 2.2 + (i % 4) * 0.72,
       goldBias: i % 4 !== 0
     };
   });
@@ -231,8 +231,8 @@ export function createCursorCanvas(canvas: HTMLCanvasElement): CursorCanvasContr
   };
 
   const pushTrailPoint = (x: number, y: number, now: number, speed: number) => {
-    // Calligraphic pressure: slower stroke deposits wider wet ink; fast flick thins cleanly
-    const w = clamp(3.6 - speed * 0.045, 1.15, 3.6);
+    // Calligraphic pressure: slower stroke deposits richer wet ink; fast flick tapers cleanly
+    const w = clamp(4.6 - speed * 0.055, 1.5, 4.6);
     const slot = trail[trailHead];
     slot.x = x;
     slot.y = y;
@@ -250,31 +250,40 @@ export function createCursorCanvas(canvas: HTMLCanvasElement): CursorCanvasContr
 
     c.lineCap = 'round';
     c.lineJoin = 'round';
+    c.strokeStyle = accent;
 
-    let prev: TrailPoint | null = null;
+    let p0: TrailPoint | null = null;
+    let p1: TrailPoint | null = null;
     for (let i = 0; i < trailCount; i++) {
       const pt = trail[(startIdx + i) % TRAIL_CAP];
       const age = now - pt.t;
       if (!pt.active || age > TRAIL_TTL_MS) {
-        prev = null;
+        p0 = null;
+        p1 = null;
         continue;
       }
-      if (prev) {
+      if (p1) {
         const life = 1 - age / TRAIL_TTL_MS;
-        // Nonlinear drying curve: stays lush briefly, then absorbs and dries out
-        const dry = life * life;
-        const alpha = dry * (rizzMode ? 0.34 : 0.72) * idleFade;
-        if (alpha > 0.01) {
-          c.strokeStyle = accent;
+        // Smooth drying curve: stays vivid while wet, then absorbs cleanly into paper
+        const dry = life * Math.sqrt(life);
+        const alpha = dry * (rizzMode ? 0.56 : 0.9) * idleFade;
+        if (alpha > 0.015) {
+          const widthNow = pt.w * (0.28 + life * 0.72);
+          const mx = (p1.x + pt.x) * 0.5;
+          const my = (p1.y + pt.y) * 0.5;
+          const sx = p0 ? (p0.x + p1.x) * 0.5 : p1.x;
+          const sy = p0 ? (p0.y + p1.y) * 0.5 : p1.y;
+
           c.globalAlpha = alpha;
-          c.lineWidth = pt.w * (0.35 + life * 0.65);
+          c.lineWidth = widthNow;
           c.beginPath();
-          c.moveTo(prev.x, prev.y);
-          c.lineTo(pt.x, pt.y);
+          c.moveTo(sx, sy);
+          c.quadraticCurveTo(p1.x, p1.y, mx, my);
           c.stroke();
         }
       }
-      prev = pt;
+      p0 = p1;
+      p1 = pt;
     }
     c.globalAlpha = 1;
   };
@@ -648,10 +657,12 @@ export function createCursorCanvas(canvas: HTMLCanvasElement): CursorCanvasContr
 
       if (!pointerPresent) {
         pointerPresent = true;
+        followerAlpha = nextCtx.mode === 'input' ? 0 : 0.9;
         px = x;
         py = y;
         fx = x;
         fy = y;
+        pushTrailPoint(x, y, now, 0);
         if (rizz) seedBees(x, y);
       } else {
         const dx = x - px;
