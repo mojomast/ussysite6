@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="#0b0c0e"/>
+  <rect x="3" y="3" width="58" height="58" fill="none" stroke="#272a31" stroke-width="1.5"/>
+  <path d="M3 14h8M53 14h8M14 3v8M14 53v8" stroke="#ff4422" stroke-width="1.5"/>
+  <text x="12" y="45" fill="#f3efe6" font-family="Georgia, serif" font-size="34" font-weight="700">Si</text>
+  <circle cx="49" cy="42" r="4.5" fill="#ff4422"/>
+</svg>

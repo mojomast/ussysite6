@@ -1,19 +1,48 @@
 {
   "name": "ussysite6",
-  "version": "6.0.0",
-  "description": "SLOP ILLUSTRATED (Si.) — A source-linked digital field journal of software and the work behind it",
+  "version": "7.0.0",
+  "description": "SLOP ILLUSTRATED (Si.) Living Edition — A source-linked software magazine that keeps publishing",
   "type": "module",
   "main": "server.mjs",
   "scripts": {
+    "dev": "astro dev",
+    "dev:api": "tsx watch server.mjs",
+    "build": "astro build",
+    "preview": "node server.mjs",
     "start": "node server.mjs",
-    "dev": "node --watch server.mjs",
-    "check:syntax": "node scripts/check-syntax.mjs",
-    "check:mirrors": "node scripts/check-mirrors.mjs",
+    "issue:draft": "node scripts/issue-draft.mjs",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "check": "astro check",
+    "lint": "astro check && node scripts/lint-security.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "engines": {
-    "node": ">=22.0.0"
+    "node": ">=22.23.4"
   },
   "author": "SLOPTIMUS PRIME (https://github.com/mojomast)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/sitemap": "^3.7.6",
+    "@astrojs/svelte": "^9.1.6",
+    "@hono/node-server": "^2.1.11",
+    "astro": "^7.4.13",
+    "better-sqlite3": "^13.2.0",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.21",
+    "svelte": "^5.59.1",
+    "three": "^0.187.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22.15.0",
+    "@types/three": "^0.187.0",
+    "drizzle-kit": "^0.31.11",
+    "playwright": "^1.65.1",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
 }
