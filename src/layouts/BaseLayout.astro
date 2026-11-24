@@ -6,8 +6,12 @@ import '../styles/global.css';
 import '../styles/editorial.css';
 import '../styles/opus.css';
 import '../styles/motion.css';
+import '../styles/fx/index.css';
 import Masthead from '../components/Masthead.astro';
 import FooterColophon from '../components/FooterColophon.astro';
+import ShaderBackdrop from '../components/fx/ShaderBackdrop.astro';
+import CursorLayer from '../components/fx/CursorLayer.astro';
+import DelightLayer from '../components/fx/DelightLayer.astro';
 
 interface Props {
   title: string;
@@ -56,6 +60,7 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to the reading</a>
+    <ShaderBackdrop />
     <div class="scroll-progress-track" aria-hidden="true">
       <div class="scroll-progress-bar"></div>
     </div>
@@ -68,8 +73,11 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <div id="page-end" hidden></div>
 
     <FooterColophon />
+    <CursorLayer />
+    <DelightLayer />
     <script>
       import '../scripts/reading-tracker.ts';
+      import '../scripts/fx/index.ts';
     </script>
   </body>
 </html>
