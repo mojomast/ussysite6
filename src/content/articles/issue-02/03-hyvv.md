@@ -6,13 +6,17 @@ readerServiceNo: 203
 section: "SANDBOX HOST RUNTIME // VERSIONED /V1 CONTRACT"
 layoutVariant: "dossier"
 title: "hyvv"
-kicker: "A Vocabulary, Not a Dependency on BundleBees"
-headline: "One Host, Many Sealed Cells, Zero Leaked Provider Keys"
-deck: "The worker-host layer of Rizzstack: loopback- or Tailscale-bound sandboxes speaking a versioned /v1 OpenAPI contract with first-read SHA-256 artifact pinning."
-byline: "By SLOPTIMUS PRIME · Folio 05"
+kicker: "Worker Host · Versioned /v1 Contract"
+headline: "One Host, Many Sealed Cells, and the Keys Never Leave the Building"
+deck: "hyvv runs the sandboxes on a machine you own, keeps the provider keys to
+  itself, and answers only to coordinators that speak its versioned /v1
+  contract."
+byline: "By SLOPTIMUS PRIME"
 category: "Sandbox Host / API Contract"
-glanceNote: "Launcher 0.1.15 implements the core attempt routes; main (bumped to 0.1.17) adds the /v1 reference artifact store, owner-only 0600 result files, and 171 unit + 93 contract tests."
-pullQuote: "hyvv is a vocabulary, not a dependency: any coordinator that speaks /v1 can drive the hive while provider keys stay locked on the machine."
+glanceNote: "Launcher 0.1.15 is the released runtime. The /v1 reference adds
+  artifact pinning and per-attempt capabilities, and the README’s status table
+  is generated from a JSON file so the prose cannot run ahead of the code."
+pullQuote: "Even model routing has case law."
 repoUrl: "https://github.com/mojomast/hyvv"
 liveUrl: null
 sourceRevision: "9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb"
@@ -33,23 +37,43 @@ metrics:
   - label: "Max Artifact Payload"
     value: "8 MiB · SHA-256 pinned on first read"
 verifiedCapabilities:
-  - "Generated machine-verified status matrix (python -m contract.v1.status) separating shipped launcher 0.1.15 routes from reference-only and specified endpoints"
-  - "Two-part artifact authorization in contract/v1/reference.py: hashed coordinator bearer principal + per-attempt hyvvcap1_ capability compared in constant time"
-  - "Project-state dispatch gate in reference store refusing parked/archived repos (409 project_parked) unless an attributed override + reason is supplied"
-  - "Merged worker workspace provisioning & landing-event export refusing short SHAs, path traversal, dirty checkouts, and mismatched remotes"
+  - "Generated machine-verified status matrix (python -m contract.v1.status)
+    separating shipped launcher 0.1.15 routes from reference-only and specified
+    endpoints"
+  - "Two-part artifact authorization in contract/v1/reference.py: hashed
+    coordinator bearer principal + per-attempt hyvvcap1_ capability compared in
+    constant time"
+  - "Project-state dispatch gate in reference store refusing parked/archived
+    repos (409 project_parked) unless an attributed override + reason is
+    supplied"
+  - "Merged worker workspace provisioning & landing-event export refusing short
+    SHAs, path traversal, dirty checkouts, and mismatched remotes"
 architecture:
-  - "Strict four-tier contract accounting (contract/v1/STATUS.json): Implemented in launcher 0.1.15, Implemented in /v1 reference only, Specified not implemented (/v1/leases), and Proposed (HMAC-signed briefs)."
-  - "Model routing precedence (owner decision 2026-11-15): an explicitly named brief model always wins over priority:high; priority:high reroutes only unnamed-model briefs."
-  - "First-read artifact pinning: ArtifactStore writes patches to owner-only files (POSIX 0600 / Windows owner ACL) and pins result_sha256 + body_sha256 so tampering triggers 409 artifact_changed."
-  - "Optional Rails worker recorder and read-only replication API gated behind a separate credential from launcher control, disabled by default."
+  - "Strict four-tier contract accounting (contract/v1/STATUS.json): Implemented
+    in launcher 0.1.15, Implemented in /v1 reference only, Specified not
+    implemented (/v1/leases), and Proposed (HMAC-signed briefs)."
+  - "Model routing precedence (owner decision 2026-11-15): an explicitly named
+    brief model always wins over priority:high; priority:high reroutes only
+    unnamed-model briefs."
+  - "First-read artifact pinning: ArtifactStore writes patches to owner-only
+    files (POSIX 0600 / Windows owner ACL) and pins result_sha256 + body_sha256
+    so tampering triggers 409 artifact_changed."
+  - "Optional Rails worker recorder and read-only replication API gated behind a
+    separate credential from launcher control, disabled by default."
 fieldNotes:
-  - "Package version on main is 0.1.17 so deployed builds are distinguishable, while the latest tagged release remains 0.1.15."
-  - "GET /v1/attempts/{attempt_id}/artifact and the project-parking gate live in contract/v1/reference.py today, not yet in the live 0.1.15 launcher."
-  - "prefer_zoo (zoo:glm-5.3-flash) has been off by default since 2026-11-19 because its free pass refuses programmatic use."
+  - The package says 0.1.17 so a deployed build can be told apart. The release
+    is still 0.1.15.
+  - The artifact endpoint and the project-parking gate live in the /v1 reference
+    today, not in the launcher.
+  - Preferring the free zoo model has been off by default since 19 November,
+    because its free pass refuses programmatic use.
 readingGuide:
-  - "READING GUIDE // README.md status table — auto-generated from contract/v1/STATUS.json so prose never outpaces code."
-  - "READING GUIDE // contract/v1/reference.py — constant-time capability checks and 8 MiB hyvv.worker-artifact/1 store."
-  - "READING GUIDE // contract/v1/openapi.yaml — additive-only /v1 contract specification."
+  - "READING GUIDE // README.md status table: auto-generated from
+    contract/v1/STATUS.json so prose never outpaces code."
+  - "READING GUIDE // contract/v1/reference.py: constant-time capability checks
+    and 8 MiB hyvv.worker-artifact/1 store."
+  - "READING GUIDE // contract/v1/openapi.yaml: additive-only /v1 contract
+    specification."
 flexiFreqs:
   - 246.94
   - 311.13
@@ -62,10 +86,13 @@ plate:
   height: 1200
   title: "Hexagonal Pod /v1 (Mode 0600)"
   medium: "CARBON LITHOGRAPH · HOST ISOLATION CUTAWAY"
-  alt: "Cutaway architectural drawing of a dark hexagonal host pod containing sealed worker cells, a vault keeping provider API keys on-host, and a constant-time hyvvcap1 capability lock."
+  alt: "Cutaway architectural drawing of a dark hexagonal host pod containing
+    sealed worker cells, a vault keeping provider API keys on-host, and a
+    constant-time hyvvcap1 capability lock."
 secondaryMedia: null
 codeExcerpt:
-  title: "LISTING 3.1 // COORDINATOR HASHING & FIRST-READ PINNING (contract/v1/reference.py)"
+  title: "LISTING 3.1 // COORDINATOR HASHING & FIRST-READ PINNING
+    (contract/v1/reference.py)"
   lang: "python"
   code: |
     class ArtifactStore:
@@ -82,18 +109,25 @@ codeExcerpt:
             self._principal_hashes: dict[str, str] = {name: _sha256_hex(key) for name, key in (principals or {}).items()}
             self.pins: dict[str, dict[str, str]] = {}
   sourceLabel: "contract/v1/reference.py L96–L116 · hyvv@9691837"
-  sourceUrl: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb/contract/v1/reference.py#L96-L116"
+  sourceUrl: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c\
+    6c22d7c8ebb/contract/v1/reference.py#L96-L116"
 sources:
-  - label: "hyvv README — four-layer status matrix & routing precedence"
-    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb/README.md"
-  - label: "contract/v1/reference.py — two-part auth & SHA-256 artifact pinning"
-    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb/contract/v1/reference.py"
-  - label: "contract/v1/STATUS.json — machine-checked implementation ledger"
-    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb/contract/v1/STATUS.json"
-  - label: "contract/v1/openapi.yaml — versioned /v1 worker-host specification"
-    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7c8ebb/contract/v1/openapi.yaml"
+  - label: "hyvv README: four-layer status matrix & routing precedence"
+    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7\
+      c8ebb/README.md"
+  - label: "contract/v1/reference.py: two-part auth & SHA-256 artifact pinning"
+    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7\
+      c8ebb/contract/v1/reference.py"
+  - label: "contract/v1/STATUS.json: machine-checked implementation ledger"
+    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7\
+      c8ebb/contract/v1/STATUS.json"
+  - label: "contract/v1/openapi.yaml: versioned /v1 worker-host specification"
+    url: "https://github.com/mojomast/hyvv/blob/9691837b0ef3bd2d5c23f7d5b539c6c22d7\
+      c8ebb/contract/v1/openapi.yaml"
 ---
 
-Most multi-agent frameworks weld the planner, the prompt templates, and the container runner into one giant monorepo until updating a button breaks SSH on three machines. **hyvv** refuses the coupling on line two of its README: *"hyvv is a vocabulary, not a dependency on bundlebees."* It sits on a workstation or SSH host, owns the local sandboxes, keeps upstream LLM provider keys strictly on disk without ever echoing them back, and exposes a narrow bearer-protected HTTP API bound only to `127.0.0.1` or your Tailscale IPv4 address.
+The second line of the README is the whole philosophy: “hyvv is a vocabulary, not a dependency on bundlebees.” The bee names are a shared language. Any coordinator that speaks the `/v1` contract can drive a hyvv host. The host owns the sandboxes, holds the provider keys without ever returning them, and listens only on loopback or a Tailscale address.
 
-What makes `hyvv` worth studying is its compulsive honesty about contract maturity. An auto-generated status table (`python -m contract.v1.status`) partitions every route into four explicit buckets: what actually runs in `launcher-0.1.15` today, what is proven in the in-memory `/v1` reference (`contract/v1/reference.py`, complete with SHA-256 hashed coordinator keys, `hyvvcap1_` per-attempt capabilities, POSIX `0600` result files, and `409 project_parked` dispatch gates), what is merely specified (`/v1/leases`), and what is still a proposal. Even model routing carries dated owner precedent: if a brief explicitly names a model, that choice beats `priority: high` every time, because nobody wants an "intelligent router" quietly swapping engines mid-experiment.
+What makes hyvv worth reading is how carefully it keeps score. Its status table sorts every route into four piles: implemented in the 0.1.15 launcher, implemented only in the `/v1` reference, specified but not built, and proposed. In the reference, coordinator keys are stored as hashes, each attempt gets its own `hyvvcap1_` capability compared in constant time, result files are owner-only, and an artifact’s hash is pinned on first read, so a file that changes afterwards comes back as `409 artifact_changed`.
+
+Even model routing has case law. Since an owner decision on 15 November, a model named in the brief always beats `priority: high`. Nobody wants a clever router swapping engines in the middle of an experiment, and now there is a dated ruling to point at.

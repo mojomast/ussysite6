@@ -18,6 +18,9 @@ export interface CatalogIssue {
   editorLetterHeadline: string;
   highlights: Array<{ label: string; value: string }>;
   dispatches: Array<{ title: string; repoUrl: string; commitSha: string; note: string }>;
+  coldOpen?: string[];
+  corrections?: string[];
+  lastPage?: { headline: string; lines: string[] };
   body: string;
 }
 

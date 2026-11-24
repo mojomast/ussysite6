@@ -51,7 +51,15 @@ const issues = defineCollection({
           note: z.string()
         })
       )
-      .default([])
+      .default([]),
+    coldOpen: z.array(z.string()).default([]),
+    corrections: z.array(z.string()).default([]),
+    lastPage: z
+      .object({
+        headline: z.string(),
+        lines: z.array(z.string()).min(1)
+      })
+      .optional()
   })
 });
 

@@ -6,13 +6,18 @@ readerServiceNo: 209
 section: "COMPUTATIONAL CAD // METRIC PHOTOGRAMMETRY"
 layoutVariant: "opener"
 title: "photo-to-part"
-kicker: "Coin-Calibrated Photos to Watertight STL—With an Involute Bouncer"
-headline: "Stop Freehanding Involute Gears for Forty Turns Straight"
-deck: "Turn a coin-scaled photo or messy scan into a validated, printable STL—complete with IoU silhouette overlays, ISO fastener warnings, and hooks that stop LLMs from hallucinating gear math."
-byline: "By SLOPTIMUS PRIME · Folio 11"
+kicker: "CAD · Photos to Printable Parts"
+headline: "The Model Spent Forty Turns Doing Gear Math by Hand. Now There’s a Bouncer."
+deck: "photo-to-part turns a photo with a coin in it, a few measurements or a
+  messy scan into a solid you can print, then checks the mesh and renders it
+  beside the original so you can compare."
+byline: "By SLOPTIMUS PRIME"
 category: "Parametric CAD / 3D Printing"
-glanceNote: "5 GitHub stars, v0.1.23. Six local mesh tools (trimesh + manifold3d, zero network calls), a 40-call session budget governor, non-bypassable build approval, and gear_steer.py born from painful r17/r18 agent transcripts."
-pullQuote: "Live runs in r17 and r18 never called the tools—they freehanded involute math in terminal scripts until the 40-turn cap—so gear_steer.py now locks the door until spur_gear is tried."
+glanceNote: "Six local tools on trimesh and manifold3d, no network connections,
+  a 40-call session budget, and build approval that can no longer be switched
+  off with an environment variable."
+pullQuote: "The plugin was shaped by watching models misbehave and writing down
+  what happened."
 repoUrl: "https://github.com/mojomast/hermes-photo-to-part"
 liveUrl: null
 sourceRevision: "af108f48c2f1ec0e843ce91b480a6caeafed6361"
@@ -26,30 +31,51 @@ techStack:
   - "Hermes Hooks (v0.1.23)"
   - "ISO Fastener Checks"
 metrics:
-  - label: "Plugin Version"
-    value: "0.1.23 (6 tools · zero network calls)"
-  - label: "Session Call Budget"
-    value: "40 calls (nudges at 60% / 80% / 95%)"
-  - label: "Built-In Templates"
-    value: "15 watertight primitives incl. spur_gear"
+  - label: Plugin Version
+    value: 0.1.23 · six tools · no network
+  - label: Session Call Budget
+    value: 40 calls, with nudges at 60 / 80 / 95%
+  - label: Built-In Templates
+    value: 16 watertight shapes, spur gear included
 verifiedCapabilities:
-  - "Metric photo calibration (photo_part_measure) from coins, rulers, or ArUco/AprilTag markers with four-point perspective rectification and mm uncertainty tags"
-  - "Mesh validation (photo_part_validate) checking watertightness, shell count, circular bores, wall thickness (<0.70 mm warning), overhang, and ISO 261/273/4762/608 bearing mismatches"
-  - "Multi-angle silhouette IoU overlay search (photo_part_render) scanning 15° then 1° rotations plus mirror, distinguishing trusted vs. guide_only overlays"
-  - "Hard behavioral guardrails: gear_steer.py forces spur_gear template first, budget hooks reserve final turns for delivery, and PHOTOPART_BUILD_APPROVAL off-switch was deleted in 0.1.23"
+  - Metric calibration from a coin, a ruler or an ArUco/AprilTag marker, with
+    four-point rectification and per-value uncertainty
+  - Mesh validation for watertightness, shells, bores, wall thickness and
+    printability, with warnings when a named fastener disagrees with the cited
+    ISO tables or a 608 bearing disagrees with the SKF size
+  - Silhouette overlay search across poses, at 15° and then 1°, that reports
+    when the score should only be trusted as a guide
+  - Hooks that steer gear requests onto the spur_gear template, reserve the last
+    turns for delivery, and keep build approval with Hermes
 architecture:
-  - "Six offline tools (`photo_part_template`, `photo_part_build`, `photo_part_validate`, `photo_part_render`, `photo_part_heal`, `photo_part_measure`) executing inside the plugin's trimesh/manifold3d venv with an explicit minimal child environment (no leaked API keys)."
-  - "Empirical agent-steering hooks (`plugin/photopart/gear_steer.py` & `deliver_steer.py`): intercepts `write_file`/`terminal` gear-math tangents before `spur_gear` is tried, and blocks endless post-validation vision/refine loops past 80% of the 40-call cap."
-  - "Versioned non-destructive STL history: writes `name_vN.stl`, backs up any replaced mesh into `.p2p_history/`, and preserves face tags (`<stl>.faces.json`) across booleans so periodic screw threads aren't misflagged as thin walls."
-  - "Sparse subdirectory packaging (`mojomast/hermes-photo-to-part/plugin`) keeps regression meshes and canary-marked eval files out of end-user installs."
+  - "Six offline tools (`photo_part_template`, `photo_part_build`,
+    `photo_part_validate`, `photo_part_render`, `photo_part_heal`,
+    `photo_part_measure`) executing inside the plugin's trimesh/manifold3d venv
+    with an explicit minimal child environment (no leaked API keys)."
+  - "Empirical agent-steering hooks (`plugin/photopart/gear_steer.py` &
+    `deliver_steer.py`): intercepts `write_file`/`terminal` gear-math tangents
+    before `spur_gear` is tried, and blocks endless post-validation
+    vision/refine loops past 80% of the 40-call cap."
+  - "Versioned non-destructive STL history: writes `name_vN.stl`, backs up any
+    replaced mesh into `.p2p_history/`, and preserves face tags
+    (`<stl>.faces.json`) across booleans so periodic screw threads aren't
+    misflagged as thin walls."
+  - "Sparse subdirectory packaging (`mojomast/hermes-photo-to-part/plugin`)
+    keeps regression meshes and canary-marked eval files out of end-user
+    installs."
 fieldNotes:
-  - "Inspired by Michael Lydick's engineering test video; the repo's plate-clip example is an original generic bracket, not a copy."
-  - "Single flat photos leave thickness/depth unobserved—the skill requires asking the user or explicitly marking depth as assumed in spec.json."
-  - "CadQuery, build123d, and OpenSCAD are intentionally not auto-installed."
+  - Inspired by Michael Lydick’s video test. The sample in the repo is a generic
+    plate with a hook, not a copy of his object.
+  - One flat photo cannot see thickness. The skill has to ask you, or mark the
+    depth as assumed.
+  - CadQuery, build123d and OpenSCAD are not installed for you.
 readingGuide:
-  - "READING GUIDE // README.md — candid changelog from 0.1.18 to 0.1.23 documenting every way coding models tried to misbehave."
-  - "READING GUIDE // plugin/photopart/gear_steer.py — the greatest docstring of November 2026."
-  - "READING GUIDE // SECURITY.md — minimal child env, write-denylist checks, and zero-network guarantee."
+  - "READING GUIDE // README.md: candid changelog from 0.1.18 to 0.1.23
+    documenting every way coding models tried to misbehave."
+  - "READING GUIDE // plugin/photopart/gear_steer.py: the greatest docstring of
+    November 2026."
+  - "READING GUIDE // SECURITY.md: minimal child env, write-denylist checks, and
+    zero-network guarantee."
 flexiFreqs:
   - 293.66
   - 392.0
@@ -62,13 +88,15 @@ plate:
   height: 1200
   title: "Involute Bouncer & Coin Scale"
   medium: "CARBON LITHOGRAPH · METROLOGY BENCH"
-  alt: "Technical drafting plate showing a reference coin beside a rectified mechanical spur gear, an IoU silhouette alignment ring, and a pre_tool_call gate blocking hand-rolled trochoid math."
+  alt: "Technical drafting plate showing a reference coin beside a rectified
+    mechanical spur gear, an IoU silhouette alignment ring, and a pre_tool_call
+    gate blocking hand-rolled trochoid math."
 secondaryMedia:
   kind: "svg-study"
   studyId: "photopart"
   width: 800
   height: 450
-  caption: "Walk through coin scale calibration, the gear_steer.py involute bouncer, and watertight spur_gear validation."
+  caption: "Calibrate, get bounced, take the template, deliver the file."
 codeExcerpt:
   title: "LISTING 9.1 // THE INVOLUTE BOUNCER (plugin/photopart/gear_steer.py)"
   lang: "python"
@@ -87,20 +115,31 @@ codeExcerpt:
         "an involute spur-gear template."
     )
   sourceLabel: "plugin/photopart/gear_steer.py L1–L24 · hermes-photo-to-part@af108f4"
-  sourceUrl: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/plugin/photopart/gear_steer.py#L1-L24"
+  sourceUrl: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1e\
+    c0e843ce91b480a6caeafed6361/plugin/photopart/gear_steer.py#L1-L24"
 sources:
-  - label: "README — 0.1.23 catalog hardening, 6-tool table & metrology rules"
-    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/README.md"
-  - label: "plugin/photopart/gear_steer.py — pre_tool_call involute template enforcement"
-    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/plugin/photopart/gear_steer.py"
-  - label: "plugin/photopart/__init__.py — offline venv re-exec & zero-network boundary"
-    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/plugin/photopart/__init__.py"
-  - label: "SECURITY.md — minimal build environment & eval canary protections"
-    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/SECURITY.md"
-  - label: "CHANGELOG.md — 23 iterations of real-world CAD agent Failure-Mode Engineering"
-    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843ce91b480a6caeafed6361/CHANGELOG.md"
+  - label: "README: 0.1.23 catalog hardening, 6-tool table & metrology rules"
+    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843\
+      ce91b480a6caeafed6361/README.md"
+  - label: "plugin/photopart/gear_steer.py: pre_tool_call involute template
+      enforcement"
+    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843\
+      ce91b480a6caeafed6361/plugin/photopart/gear_steer.py"
+  - label: "plugin/photopart/__init__.py: offline venv re-exec & zero-network
+      boundary"
+    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843\
+      ce91b480a6caeafed6361/plugin/photopart/__init__.py"
+  - label: "SECURITY.md: minimal build environment & eval canary protections"
+    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843\
+      ce91b480a6caeafed6361/SECURITY.md"
+  - label: "CHANGELOG.md: 23 iterations of real-world CAD agent Failure-Mode
+      Engineering"
+    url: "https://github.com/mojomast/hermes-photo-to-part/blob/af108f48c2f1ec0e843\
+      ce91b480a6caeafed6361/CHANGELOG.md"
 ---
 
-If you want to know the difference between a weekend prompt wrapper and battle-scarred agent engineering, read the first eight lines of `plugin/photopart/gear_steer.py` in **photo-to-part (`0.1.23`)**. Given six specialized 3D-printing tools (`trimesh` + `manifold3d`), `deepseek-v4.1-flash` looked at a photograph of a gear during evaluation runs `r17` and `r18`, ignored every single tool, opened a blank Python file, and spent all forty turns of its session budget trying to derive involute tooth trochoids from memory in bash. So SLOPTIMUS PRIME built a `pre_tool_call` bouncer: mention `involute`, `dedendum`, or `trochoid` in `write_file` before trying `photo_part_template(shape="spur_gear")` and the hook politely confiscates your chalk.
+The best docstring of November is eight lines at the top of `gear_steer.py`. In evaluation runs r17 and r18, `deepseek-v4.1-flash` was given a photo of a gear and six purpose-built tools. It called none of them. It wrote an involute gear script by hand and ran it from the terminal until it hit the 40-turn cap. So now there is a hook. Write a script about involutes, dedendums or trochoids before you have tried `photo_part_template` with shape `spur_gear`, and the call is blocked with a polite note that the template already exists. Try the template once, even if it fails, and the block lifts.
 
-Everything else in the pipeline shows the same bruised empirical wisdom. `photo_part_measure` extracts pixels-per-millimetre from a coin, ruler, or ArUco tag with perspective rectification; `photo_part_validate` checks watertightness, bore counts, 0.70 mm wall limits (cleverly exempting periodic screw-thread crests via `<stl>.faces.json` sidecars), and ISO fastener/608-bearing dimensions; and `photo_part_render` sweeps 15-degree then 1-degree pose rotations to score silhouette IoU against the original photo. By `0.1.23`, even the environment-variable escape hatch for skipping build approval (`PHOTOPART_BUILD_APPROVAL`) was deleted outright, child Python builds receive only a scrubbed minimal env, and past 80% of the 40-call budget the hooks refuse vanity re-renders and tell the model: *deliver the validated STL now*.
+That is the character of the whole thing. The plugin was shaped by watching models misbehave and writing down what happened. `photo_part_measure` takes pixels per millimetre from a coin, a ruler or an ArUco marker and tags every value with its uncertainty. `photo_part_validate` checks watertightness, bores, wall thickness and printability, and warns when a named fastener disagrees with the ISO tables or a 608 bearing disagrees with the SKF size. `photo_part_render` searches poses to score a silhouette overlay against your photo, and labels the score guide-only when the angle makes it unreliable.
+
+Past 80 percent of the budget, the hooks refuse another vanity render and tell the model, in effect, to deliver the file. In 0.1.23 the environment switch that turned off build approval was removed entirely, and build scripts now run with a minimal environment that holds no provider keys. Sixteen templates ship, from a sample plate to a strap hinge. The spur gear is one of them, which is the joke and also the point.
