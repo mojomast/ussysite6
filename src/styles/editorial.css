@@ -886,6 +886,16 @@
   align-items: start;
 }
 
+.article-body-columns > *,
+.article-hero-media > *,
+.hero-asymmetric-grid > *,
+.issue-cover-grid > *,
+.editor-letter-spread > *,
+.source-room-grid > *,
+.cover-story-banner > * {
+  min-width: 0;
+}
+
 .article-prose-body {
   font-family: var(--font-prose);
   font-size: var(--text-prose);
@@ -1123,6 +1133,398 @@
   border-top: 2px solid var(--ink-primary);
   background: var(--bg-surface);
   padding-block: var(--space-7);
+}
+
+/* ==========================================================================
+   9. GEMINI 4 NEON (Ne·10) — INTERACTIVE INSTRUMENTS, TRANSPORT & PRESS WIRE
+   ========================================================================== */
+
+/* Interactive Step-Through Study Bench */
+.neon-study-bench {
+  margin-block: var(--space-6);
+  border: 1px solid var(--neon-cyan);
+  background: var(--bg-panel);
+  box-shadow: var(--neon-halo);
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.neon-study-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+  flex-wrap: wrap;
+}
+
+.neon-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.14rem 0.48rem;
+  border: 1px solid var(--neon-cyan);
+  background: var(--neon-cyan-soft);
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.neon-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  animation: neon-beacon 2.2s var(--ease-neon) infinite;
+}
+
+@keyframes neon-beacon {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.38;
+    transform: scale(0.8);
+  }
+}
+
+.neon-study-stage {
+  background: #070a0f;
+  border-bottom: 1px solid var(--rule-hairline);
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-study-svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  display: block;
+}
+
+.neon-study-tabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  border-bottom: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+}
+
+.neon-step-tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--rule-hairline);
+  border-bottom: 1px solid var(--rule-hairline);
+  padding: 0.58rem 0.72rem;
+  min-height: 44px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.14rem;
+  transition: background var(--dur-fast) var(--ease-neon), color var(--dur-fast) var(--ease-neon);
+}
+
+.neon-step-tab:hover {
+  background: var(--bg-panel);
+}
+
+.neon-step-tab[aria-selected="true"] {
+  background: var(--neon-cyan-soft);
+  box-shadow: inset 0 -2px 0 var(--neon-cyan);
+}
+
+.neon-step-index {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--ink-muted);
+  letter-spacing: 0.08em;
+}
+
+.neon-step-tab[aria-selected="true"] .neon-step-index {
+  color: var(--neon-cyan);
+}
+
+.neon-step-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.neon-study-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0.85rem 1rem;
+  flex-wrap: wrap;
+}
+
+.neon-study-readout {
+  flex: 1 1 320px;
+  margin: 0;
+  font-family: var(--font-prose);
+  font-size: 0.98rem;
+  line-height: 1.48;
+  color: var(--ink-primary);
+}
+
+.neon-study-readout strong {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 0.5rem;
+}
+
+.neon-study-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.neon-btn-accent {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.neon-btn-accent:hover,
+.neon-btn-accent[aria-pressed="true"] {
+  background: var(--neon-cyan);
+  color: #070a0f;
+  border-color: var(--neon-cyan);
+}
+
+/* Multi-Turn Ask the Editor Drawer */
+.neon-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 165;
+  background: rgba(5, 6, 9, 0.72);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.neon-drawer {
+  width: min(100%, 540px);
+  height: 100%;
+  background: var(--bg-panel);
+  border-left: 1px solid var(--neon-cyan);
+  box-shadow: var(--neon-halo);
+  display: flex;
+  flex-direction: column;
+}
+
+.neon-drawer-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.neon-starter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.neon-chip-btn {
+  appearance: none;
+  background: var(--bg-surface);
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-secondary);
+  padding: 0.36rem 0.62rem;
+  min-height: 36px;
+  font-family: var(--font-mono);
+  font-size: 0.71rem;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-neon), color var(--dur-fast) var(--ease-neon);
+}
+
+.neon-chip-btn:hover {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.neon-chat-thread {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.neon-msg {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+}
+
+.neon-msg--user {
+  border-left: 3px solid var(--signal-vermilion);
+}
+
+.neon-msg--editor {
+  border-left: 3px solid var(--neon-cyan);
+  background: color-mix(in srgb, var(--bg-surface) 88%, var(--neon-cyan-soft));
+}
+
+.neon-msg-role {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.neon-msg p {
+  margin: 0;
+  font-family: var(--font-prose);
+  font-size: 0.98rem;
+  line-height: 1.54;
+}
+
+.neon-cite-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.neon-drawer-composer {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+}
+
+/* Docked Audio Edition Transport Bar */
+.neon-audio-dock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 140;
+  border-top: 1px solid var(--neon-cyan);
+  background: color-mix(in srgb, var(--bg-canvas) 95%, transparent);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--neon-halo);
+}
+
+.neon-audio-dock-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-block: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.neon-eq-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 18px;
+  padding-inline: 0.25rem;
+}
+
+.neon-eq-bar {
+  width: 3px;
+  height: 4px;
+  background: var(--neon-cyan);
+}
+
+.neon-eq-bars.is-live .neon-eq-bar:nth-child(1) {
+  animation: neon-eq-a 0.62s var(--ease-neon) infinite alternate;
+}
+.neon-eq-bars.is-live .neon-eq-bar:nth-child(2) {
+  animation: neon-eq-b 0.48s var(--ease-neon) infinite alternate;
+}
+.neon-eq-bars.is-live .neon-eq-bar:nth-child(3) {
+  animation: neon-eq-c 0.74s var(--ease-neon) infinite alternate;
+}
+.neon-eq-bars.is-live .neon-eq-bar:nth-child(4) {
+  animation: neon-eq-b 0.56s var(--ease-neon) infinite alternate;
+}
+.neon-eq-bars.is-live .neon-eq-bar:nth-child(5) {
+  animation: neon-eq-a 0.68s var(--ease-neon) infinite alternate;
+}
+
+@keyframes neon-eq-a {
+  from { height: 4px; }
+  to { height: 17px; }
+}
+@keyframes neon-eq-b {
+  from { height: 6px; }
+  to { height: 14px; }
+}
+@keyframes neon-eq-c {
+  from { height: 3px; }
+  to { height: 18px; }
+}
+
+.neon-audio-track-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+  min-width: 190px;
+}
+
+.neon-audio-track-meta strong {
+  font-family: var(--font-ui);
+  font-size: 0.84rem;
+}
+
+/* Keyboard Folio Navigator HUD */
+.neon-shortcut-hud {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 130;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--neon-cyan);
+  background: var(--bg-panel);
+  box-shadow: var(--neon-halo);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--neon-cyan);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+.folio-shortcut-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--rule-hairline);
+  background: var(--bg-surface);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+.cover-stage-frame.is-neon-live {
+  border-color: color-mix(in srgb, var(--rule-strong) 55%, var(--neon-cyan));
+  box-shadow: var(--shadow-elevated), var(--neon-halo);
+}
+
+.cover-node-btn.is-selected {
+  box-shadow: inset 0 2px 0 var(--neon-cyan);
 }
 
 .stratigraphy-strip {

@@ -99,3 +99,37 @@
 - **DON'T introduce generic rounded SaaS cards**, blurred purple-pink hero blobs, Tailwind utility soup, or unattributed AI stock art.
 - **DON'T commit API keys, tokens, `.sqlite` files, or eval canary strings** (`npm run lint` and `npm test` enforce this automatically).
 - **DON'T touch any production server, run `deploy/activate.sh`, or merge the PR**.
+
+---
+
+## 6. Neon Layer (`Ne·10`) — Motion, Interaction & Live Instruments
+
+**Layer Author:** Gemini 4 Neon (`Ne·10`, atomic weight `20.180 u`)  
+**Relationship to Carbon:** Carbon (`C·06`) owns the structural press, grid geometry, paper stocks, and quiet `Newsreader` prose spine. **Neon (`Ne·10`)** is the **excited gas-discharge signal layer** that illuminates *interactive state*—live step-through diagrams, optical View Transition morphs, keyboard folio detents, WebGPU TSL lattice accents, docked Audio Edition transport, and the multi-turn Ask-the-Editor press wire—without disturbing the editorial calm of static text.
+
+### 6.1 Calibrated Neon Signal Tokens (`src/styles/tokens.css`)
+
+| Token | `graphite` | `rag` (Daylight) | `oxide` (Blueprint) | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| `--neon-cyan` | `#22f3e6` | `#006b76` | `#5efce8` | Primary excited-state signal: active study step, live audio meter, keyboard HUD, WebGPU TSL rim |
+| `--neon-cyan-soft` | `rgba(34,243,230,0.12)` | `rgba(0,107,118,0.10)` | `rgba(94,252,232,0.14)` | Subtle discharge bed for active tabs & editor replies |
+| `--neon-lime` | `#b8ff3c` | `#356600` | `#c7ff5e` | Verified PASS rails & green-state instrument indicators |
+| `--neon-halo` | `0 0 0 1px cyan/42% + 22px 14%` | `0 0 0 1px cyan/45% + 16px 12%` | `0 0 0 1px cyan/45% + 22px 16%` | Crisp hairline optical glow reserved strictly for mounted live instruments |
+| `--ease-neon` | `cubic-bezier(0.12, 0.92, 0.24, 1)` | — | — | Rapid optical-shutter curve for View Transitions and step-through switches |
+
+### 6.2 Neon Interactive Components & Motion Grammar
+
+1. **Interactive Step-Through Monograph Studies (`src/components/islands/InteractiveStudy.svelte`)**:
+   - Mounts inside any monograph whose `secondaryMedia.kind === 'svg-study'`, covering **10 bespoke state machines**: 5 Issue 02 systems (`rizzstack`, `uirizz`, `doppler`, `photopart`, `jackpot`) and all 5 archived Issue 01 studies (`cocs`, `rgbagentflightindicator`, `warpi`, `hermesdashboard`, `becomussy`).
+   - Supports full keyboard stepping (`ArrowLeft` / `ArrowRight`, `Home` / `End`, step tabs, and `Prev`/`Next` buttons), live ARIA status announcements, and zero inline `style=""` attributes.
+2. **Class-Scoped View Transition Morphs & `j`/`k` Folio Shortcuts**:
+   - Shared `view-transition-name` classes (`.vt-masthead`, `.vt-issue-title`, `.vt-issue-stage`, `.vt-article-headline`, `.vt-article-plate`) morph smoothly across pages (`380ms var(--ease-neon)`) and collapse cleanly under `prefers-reduced-motion: reduce`.
+   - Global keyboard navigation in `PressControls.svelte` binds `j` / `]` (next folio), `k` / `[` (previous folio), `/` (catalog finder), `?` (shortcut reference modal), and `u-s-s-y` (Ussyverse Stratigraphy), displaying a brief Neon HUD pill on navigation.
+3. **WebGPU TSL Cover Accent (`src/components/islands/CarbonCoverStage.svelte`)**:
+   - On WebGPU-capable browsers, uses `three/tsl` (`MeshStandardNodeMaterial`, Fresnel view-angle rim + travelling time uniform discharge wave) on the Carbon Allotrope core and active cell; degrades gracefully to an enhanced WebGL2 Neon orbital discharge ring and then to a static SVG lattice under reduced motion or no-GPU environments.
+4. **Multi-Turn Ask the Editor Press Wire & Docked Audio Edition Transport**:
+   - **Ask the Editor** slides in as a right-hand press-wire drawer with starter prompt chips, multi-turn conversation history, BM25-weighted local catalog grounding when `FEATURE_ASK_EDITOR=false`, and live **`gemini-3.5-flash-lite`** (verified current stable Flash-Lite model ID) synthesis when `FEATURE_ASK_EDITOR=true` + `GEMINI_API_KEY` are set.
+   - **Audio Edition (`AudioEditionBar.svelte`)** docks a compact flexi-disc / tape transport at the viewport bottom to step through an issue's 11 harmonic WebAudio tracks with a pure-CSS 5-bar phosphor meter and a flagged server narration hook (`FEATURE_AUDIO_EDITION` / `gemini-3.8-flash-lite-tts` + SQLite cache table `audio_editions`).
+5. **Syndication (`/rss.xml`)**:
+   - Static RSS 2.0 feed generated at build time (`src/pages/rss.xml.ts`) exposing all published issues and commit-pinned monographs.
+

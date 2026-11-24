@@ -25,6 +25,14 @@
   --amber-oxide-soft: rgba(245, 166, 35, 0.14);
   --cobalt-trace: #38bdf8;
 
+  /* Gemini 4 Neon (Ne·10) Gas-Discharge Interactive Layer */
+  --neon-cyan: #22f3e6;
+  --neon-cyan-soft: rgba(34, 243, 230, 0.12);
+  --neon-lime: #b8ff3c;
+  --neon-lime-soft: rgba(184, 255, 60, 0.12);
+  --neon-halo: 0 0 0 1px rgba(34, 243, 230, 0.42), 0 0 22px rgba(34, 243, 230, 0.14);
+  --neon-halo-hot: 0 0 0 1px rgba(255, 68, 34, 0.55), 0 0 22px rgba(255, 68, 34, 0.18);
+
   --shadow-elevated: 0 22px 48px rgba(0, 0, 0, 0.55);
   --grid-overlay-color: rgba(255, 68, 34, 0.09);
   color-scheme: dark;
@@ -52,6 +60,14 @@
   --amber-oxide-soft: rgba(148, 82, 0, 0.1);
   --cobalt-trace: #0369a1;
 
+  /* Gemini 4 Neon (Ne·10) Daylight Ink Calibration (WCAG AA+) */
+  --neon-cyan: #006b76;
+  --neon-cyan-soft: rgba(0, 107, 118, 0.1);
+  --neon-lime: #356600;
+  --neon-lime-soft: rgba(53, 102, 0, 0.1);
+  --neon-halo: 0 0 0 1px rgba(0, 107, 118, 0.45), 0 4px 16px rgba(0, 107, 118, 0.12);
+  --neon-halo-hot: 0 0 0 1px rgba(196, 40, 12, 0.5), 0 4px 16px rgba(196, 40, 12, 0.12);
+
   --shadow-elevated: 0 18px 40px rgba(18, 19, 22, 0.12);
   --grid-overlay-color: rgba(196, 40, 12, 0.08);
   color-scheme: light;
@@ -78,6 +94,14 @@
   --amber-oxide: #fbbf24;
   --amber-oxide-soft: rgba(251, 191, 36, 0.15);
   --cobalt-trace: #7dd3fc;
+
+  /* Gemini 4 Neon (Ne·10) Ferric Cyanotype Calibration */
+  --neon-cyan: #5efce8;
+  --neon-cyan-soft: rgba(94, 252, 232, 0.14);
+  --neon-lime: #c7ff5e;
+  --neon-lime-soft: rgba(199, 255, 94, 0.13);
+  --neon-halo: 0 0 0 1px rgba(94, 252, 232, 0.45), 0 0 22px rgba(94, 252, 232, 0.16);
+  --neon-halo-hot: 0 0 0 1px rgba(255, 120, 71, 0.55), 0 0 22px rgba(255, 120, 71, 0.18);
 
   --shadow-elevated: 0 22px 48px rgba(2, 8, 15, 0.62);
   --grid-overlay-color: rgba(125, 211, 252, 0.09);
@@ -118,10 +142,11 @@
   --measure-prose: 62ch;
   --header-h: 3.5rem;
 
-  /* Motion Language — Crisp Mechanical Detents */
+  /* Motion Language — Carbon Detents + Neon Optical Shutter */
   --ease-carbon: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-neon: cubic-bezier(0.12, 0.92, 0.24, 1);
   --dur-fast: 140ms;
   --dur-med: 260ms;
-  --dur-slow: 480ms;
+  --dur-slow: 460ms;
 }

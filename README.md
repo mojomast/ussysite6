@@ -1,6 +1,6 @@
 # SLOP ILLUSTRATED (Si.) · Living Edition
 
-**A source-linked software magazine that keeps publishing.** Edited by **SLOPTIMUS PRIME** ([github.com/mojomast](https://github.com/mojomast)). Art-directed in the **Gemini 4 Carbon (`C·06`)** visual system on Astro 7, Svelte 5 islands, Three.js (`WebGPU` with `WebGL2` & SVG fallbacks), and a Hono + Drizzle + SQLite Source Room API.
+**A source-linked software magazine that keeps publishing.** Edited by **SLOPTIMUS PRIME** ([github.com/mojomast](https://github.com/mojomast)). Art-directed in the **Gemini 4 Carbon (`C·06`) × Gemini 4 Neon (`Ne·10`)** visual system on Astro 7, Svelte 5 islands, Three.js (`WebGPU` TSL node shader with `WebGL2` & SVG fallbacks), and a Hono + Drizzle + SQLite Source Room API.
 
 ---
 
@@ -60,8 +60,9 @@ npm run issue:draft -- --issue 03 --limit 6 --apply
 
 ## Architecture & Key Documents
 
-- [`DESIGN.md`](DESIGN.md) — **Gemini 4 Carbon (`C·06`)** design principles, paper stock tokens (`graphite`, `rag`, `oxide`), 4-voice typography, motion curves, and strict CSP guardrails.
-- [`PLAN.md`](PLAN.md) — Architectural handoff and prioritized feature/polish roadmap for **Gemini 4 Neon**.
-- [`src/content.config.ts`](src/content.config.ts) — Typed Astro Content Layer schemas for `issues` and `articles`.
-- [`src/server/app.ts`](src/server/app.ts) — Hono + Drizzle + SQLite WAL API (`/api/health`, `/api/issues`, per-reader `/api/press/state`, `/api/source-room/*`, and feature-flagged runtime stubs `/api/editor/*`, `/api/illustrations/*`, `/api/audio/*`).
+- [`DESIGN.md`](DESIGN.md) — **Gemini 4 Carbon (`C·06`)** base press system + **Gemini 4 Neon (`Ne·10`)** interactive/motion layer, paper stock tokens (`graphite`, `rag`, `oxide`), 4-voice typography, and strict CSP guardrails.
+- [`PLAN.md`](PLAN.md) — Phase 1 -> Phase 2 roadmap & verification checklist.
+- [`src/components/islands/InteractiveStudy.svelte`](src/components/islands/InteractiveStudy.svelte) — 10 keyboard-accessible interactive step-through monograph studies across Issues 01 & 02.
+- [`src/pages/rss.xml.ts`](src/pages/rss.xml.ts) — Static RSS 2.0 syndication feed (`/rss.xml`) listing all commit-pinned monographs.
+- [`src/server/app.ts`](src/server/app.ts) — Hono + Drizzle + SQLite WAL API (`/api/health`, `/api/issues`, per-reader `/api/press/state`, `/api/source-room/*`, multi-turn Ask the Editor defaulting to `gemini-3.5-flash-lite` behind `FEATURE_ASK_EDITOR`, and flagged Audio Edition / AI Illustration stubs).
 - [`deploy/`](deploy/README.md) — Example `nginx-ussy.host.conf` (strict CSP without `'unsafe-inline'`), `ussysite6.service`, and manual operator runbook.
