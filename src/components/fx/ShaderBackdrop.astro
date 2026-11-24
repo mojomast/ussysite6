@@ -1,3 +1,14 @@
 ---
-/* Wave 9 mount point; owned by its track. Renders nothing until that track fills it in. */
+/*
+ * Wave 9 · shader mount point:
+ * - .fx-backdrop hosts the full-viewport Ink-in-Water canvas ONLY in full tier on fine pointers.
+ *   No <canvas> is emitted in HTML so lite/off tiers and reduced-motion never allocate one.
+ * - .fx-film-overlay supplies the subtle film grain (static on lite/off, shimmering on full)
+ *   and stock-aware vignette.
+ */
 ---
+<div class="fx-backdrop" data-fx-backdrop aria-hidden="true"></div>
+<div class="fx-film-overlay" data-fx-film aria-hidden="true">
+  <div class="fx-film-grain"></div>
+  <div class="fx-film-vignette"></div>
+</div>
