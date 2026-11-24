@@ -1,0 +1,113 @@
+---
+import { withBase } from '../../../lib/paths';
+
+interface PressSheetItem {
+  articleSlug: string;
+  issueNumber: string;
+  folioCode: string;
+  readerServiceNo: number;
+  title: string;
+  kicker: string;
+  headline: string;
+  deck: string;
+  sourceRevision: string;
+}
+
+interface Props {
+  issueNumber: string;
+  coverDate: string;
+  totalFolios: number;
+  items: PressSheetItem[];
+}
+
+const { issueNumber, coverDate, totalFolios, items } = Astro.props;
+const totalCount = items.length;
+const paddedFolios = String(totalFolios).padStart(2, '0');
+---
+
+<section
+  class="fx-press-run"
+  aria-labelledby="press-run-heading"
+  data-fx-press-run
+  data-sheet-count={totalCount}
+>
+  <div class="fx-press-stage">
+    <div class="carbon-sheet fx-press-head">
+      <div class="fx-press-head-left">
+        <span class="datum-tag">Issue {issueNumber} · {coverDate} · Folios 01 to {paddedFolios}</span>
+        <h2 id="press-run-heading" class="section-heading">The Press <em>Run</em></h2>
+      </div>
+      <div class="fx-press-telemetry" aria-hidden="true">
+        <span class="fx-press-counter-readout">
+          <span class="fx-press-sheet-live"></span>
+          <span class="fx-press-sheet-sep">/</span>
+          <span>{String(totalCount).padStart(2, '0')}</span>
+        </span>
+        <div class="fx-press-meter"><span></span></div>
+      </div>
+    </div>
+
+    <div class="fx-press-rail fx-press-rail--top" aria-hidden="true">
+      <span class="fx-press-crop"></span>
+      <span class="fx-press-ticks"></span>
+      <span class="fx-press-crop"></span>
+    </div>
+
+    <div class="fx-press-viewport">
+      <ol class="fx-press-track" data-fx-press-track>
+        {items.map((item, idx) => (
+          <li class="fx-press-sheet" data-sheet-index={idx + 1}>
+            <div class="fx-sheet-crops" aria-hidden="true">
+              <span class="fx-crop fx-crop--tl"></span>
+              <span class="fx-crop fx-crop--tr"></span>
+              <span class="fx-crop fx-crop--bl"></span>
+              <span class="fx-crop fx-crop--br"></span>
+            </div>
+
+            <span class="fx-sheet-watermark" aria-hidden="true">{item.folioCode}</span>
+
+            <div class="fx-sheet-top">
+              <span class="fx-sheet-folio">Folio {item.folioCode}</span>
+              <span class="service-stamp">No. {item.readerServiceNo}</span>
+            </div>
+
+            <div class="fx-sheet-body">
+              <span class="datum-tag">{item.kicker}</span>
+              <h3 class="fx-sheet-title">
+                <a href={withBase(`/issues/${item.issueNumber}/${item.articleSlug}`)}>
+                  {item.title}
+                </a>
+              </h3>
+              <p class="fx-sheet-headline">{item.headline}</p>
+              <p class="fx-sheet-deck">{item.deck}</p>
+            </div>
+
+            <div class="fx-sheet-foot">
+              <span class="datum-tag">@{item.sourceRevision.slice(0, 7)}</span>
+              <a
+                class="fx-sheet-read"
+                href={withBase(`/issues/${item.issueNumber}/${item.articleSlug}`)}
+                aria-label={`Read ${item.title}`}
+              >
+                Read feature →
+              </a>
+            </div>
+
+            <div class="fx-sheet-colorbar" aria-hidden="true">
+              <span class="fx-swatch fx-swatch--ink"></span>
+              <span class="fx-swatch fx-swatch--gold"></span>
+              <span class="fx-swatch fx-swatch--signal"></span>
+              <span class="fx-swatch fx-swatch--rule"></span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+
+    <div class="fx-press-rail fx-press-rail--bottom" aria-hidden="true">
+      <span class="fx-press-crop"></span>
+      <span class="fx-press-ticks"></span>
+      <span class="fx-press-crop"></span>
+    </div>
+  </div>
+</section>

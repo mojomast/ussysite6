@@ -1,0 +1,16 @@
+---
+interface Props {
+  value: number;
+}
+
+const { value } = Astro.props;
+const clean = Number.isInteger(value) && value > 0 && value <= 9999;
+---
+{clean ? (
+  <span class="fx-counter" data-fx-count={value}>
+    <span class="fx-counter-real">{value}</span>
+    <span class="fx-counter-anim" aria-hidden="true"></span>
+  </span>
+) : (
+  String(value)
+)}
