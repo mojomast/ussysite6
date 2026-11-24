@@ -290,6 +290,11 @@
     --kt-base: 460ms;
   }
 
+  /* A shared headline is already moving in its morph; its words have to be on the plate it carries */
+  html.is-vt-arrival :is([class*='vt-hl-'], .vt-issue-title) .kt-wi {
+    animation: none;
+  }
+
   .mo-masthead-letters > span {
     animation: mo-letter-drop 1100ms var(--spring-soft) both, mo-weight 1400ms var(--ease-out-expo) both;
   }
@@ -704,8 +709,7 @@
   }
 
   .opus-cold-open:not(.is-static) .co-letters > span {
-    opacity: 0;
-    animation: mo-ink-bleed 900ms var(--ease-out-expo) forwards;
+    animation: mo-ink-bleed 900ms var(--ease-out-expo) both;
   }
 
   .opus-cold-open:not(.is-static) .co-letters > span:nth-child(1) { animation-delay: 4.12s; }
@@ -715,8 +719,7 @@
 
   .opus-cold-open:not(.is-static) .co-ill {
     display: inline-block;
-    opacity: 0;
-    animation: mo-ink-bleed 1000ms var(--ease-out-expo) 4.5s forwards;
+    animation: mo-ink-bleed 1000ms var(--ease-out-expo) 4.5s both;
   }
 
   .opus-cold-open:not(.is-static) .opus-co-title {
@@ -725,8 +728,7 @@
   }
 
   .opus-cold-open:not(.is-static) .opus-co-issue {
-    opacity: 0;
-    animation: mo-rise-in 700ms var(--ease-out-expo) 4.9s forwards;
+    animation: mo-rise-in 700ms var(--ease-out-expo) 4.9s both;
   }
 
   .opus-cold-open:not(.is-static) .opus-co-seal {

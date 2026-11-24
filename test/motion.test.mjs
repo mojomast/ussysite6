@@ -36,6 +36,20 @@ test('motion keyframes only animate compositor-friendly properties', () => {
   }
 });
 
+test('nothing hidden by a base opacity: 0 waits on keyframes that never reveal it', () => {
+  const frames = new Map(keyframeBlocks(motionCss).map((k) => [k.name, k.body]));
+  const revealsOpacity = (body) => /(?:^|\})\s*(?:to|100%)[^{]*\{[^}]*opacity/.test(body);
+  for (const [, selector, body] of motionCss.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (!/(^|;|\s)opacity:\s*0\s*;/.test(body)) continue;
+    const anim = body.match(/animation(?:-name)?:\s*([^;]+);/);
+    if (!anim) continue;
+    for (const name of anim[1].split(',').map((part) => part.trim().split(/\s+/)[0])) {
+      if (!frames.has(name)) continue;
+      assert.ok(revealsOpacity(frames.get(name)), `${selector.trim()} starts at opacity 0 but @keyframes ${name} never sets an end opacity`);
+    }
+  }
+});
+
 test('springs are CSS linear() curves and every token is defined', () => {
   for (const token of ['--spring-snappy', '--spring-bouncy', '--spring-soft', '--spring-stamp']) {
     assert.match(motionCss, new RegExp(`${token}:\\s*linear\\(`), `${token} should be a linear() spring`);
