@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import { buildIssueFolios } from '../lib/folio';
+import PressControls from './islands/PressControls.svelte';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+
+const allArticles = await getCollection('articles');
+const byIssue = new Map<string, typeof allArticles>();
+for (const entry of allArticles) {
+  const list = byIssue.get(entry.data.issueNumber) || [];
+  list.push(entry);
+  byIssue.set(entry.data.issueNumber, list);
+}
+
+const searchCatalog = allArticles
+  .sort((a, b) => b.data.issueNumber.localeCompare(a.data.issueNumber) || a.data.index - b.data.index)
+  .map((entry) => {
+    const issueArts = (byIssue.get(entry.data.issueNumber) || []).map((a) => a.data);
+    const folios = buildIssueFolios(entry.data.issueNumber, issueArts);
+    const f = folios.find((x) => x.articleSlug === entry.data.articleSlug);
+    return {
+      issueNumber: entry.data.issueNumber,
+      articleSlug: entry.data.articleSlug,
+      readerServiceNo: entry.data.readerServiceNo,
+      folioCode: f?.folioCode || '00',
+      title: entry.data.title,
+      headline: entry.data.headline,
+      category: entry.data.category,
+      techStack: entry.data.techStack
+    };
+  });
+
+const isCurrent = (prefix: string) =>
+  prefix === '/'
+    ? currentPath === '/'
+    : currentPath === prefix || currentPath.startsWith(`${prefix}/`);
+---
+
+<header class="press-masthead">
+  <div class="carbon-sheet press-masthead-inner">
+    <div class="brand-cluster">
+      <a href="/" class="si-badge" aria-label="Slop Illustrated Home">
+        Si<span>.</span>
+      </a>
+      <div class="brand-imprint">
+        <a href="/" class="brand-title">Slop Illustrated</a>
+        <span class="datum-tag">LIVING EDITION // C·06</span>
+      </div>
+    </div>
+
+    <nav class="primary-nav" aria-label="Primary Publication Navigation">
+      <a class="nav-link" href="/" aria-current={isCurrent('/') ? 'page' : undefined}>
+        Newsstand
+      </a>
+      <a class="nav-link" href="/issues/02" aria-current={isCurrent('/issues/02') ? 'page' : undefined}>
+        Issue 02<span class="nav-link-badge">NEW</span>
+      </a>
+      <a class="nav-link" href="/issues/01" aria-current={isCurrent('/issues/01') ? 'page' : undefined}>
+        Issue 01 Archive
+      </a>
+      <a class="nav-link" href="/issues" aria-current={currentPath === '/issues' ? 'page' : undefined}>
+        All Issues
+      </a>
+      <a class="nav-link" href="/source-room" aria-current={isCurrent('/source-room') ? 'page' : undefined}>
+        Source Room
+      </a>
+    </nav>
+
+    <div class="press-controls-wrap">
+      <PressControls client:load catalog={searchCatalog} />
+    </div>
+  </div>
+</header>

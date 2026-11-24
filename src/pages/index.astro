@@ -1,0 +1,278 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CarbonCoverStage from '../components/islands/CarbonCoverStage.svelte';
+import CarbonPlateSvg from '../components/CarbonPlateSvg.astro';
+import { buildIssueFolios } from '../lib/folio';
+
+const allIssues = (await getCollection('issues')).sort((a, b) =>
+  b.data.issueNumber.localeCompare(a.data.issueNumber)
+);
+const currentIssue = allIssues.find((i) => i.data.status === 'current') || allIssues[0];
+const allArticles = await getCollection('articles');
+
+const currentArticles = allArticles
+  .filter((a) => a.data.issueNumber === currentIssue.data.issueNumber)
+  .sort((a, b) => a.data.index - b.data.index);
+
+const currentFolios = buildIssueFolios(
+  currentIssue.data.issueNumber,
+  currentArticles.map((a) => a.data)
+);
+const folioBySlug = new Map(
+  currentFolios.filter((f) => f.articleSlug).map((f) => [f.articleSlug!, f.folioCode])
+);
+
+const coverCells = currentArticles.map((a) => ({
+  articleSlug: a.data.articleSlug,
+  issueNumber: a.data.issueNumber,
+  folioCode: folioBySlug.get(a.data.articleSlug) || '00',
+  readerServiceNo: a.data.readerServiceNo,
+  title: a.data.title,
+  kicker: a.data.kicker,
+  spotInkHex: a.data.spotInkHex
+}));
+
+const leadArticle = currentArticles[0];
+---
+
+<BaseLayout
+  title={`SLOP ILLUSTRATED (Si.) · Living Edition — Issue ${currentIssue.data.issueNumber} (${currentIssue.data.coverDate})`}
+  description={`${currentIssue.data.title}: ${currentIssue.data.subtitle}. Edited by ${currentIssue.data.editorInChief}.`}
+>
+  <!-- NEWSSTAND MONUMENTAL HERO -->
+  <section class="newsstand-hero">
+    <div class="carbon-sheet">
+      <div class="masthead-datum-strip">
+        <span class="live-issue-pill">
+          <span class="live-dot" aria-hidden="true"></span>
+          LIVING EDITION // ISSUE {currentIssue.data.issueNumber} · {currentIssue.data.coverDate}
+        </span>
+        <span class="datum-tag">
+          EDITED BY {currentIssue.data.editorInChief} · ALL CLAIMS COMMIT-SHA PINNED · {allArticles.length} TOTAL MONOGRAPHS
+        </span>
+      </div>
+
+      <div class="hero-asymmetric-grid">
+        <div>
+          <h1 class="masthead-monument">
+            <span class="word-slop">SLOP</span>
+            <span class="word-illustrated">Illustrated<span class="period-mark">.</span></span>
+          </h1>
+
+          <span class="hero-issue-kicker">{currentIssue.data.themeTag}</span>
+          <h2 class="hero-issue-headline">{currentIssue.data.title}</h2>
+          <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
+
+          <div class="cta-row">
+            <a class="btn-primary" href={`/issues/${currentIssue.data.issueNumber}`}>
+              Open Issue {currentIssue.data.issueNumber} Cover &amp; Contents ↗
+            </a>
+            <a class="btn-secondary" href={`/issues/${currentIssue.data.issueNumber}/${leadArticle.data.articleSlug}`}>
+              Cover Story: {leadArticle.data.title}
+            </a>
+            <a class="btn-secondary" href="/issues/01">
+              Issue 01 Archive
+            </a>
+          </div>
+
+          <dl class="hero-highlights-dl">
+            {currentIssue.data.highlights.map((h) => (
+              <div>
+                <dt>{h.label}</dt>
+                <dd>{h.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div>
+          <CarbonCoverStage client:load items={coverCells} issueNumber={currentIssue.data.issueNumber} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COVER STORY SPOTLIGHT & ISSUE 02 LEDGER -->
+  <section class="section-block scroll-reveal">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">IN THIS ISSUE // {currentArticles.length} SOURCE-VERIFIED MONOGRAPHS</span>
+          <h2 class="section-heading">Issue {currentIssue.data.issueNumber} <em>Table of Dispatches</em></h2>
+        </div>
+        <a class="btn-secondary" href={`/issues/${currentIssue.data.issueNumber}`}>
+          Read Editor’s Letter &amp; Full Folio Map ↗
+        </a>
+      </div>
+
+      <article class="cover-story-banner">
+        <div>
+          <div class="article-kicker-row">
+            <span class="service-stamp">COVER STORY · #{leadArticle.data.readerServiceNo}</span>
+            <span class="datum-tag">FOLIO {folioBySlug.get(leadArticle.data.articleSlug)}</span>
+            <a
+              class="sha-pill"
+              href={`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`}
+              target="_blank"
+              rel="noopener"
+            >
+              @{leadArticle.data.sourceRevision.slice(0, 7)} ↗
+            </a>
+          </div>
+          <h3 class="hero-issue-headline">
+            <a href={`/issues/${leadArticle.data.issueNumber}/${leadArticle.data.articleSlug}`}>
+              {leadArticle.data.headline}
+            </a>
+          </h3>
+          <p class="hero-issue-deck">{leadArticle.data.deck}</p>
+          <blockquote class="editorial-pullquote">“{leadArticle.data.pullQuote}”</blockquote>
+          <div class="cta-row">
+            <a class="btn-primary" href={`/issues/${leadArticle.data.issueNumber}/${leadArticle.data.articleSlug}`}>
+              Read Cover Monograph ↗
+            </a>
+            <a class="btn-secondary" href={leadArticle.data.repoUrl} target="_blank" rel="noopener">
+              Inspect Repository ↗
+            </a>
+          </div>
+        </div>
+        <div class="plate-figure">
+          <div class="plate-art-box">
+            <CarbonPlateSvg
+              svgId={leadArticle.data.plate.svgId || 'plate-rizzstack'}
+              title={leadArticle.data.plate.title}
+              accent={leadArticle.data.spotInkHex}
+              secondary={leadArticle.data.secondaryInkHex}
+            />
+          </div>
+          <div class="plate-figcaption">
+            <span><strong>{leadArticle.data.plate.title}</strong></span>
+            <span class="datum-tag">{leadArticle.data.plate.medium}</span>
+          </div>
+        </div>
+      </article>
+
+      <ol class="article-ledger">
+        {currentArticles.map((art) => (
+          <li class="article-ledger-row">
+            <div class="ledger-folio-col">{folioBySlug.get(art.data.articleSlug)}</div>
+            <div class="ledger-title-col">
+              <span class="datum-tag">{art.data.section}</span>
+              <h3>
+                <a href={`/issues/${art.data.issueNumber}/${art.data.articleSlug}`}>{art.data.title}</a>
+              </h3>
+            </div>
+            <div class="ledger-deck-col">
+              <strong>{art.data.headline}</strong>
+              <p>{art.data.deck}</p>
+            </div>
+            <div class="ledger-meta-col">
+              <span class="service-stamp">#{art.data.readerServiceNo}</span>
+              <a
+                class="sha-pill"
+                href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
+                target="_blank"
+                rel="noopener"
+              >
+                @{art.data.sourceRevision.slice(0, 7)} ↗
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- WORKBENCH SHORT DISPATCHES -->
+  {currentIssue.data.dispatches.length > 0 && (
+    <section class="section-block scroll-reveal">
+      <div class="carbon-sheet">
+        <div class="section-header-row">
+          <div>
+            <span class="datum-tag">BENCH NOTES // NOUS HERMES HACKATHON &amp; FILM TOOLS</span>
+            <h2 class="section-heading">Also Shipping on the <em>November Wire</em></h2>
+          </div>
+          <span class="datum-tag">4 ADDITIONAL PINNED REPOSITORIES</span>
+        </div>
+
+        <div class="dispatches-grid">
+          {currentIssue.data.dispatches.map((d) => (
+            <article class="dispatch-cell">
+              <div>
+                <a class="sha-pill" href={`${d.repoUrl}/tree/${d.commitSha}`} target="_blank" rel="noopener">
+                  @{d.commitSha.slice(0, 7)} ↗
+                </a>
+                <h3>
+                  <a href={d.repoUrl} target="_blank" rel="noopener">{d.title} ↗</a>
+                </h3>
+                <p>{d.note}</p>
+              </div>
+              <a class="datum-tag" href={d.repoUrl} target="_blank" rel="noopener">
+                {d.repoUrl.replace('https://', '')} ↗
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- NEWSSTAND ARCHIVE RACK: ISSUE 02 + ARCHIVED ISSUE 01 -->
+  <section class="section-block scroll-reveal">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">BACK-ISSUE VAULT &amp; CONTINUOUS PRESS</span>
+          <h2 class="section-heading">Every Issue Remains <em>On Press</em></h2>
+        </div>
+        <span class="datum-tag">DRAFT NEXT ISSUE VIA: npm run issue:draft</span>
+      </div>
+
+      <div class="issues-rack">
+        {allIssues.map((iss) => {
+          const count = allArticles.filter((a) => a.data.issueNumber === iss.data.issueNumber).length;
+          return (
+            <article class="issue-folio-card">
+              <div>
+                <div class="issue-card-top">
+                  <span class="service-stamp">
+                    ISSUE {iss.data.issueNumber} · {iss.data.status.toUpperCase()}
+                  </span>
+                  <span class="datum-tag">{iss.data.coverDate}</span>
+                </div>
+                <div class="issue-card-art">
+                  {iss.data.coverArt.src ? (
+                    <img
+                      src={iss.data.coverArt.src}
+                      width={iss.data.coverArt.width || 1600}
+                      height={iss.data.coverArt.height || 1200}
+                      alt={iss.data.coverArt.alt}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <CarbonPlateSvg svgId={iss.data.coverArt.svgId || 'cover-carbon-hive'} title={iss.data.coverArt.title} />
+                  )}
+                </div>
+                <div class="issue-card-body">
+                  <span class="datum-tag">{iss.data.themeTag}</span>
+                  <h3>
+                    <a href={`/issues/${iss.data.issueNumber}`}>{iss.data.title}</a>
+                  </h3>
+                  <p>{iss.data.subtitle}</p>
+                  <div class="cta-row">
+                    <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
+                      Open Issue {iss.data.issueNumber} ({count} Features) ↗
+                    </a>
+                    <a class="btn-secondary" href={`/source-room?issue=${iss.data.issueNumber}`}>
+                      Issue {iss.data.issueNumber} Sources
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

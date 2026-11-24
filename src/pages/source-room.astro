@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SourceRoomWorkbench from '../components/islands/SourceRoomWorkbench.svelte';
+import { buildIssueFolios } from '../lib/folio';
+
+const allArticles = await getCollection('articles');
+const byIssue = new Map<string, typeof allArticles>();
+for (const entry of allArticles) {
+  const list = byIssue.get(entry.data.issueNumber) || [];
+  list.push(entry);
+  byIssue.set(entry.data.issueNumber, list);
+}
+
+const sourceItems = allArticles
+  .sort((a, b) => b.data.issueNumber.localeCompare(a.data.issueNumber) || a.data.index - b.data.index)
+  .map((entry) => {
+    const folios = buildIssueFolios(
+      entry.data.issueNumber,
+      (byIssue.get(entry.data.issueNumber) || []).map((x) => x.data)
+    );
+    const f = folios.find((x) => x.articleSlug === entry.data.articleSlug);
+    return {
+      issueNumber: entry.data.issueNumber,
+      articleSlug: entry.data.articleSlug,
+      folioCode: f?.folioCode || '00',
+      readerServiceNo: entry.data.readerServiceNo,
+      title: entry.data.title,
+      category: entry.data.category,
+      repoUrl: entry.data.repoUrl,
+      sourceRevision: entry.data.sourceRevision,
+      techStack: entry.data.techStack
+    };
+  });
+---
+
+<BaseLayout
+  title="The Source Room · SLOP ILLUSTRATED (Si.) Living Edition"
+  description="Browse all 22 source-linked mojomast repositories across Issues 01 & 02, sync your personal reading list via Hono + SQLite, export Markdown, and post margin dispatches."
+>
+  <section class="section-block">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">THE SOURCE DIRECTORY // SQLITE + DRIZZLE READER DESK</span>
+          <h1 class="section-heading">The Issue Ends. <em>The Code Stays Open.</em></h1>
+        </div>
+        <span class="datum-tag">{sourceItems.length} VERIFIED REPOSITORIES</span>
+      </div>
+
+      <p class="hero-issue-deck">
+        Rebuilt on Hono, Drizzle, and SQLite so your saved repositories stay scoped to your own reader token while
+        community save counts and margin dispatches aggregate across the press.
+      </p>
+
+      <SourceRoomWorkbench client:load items={sourceItems} />
+    </div>
+  </section>
+</BaseLayout>

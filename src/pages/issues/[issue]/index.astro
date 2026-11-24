@@ -1,0 +1,212 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CarbonCoverStage from '../../../components/islands/CarbonCoverStage.svelte';
+import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
+import { buildIssueFolios } from '../../../lib/folio';
+
+export async function getStaticPaths() {
+  const issues = await getCollection('issues');
+  return issues.map((issueEntry) => ({
+    params: { issue: issueEntry.data.issueNumber },
+    props: { issueEntry }
+  }));
+}
+
+const { issueEntry } = Astro.props;
+const { Content } = await render(issueEntry);
+const issueData = issueEntry.data;
+
+const issueArticles = (await getCollection('articles'))
+  .filter((a) => a.data.issueNumber === issueData.issueNumber)
+  .sort((a, b) => a.data.index - b.data.index);
+
+const folios = buildIssueFolios(
+  issueData.issueNumber,
+  issueArticles.map((a) => a.data)
+);
+const folioBySlug = new Map(
+  folios.filter((f) => f.articleSlug).map((f) => [f.articleSlug!, f.folioCode])
+);
+
+const coverCells = issueArticles.map((a) => ({
+  articleSlug: a.data.articleSlug,
+  issueNumber: a.data.issueNumber,
+  folioCode: folioBySlug.get(a.data.articleSlug) || '00',
+  readerServiceNo: a.data.readerServiceNo,
+  title: a.data.title,
+  kicker: a.data.kicker,
+  spotInkHex: a.data.spotInkHex
+}));
+---
+
+<BaseLayout
+  title={`Issue ${issueData.issueNumber}: ${issueData.title} · SLOP ILLUSTRATED (Si.)`}
+  description={`${issueData.subtitle} — ${issueData.coverDate} (${issueData.status} issue).`}
+>
+  <!-- FOLIO 01: FRONT COVER -->
+  <section id="cover" class="issue-cover-spread">
+    <div class="carbon-sheet">
+      <div class="masthead-datum-strip">
+        <span class="live-issue-pill">
+          FOLIO 01 / COVER · ISSUE {issueData.issueNumber} ({issueData.status.toUpperCase()})
+        </span>
+        <span class="datum-tag">
+          {issueData.coverDate} · {folios.length} DIGITAL FOLIOS · EDITED BY {issueData.editorInChief}
+        </span>
+      </div>
+
+      <h1 class="masthead-monument">
+        <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}</span>
+        <span class="word-illustrated">{issueData.title}<span class="period-mark">.</span></span>
+      </h1>
+      <p class="hero-issue-deck">{issueData.subtitle}</p>
+
+      <div class="issue-cover-grid">
+        <div>
+          {issueData.coverArt.kind === 'webgl-carbon-hive' ? (
+            <CarbonCoverStage client:load items={coverCells} issueNumber={issueData.issueNumber} />
+          ) : (
+            <figure class="plate-figure">
+              <div class="plate-art-box">
+                {issueData.coverArt.src ? (
+                  <img
+                    src={issueData.coverArt.src}
+                    width={issueData.coverArt.width || 1600}
+                    height={issueData.coverArt.height || 1200}
+                    alt={issueData.coverArt.alt}
+                  />
+                ) : (
+                  <CarbonPlateSvg svgId={issueData.coverArt.svgId || 'cover-carbon-hive'} title={issueData.coverArt.title} />
+                )}
+              </div>
+              <figcaption class="plate-figcaption">
+                <span><strong>{issueData.coverArt.title}</strong> — {issueData.coverArt.caption}</span>
+                <span class="datum-tag">{issueData.coverArt.medium}</span>
+              </figcaption>
+            </figure>
+          )}
+        </div>
+
+        <aside class="glance-ledger-box" aria-label="Cover Highlights & Quick Jump">
+          <h2>Cover Lines // Issue {issueData.issueNumber}</h2>
+          <dl class="metrics-dl">
+            {issueData.highlights.map((h) => (
+              <div>
+                <dt>{h.label}</dt>
+                <dd>{h.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <ul class="sources-list">
+            {issueArticles.slice(0, 6).map((art) => (
+              <li>
+                <span class="datum-tag">FOLIO {folioBySlug.get(art.data.articleSlug)} · </span>
+                <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>
+                  <strong>{art.data.title}</strong>
+                </a>
+                <div class="datum-tag">{art.data.kicker}</div>
+              </li>
+            ))}
+          </ul>
+
+          <div class="cta-row">
+            <a class="btn-primary" href="#contents">Jump to Contents ↓</a>
+            {issueArticles[0] && (
+              <a class="btn-secondary" href={`/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}`}>
+                Begin Folio 03 ↗
+              </a>
+            )}
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOLIO 02: EDITOR'S LETTER & FRONTISPIECE -->
+  <section id="contents" class="carbon-sheet editor-letter-spread scroll-reveal">
+    <div>
+      <span class="datum-tag">FOLIO 02 // FRONTISPIECE &amp; IMPRINT</span>
+      {issueData.frontispiece && (
+        <figure class="plate-figure">
+          <div class="plate-art-box">
+            {issueData.frontispiece.src ? (
+              <img
+                src={issueData.frontispiece.src}
+                width={issueData.frontispiece.width}
+                height={issueData.frontispiece.height}
+                alt={issueData.frontispiece.alt}
+                loading="lazy"
+              />
+            ) : (
+              <CarbonPlateSvg
+                svgId={issueData.frontispiece.svgId || 'frontispiece-verify-gate'}
+                title={issueData.frontispiece.title}
+              />
+            )}
+          </div>
+          <figcaption class="plate-figcaption">
+            <span><strong>{issueData.frontispiece.title}</strong></span>
+            <span class="datum-tag">{issueData.frontispiece.medium}</span>
+          </figcaption>
+        </figure>
+      )}
+    </div>
+
+    <div>
+      <span class="service-stamp">FROM THE EDITOR’S DESK</span>
+      <h2 class="hero-issue-headline">{issueData.editorLetterHeadline}</h2>
+      <div class="editor-prose">
+        <Content />
+      </div>
+      <p class="datum-tag">
+        — {issueData.editorInChief} · Si. Issue {issueData.issueNumber} ({issueData.coverDate})
+      </p>
+    </div>
+  </section>
+
+  <!-- COMPLETE FOLIO TABLE OF CONTENTS -->
+  <section class="section-block scroll-reveal">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">COMPLETE TABLE OF CONTENTS // FOLIOS 01–{String(folios.length).padStart(2, '0')}</span>
+          <h2 class="section-heading">Feature <em>Monographs</em></h2>
+        </div>
+        <a class="btn-secondary" href={`/source-room?issue=${issueData.issueNumber}`}>
+          Open Issue {issueData.issueNumber} in Source Room ↗
+        </a>
+      </div>
+
+      <ol class="article-ledger">
+        {issueArticles.map((art) => (
+          <li class="article-ledger-row">
+            <div class="ledger-folio-col">{folioBySlug.get(art.data.articleSlug)}</div>
+            <div class="ledger-title-col">
+              <span class="datum-tag">{art.data.section}</span>
+              <h3>
+                <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>{art.data.title}</a>
+              </h3>
+            </div>
+            <div class="ledger-deck-col">
+              <strong>{art.data.headline}</strong>
+              <p>{art.data.deck}</p>
+            </div>
+            <div class="ledger-meta-col">
+              <span class="service-stamp">#{art.data.readerServiceNo}</span>
+              <a
+                class="sha-pill"
+                href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
+                target="_blank"
+                rel="noopener"
+              >
+                @{art.data.sourceRevision.slice(0, 7)} ↗
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+</BaseLayout>

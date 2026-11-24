@@ -1,0 +1,281 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
+import ArticleActions from '../../../components/islands/ArticleActions.svelte';
+import { buildIssueFolios } from '../../../lib/folio';
+
+export async function getStaticPaths() {
+  const allArticles = await getCollection('articles');
+  const byIssue = new Map<string, typeof allArticles>();
+  for (const entry of allArticles) {
+    const list = byIssue.get(entry.data.issueNumber) || [];
+    list.push(entry);
+    byIssue.set(entry.data.issueNumber, list);
+  }
+
+  const paths = [];
+  for (const [issueNumber, entries] of byIssue.entries()) {
+    const sorted = entries.sort((a, b) => a.data.index - b.data.index);
+    const folios = buildIssueFolios(
+      issueNumber,
+      sorted.map((s) => s.data)
+    );
+
+    for (let i = 0; i < sorted.length; i++) {
+      const entry = sorted[i];
+      const prev = i > 0 ? sorted[i - 1] : null;
+      const next = i < sorted.length - 1 ? sorted[i + 1] : null;
+      const folioEntry = folios.find((f) => f.articleSlug === entry.data.articleSlug);
+      paths.push({
+        params: {
+          issue: issueNumber,
+          slug: entry.data.articleSlug
+        },
+        props: {
+          entry,
+          folioCode: folioEntry?.folioCode || '03',
+          totalFolios: folios.length,
+          prevArticle: prev ? { slug: prev.data.articleSlug, title: prev.data.title } : null,
+          nextArticle: next ? { slug: next.data.articleSlug, title: next.data.title } : null
+        }
+      });
+    }
+  }
+  return paths;
+}
+
+const { entry, folioCode, totalFolios, prevArticle, nextArticle } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+---
+
+<BaseLayout
+  title={`${d.title} — Issue ${d.issueNumber} Folio ${folioCode} · SLOP ILLUSTRATED (Si.)`}
+  description={`${d.headline}: ${d.deck}`}
+>
+  <article class="article-monograph carbon-sheet" data-variant={d.layoutVariant} data-article={d.articleSlug}>
+    <!-- TOP FOLIO BREADCRUMB -->
+    <div class="article-breadcrumb-bar">
+      <div class="press-controls-bar">
+        <a class="datum-tag" href={`/issues/${d.issueNumber}`}>
+          ← ISSUE {d.issueNumber} CONTENTS
+        </a>
+        <span class="datum-tag">
+          // FOLIO {folioCode} OF {String(totalFolios).padStart(2, '0')}
+        </span>
+      </div>
+      <div class="press-controls-bar">
+        <span class="datum-tag">RESEARCHED {d.researchedAt}</span>
+        <a class="sha-pill" href={`${d.repoUrl}/tree/${d.sourceRevision}`} target="_blank" rel="noopener">
+          PINNED @{d.sourceRevision.slice(0, 10)} ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- MONOGRAPH OPENER HEADER -->
+    <header class="article-opener-header">
+      <div class="article-kicker-row">
+        <span class="service-stamp">READER SERVICE #{d.readerServiceNo}</span>
+        <span class="datum-tag">{d.section}</span>
+        <span class="datum-tag">· {d.kicker}</span>
+      </div>
+
+      <h1 class="article-headline">{d.headline}</h1>
+      <p class="article-deck">{d.deck}</p>
+
+      <div class="article-byline-bar">
+        <div>
+          <strong>{d.title}</strong>
+          <span class="datum-tag"> · {d.byline}</span>
+          {d.liveUrl && (
+            <span>
+              {' '}· <a class="sha-pill" href={d.liveUrl} target="_blank" rel="noopener">Live Deployment ↗</a>
+            </span>
+          )}
+        </div>
+
+        <ArticleActions
+          client:load
+          readerServiceNo={d.readerServiceNo}
+          title={d.title}
+          issueNumber={d.issueNumber}
+          articleSlug={d.articleSlug}
+          repoUrl={d.repoUrl}
+          sourceRevision={d.sourceRevision}
+          flexiFreqs={d.flexiFreqs}
+        />
+      </div>
+    </header>
+
+    <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
+    <section class="article-hero-media" aria-label="Editorial Plate & Technical Specifications">
+      <figure class="plate-figure">
+        <div class="plate-art-box">
+          {d.plate.kind === 'blender-webp' && d.plate.src ? (
+            <img
+              src={d.plate.src}
+              width={d.plate.width}
+              height={d.plate.height}
+              alt={d.plate.alt}
+            />
+          ) : (
+            <CarbonPlateSvg
+              svgId={d.plate.svgId || `plate-${d.articleSlug}`}
+              title={d.plate.title}
+              accent={d.spotInkHex}
+              secondary={d.secondaryInkHex}
+            />
+          )}
+        </div>
+        <figcaption class="plate-figcaption">
+          <span><strong>“{d.plate.title}”</strong> — {d.plate.alt}</span>
+          <span class="datum-tag">{d.plate.medium}</span>
+        </figcaption>
+      </figure>
+
+      <aside class="glance-ledger-box">
+        <h2>At a Glance // {d.category}</h2>
+        <dl class="metrics-dl">
+          {d.metrics.map((m) => (
+            <div>
+              <dt>{m.label}</dt>
+              <dd>{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="datum-tag">{d.glanceNote}</p>
+        <ul class="stack-pills" aria-label="Technology stack">
+          {d.techStack.map((tech) => (
+            <li>{tech}</li>
+          ))}
+        </ul>
+      </aside>
+    </section>
+
+    <!-- TWO-COLUMN MONOGRAPH BODY: PROSE + CODE ON LEFT, PROVENANCE ON RIGHT -->
+    <div class="article-body-columns">
+      <div>
+        <div class="article-prose-body">
+          <Content />
+        </div>
+
+        <blockquote class="editorial-pullquote">
+          “{d.pullQuote}”
+        </blockquote>
+
+        {d.secondaryMedia && d.secondaryMedia.kind === 'screenshot' && d.secondaryMedia.src && (
+          <figure class="plate-figure">
+            <div class="plate-art-box">
+              <img
+                src={d.secondaryMedia.src}
+                width={d.secondaryMedia.width || 1280}
+                height={d.secondaryMedia.height || 800}
+                alt={d.secondaryMedia.alt || d.secondaryMedia.caption}
+                loading="lazy"
+              />
+            </div>
+            <figcaption class="plate-figcaption">
+              <span>{d.secondaryMedia.caption}</span>
+              <span class="datum-tag">DOCUMENTED CAPTURE</span>
+            </figcaption>
+          </figure>
+        )}
+
+        <section class="under-hood-section" aria-labelledby="under-hood-heading">
+          <h2 id="under-hood-heading">Under the Hood // Verified Architecture</h2>
+          <ul class="arch-list">
+            {d.architecture.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+
+          <div class="code-specimen">
+            <div class="code-specimen-header">
+              <span>{d.codeExcerpt.title}</span>
+              <a href={d.codeExcerpt.sourceUrl} target="_blank" rel="noopener">
+                {d.codeExcerpt.sourceLabel} ↗
+              </a>
+            </div>
+            <pre><code>{d.codeExcerpt.code}</code></pre>
+          </div>
+        </section>
+      </div>
+
+      <aside aria-label="Provenance, Boundaries & Pinned Sources">
+        <div class="sidebar-panel">
+          <h3>Verified Capabilities</h3>
+          <ul class="sidebar-list">
+            {d.verifiedCapabilities.map((cap) => (
+              <li>{cap}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="sidebar-panel caveat-panel">
+          <h3>Field Notes &amp; Honest Boundaries</h3>
+          <ul class="sidebar-list">
+            {d.fieldNotes.map((note) => (
+              <li>{note}</li>
+            ))}
+          </ul>
+        </div>
+
+        {d.readingGuide.length > 0 && (
+          <div class="sidebar-panel">
+            <h3>Source Reading Guide</h3>
+            <ul class="sidebar-list">
+              {d.readingGuide.map((line) => (
+                <li class="datum-tag">{line}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="sidebar-panel">
+          <h3>Commit-Pinned Sources ({d.sources.length})</h3>
+          <ul class="sources-list">
+            {d.sources.map((src) => (
+              <li>
+                <a href={src.url} target="_blank" rel="noopener">
+                  {src.label} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- FOLIO PAGER -->
+    <nav class="folio-pager" aria-label="Folio Navigation">
+      <div>
+        {prevArticle ? (
+          <a class="btn-secondary" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
+            ← Prev: {prevArticle.title}
+          </a>
+        ) : (
+          <a class="btn-secondary" href={`/issues/${d.issueNumber}`}>
+            ← Issue {d.issueNumber} Cover
+          </a>
+        )}
+      </div>
+      <div>
+        <a class="datum-tag" href={`/source-room?issue=${d.issueNumber}`}>
+          SOURCE ROOM ↗
+        </a>
+      </div>
+      <div class="pager-next">
+        {nextArticle ? (
+          <a class="btn-primary" href={`/issues/${d.issueNumber}/${nextArticle.slug}`}>
+            Next: {nextArticle.title} →
+          </a>
+        ) : (
+          <a class="btn-primary" href={`/source-room?issue=${d.issueNumber}`}>
+            Finish in Source Room →
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>

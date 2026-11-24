@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CarbonPlateSvg from '../../components/CarbonPlateSvg.astro';
+
+const issues = (await getCollection('issues')).sort((a, b) =>
+  b.data.issueNumber.localeCompare(a.data.issueNumber)
+);
+const articles = await getCollection('articles');
+---
+
+<BaseLayout
+  title="All Issues & Archive · SLOP ILLUSTRATED (Si.) Living Edition"
+  description="Browse every published issue of Slop Illustrated, including Issue 02 (The Autonomous Shift) and archived Issue 01 (Software, Shown & Explained)."
+>
+  <section class="section-block">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">COMPLETE ARCHIVE // LIVING PERIODICAL MODEL</span>
+          <h1 class="section-heading">Published <em>Issues</em></h1>
+        </div>
+        <span class="datum-tag">{issues.length} ISSUES · {articles.length} VERIFIED MONOGRAPHS</span>
+      </div>
+
+      <p class="hero-issue-deck">
+        Each edition of <strong>Slop Illustrated</strong> is authored as typed Markdown/MDX frontmatter from real public
+        commits, releases, and source files in <code>github.com/mojomast</code>. Redesigns reskin the press without
+        rewriting the archive.
+      </p>
+
+      <div class="issues-rack">
+        {issues.map((iss) => {
+          const issArticles = articles
+            .filter((a) => a.data.issueNumber === iss.data.issueNumber)
+            .sort((a, b) => a.data.index - b.data.index);
+          return (
+            <article class="issue-folio-card">
+              <div>
+                <div class="issue-card-top">
+                  <span class="service-stamp">
+                    ISSUE {iss.data.issueNumber} · {iss.data.status.toUpperCase()}
+                  </span>
+                  <span class="datum-tag">{iss.data.coverDate}</span>
+                </div>
+                <div class="issue-card-art">
+                  {iss.data.coverArt.src ? (
+                    <img
+                      src={iss.data.coverArt.src}
+                      width={iss.data.coverArt.width || 1600}
+                      height={iss.data.coverArt.height || 1200}
+                      alt={iss.data.coverArt.alt}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <CarbonPlateSvg svgId={iss.data.coverArt.svgId || 'cover-carbon-hive'} title={iss.data.coverArt.title} />
+                  )}
+                </div>
+                <div class="issue-card-body">
+                  <span class="datum-tag">{iss.data.themeTag}</span>
+                  <h3>
+                    <a href={`/issues/${iss.data.issueNumber}`}>
+                      Issue {iss.data.issueNumber}: {iss.data.title}
+                    </a>
+                  </h3>
+                  <p>{iss.data.subtitle}</p>
+                  <ul class="stack-pills">
+                    {issArticles.map((a) => (
+                      <li>
+                        <a href={`/issues/${iss.data.issueNumber}/${a.data.articleSlug}`}>
+                          #{a.data.readerServiceNo} {a.data.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <div class="cta-row" aria-label={`Issue ${iss.data.issueNumber} links`}>
+                    <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
+                      Read Issue {iss.data.issueNumber} Cover &amp; Contents ↗
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

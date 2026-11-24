@@ -1,0 +1,47 @@
+---
+import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
+---
+
+<footer class="site-colophon" aria-label="Publication Colophon & Ussyverse Stratigraphy">
+  <div class="carbon-sheet">
+    <div class="section-header-row">
+      <div>
+        <span class="datum-tag">ARCHAEOLOGICAL COLOPHON // USSYSITE2 -&gt; USSYSITE6</span>
+        <h2 class="section-heading">Five Eras Beneath <em>ussy.host</em></h2>
+      </div>
+      <span class="datum-tag">TIP: TYPE U-S-S-Y ANYWHERE FOR AUDIO RELICS</span>
+    </div>
+
+    <div class="stratigraphy-strip">
+      {USSYVERSE_STRATIGRAPHY.map((layer) => (
+        <article class="strata-card">
+          <div class="article-kicker-row">
+            <span class="service-stamp">{layer.era}</span>
+            <a class="datum-tag" href={layer.repoUrl} target="_blank" rel="noopener">
+              {layer.repo} ↗
+            </a>
+          </div>
+          <strong>{layer.title}</strong>
+          <span class="datum-tag">{layer.subtitle}</span>
+          <p class="datum-tag">{layer.artifact}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="colophon-bottom">
+      <div>
+        <strong>Slop, Illustrated.</strong>
+        <span class="datum-tag">
+          {' '}· Edited by SLOPTIMUS PRIME (<a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast</a>) ·
+          Art-directed in Carbon (C·06)
+        </span>
+      </div>
+      <div class="press-controls-bar">
+        <a class="datum-tag" href="/issues">Archive</a>
+        <a class="datum-tag" href="/source-room">Source Room</a>
+        <a class="datum-tag" href="/sitemap-index.xml">Sitemap</a>
+        <a class="datum-tag" href="/api/health">API Health</a>
+      </div>
+    </div>
+  </div>
+</footer>
