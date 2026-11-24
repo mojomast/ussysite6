@@ -1,0 +1,18 @@
+---
+/**
+ * Splits a line into words at build time so CSS can stagger them. The whole sentence is
+ * kept as one text node for screen readers, search snippets and find-in-page; the split
+ * copy is presentation only.
+ */
+interface Props {
+  text: string;
+  class?: string;
+}
+
+const { text, class: cls = '' } = Astro.props;
+const words = text.split(/\s+/).filter(Boolean);
+---
+
+<span class="sr-only">{text}</span><span class={`kt ${cls}`} aria-hidden="true">{words.map((w, i) => (
+  <Fragment><span class="kt-w"><span class="kt-wi">{w}</span></span>{i < words.length - 1 ? ' ' : ''}</Fragment>
+))}</span>

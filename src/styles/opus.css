@@ -408,9 +408,6 @@
     animation: opus-co-progress 6.6s linear forwards;
   }
 
-  .opus-cold-open:not(.is-static) {
-    animation: opus-co-fade 6.6s linear forwards;
-  }
 }
 
 @keyframes opus-co-in {
@@ -433,10 +430,6 @@
   to { transform: scaleX(1); }
 }
 
-@keyframes opus-co-fade {
-  0%, 92% { opacity: 1; }
-  100% { opacity: 0; }
-}
 
 /* --- The last page ------------------------------------------------------ */
 

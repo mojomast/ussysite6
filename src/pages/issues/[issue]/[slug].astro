@@ -4,6 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
 import ArticleActions from '../../../components/islands/ArticleActions.svelte';
 import InteractiveStudy from '../../../components/islands/InteractiveStudy.svelte';
+import Kinetic from '../../../components/Kinetic.astro';
 import { buildIssueFolios } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -68,7 +69,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     <!-- TOP FOLIO BREADCRUMB -->
     <div class="article-breadcrumb-bar">
       <div class="press-controls-bar">
-        <a class="datum-tag" href={`/issues/${d.issueNumber}`}>
+        <a class="datum-tag" data-dir="backward" href={`/issues/${d.issueNumber}`}>
           ← Issue {d.issueNumber} contents
         </a>
         <span class="datum-tag">
@@ -96,7 +97,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
         <span class="datum-tag">{d.kicker}</span>
       </div>
 
-      <h1 class="article-headline vt-article-headline">{d.headline}</h1>
+      <h1 class={`article-headline vt-hl-${d.issueNumber}-${d.articleSlug}`}><Kinetic text={d.headline} /></h1>
       <p class="article-deck">{d.deck}</p>
 
       <div class="article-byline-bar">
@@ -125,7 +126,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
 
     <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
     <section class="article-hero-media" aria-label="Plate and the short version">
-      <figure class="plate-figure vt-article-plate">
+      <figure class={`plate-figure vt-plate-${d.issueNumber}-${d.articleSlug}`}>
         <div class="plate-art-box">
           {d.plate.kind === 'blender-webp' && d.plate.src ? (
             <img
@@ -284,11 +285,11 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     >
       <div>
         {prevArticle ? (
-          <a class="btn-secondary" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
+          <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
             ← {prevArticle.title}
           </a>
         ) : (
-          <a class="btn-secondary" href={`/issues/${d.issueNumber}`}>
+          <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}`}>
             ← Back to the cover
           </a>
         )}

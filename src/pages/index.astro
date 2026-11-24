@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CarbonCoverStage from '../components/islands/CarbonCoverStage.svelte';
 import CarbonPlateSvg from '../components/CarbonPlateSvg.astro';
+import Kinetic from '../components/Kinetic.astro';
 import { buildIssueFolios } from '../lib/folio';
 
 const allIssues = (await getCollection('issues')).sort((a, b) =>
@@ -56,7 +57,7 @@ const num = currentIssue.data.issueNumber;
       <div class="hero-asymmetric-grid">
         <div>
           <h1 class="masthead-monument">
-            <span class="word-slop">SLOP</span>
+            <span class="word-slop"><span class="sr-only">SLOP</span><span class="mo-masthead-letters" aria-hidden="true"><span>S</span><span>L</span><span>O</span><span>P</span></span></span>
             <span class="word-illustrated">Illustrated<span class="period-mark">.</span></span>
           </h1>
 
@@ -66,7 +67,7 @@ const num = currentIssue.data.issueNumber;
           </p>
 
           <span class="hero-issue-kicker">{currentIssue.data.themeTag}</span>
-          <h2 class="hero-issue-headline vt-issue-title">{currentIssue.data.title}</h2>
+          <h2 class="hero-issue-headline vt-issue-title"><Kinetic text={currentIssue.data.title} /></h2>
           <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
 
           <div class="cta-row">
@@ -92,7 +93,7 @@ const num = currentIssue.data.issueNumber;
         </div>
 
         <div
-          class="vt-issue-stage"
+          class={`vt-issue-art-${num}`}
           data-folio-next={`/issues/${num}`}
           data-folio-next-label={`the Issue ${num} cover`}
         >
@@ -144,7 +145,7 @@ const num = currentIssue.data.issueNumber;
             </a>
           </div>
         </div>
-        <div class="plate-figure">
+        <div class={`plate-figure vt-plate-${num}-${leadArticle.data.articleSlug}`}>
           <div class="plate-art-box">
             <CarbonPlateSvg
               svgId={leadArticle.data.plate.svgId || 'plate-rizzstack'}
@@ -176,7 +177,7 @@ const num = currentIssue.data.issueNumber;
               <span class="opus-read-mark" aria-live="off"></span>
             </div>
             <div class="ledger-deck-col">
-              <strong>{art.data.headline}</strong>
+              <strong class={`vt-hl-${num}-${art.data.articleSlug}`}>{art.data.headline}</strong>
               <p>{art.data.deck}</p>
             </div>
             <div class="ledger-meta-col">
@@ -196,6 +197,40 @@ const num = currentIssue.data.issueNumber;
       </ol>
     </div>
   </section>
+
+  {num === '02' && (
+    <section class="mo-scrolly" aria-labelledby="scrolly-heading">
+      <div class="carbon-sheet mo-scrolly-grid">
+        <div class="mo-scrolly-pin">
+          <span class="datum-tag">From the editor’s letter</span>
+          <h2 id="scrolly-heading" class="mo-scrolly-question">
+            If you let machines write the code, how do you know when they are cutting corners?
+          </h2>
+          <div class="mo-scrolly-meter" aria-hidden="true"><span></span></div>
+        </div>
+        <ol class="mo-scrolly-steps">
+          {[
+            ['A contract frozen before the work begins.', 'rizzstack'],
+            ['A button that is not allowed to mean yes.', 'uirizz'],
+            ['A hook that steers a model away from forty turns of gear math by hand.', 'hermes-photo-to-part'],
+            ['A README that opens with its own failure rate.', 'hermes-aircraft-doppler-geolocation'],
+            ['A globe that will find any ship on Earth and refuses, in nineteen lines, to look for a person.', 'eoh']
+          ].map(([line, slug]) => {
+            const art = currentArticles.find((a) => a.data.articleSlug === slug);
+            return (
+              <li class="mo-step">
+                <a href={`/issues/${num}/${slug}`}>{line}</a>
+                {art && <span class="datum-tag">{art.data.title} · No. {art.data.readerServiceNo}</span>}
+              </li>
+            );
+          })}
+          <li class="mo-step mo-step--coda">
+            <p>None of it is about what the machines can do. All of it is about what it takes to trust them.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  )}
 
   {currentIssue.data.corrections.length > 0 && (
     <section class="section-block scroll-reveal" aria-labelledby="corrections-heading">
@@ -275,7 +310,7 @@ const num = currentIssue.data.issueNumber;
                   </span>
                   <span class="datum-tag">{iss.data.coverDate}</span>
                 </div>
-                <div class="issue-card-art">
+                <div class={`issue-card-art ${iss.data.issueNumber !== num ? `vt-issue-art-${iss.data.issueNumber}` : ''}`}>
                   {iss.data.coverArt.src ? (
                     <img
                       src={iss.data.coverArt.src}

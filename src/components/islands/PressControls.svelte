@@ -106,6 +106,11 @@
     const label = host?.getAttribute(labelAttr) || href;
     flashHud(`${direction === 'next' ? 'Turning to' : 'Back to'} ${label}`);
     carbonSynth.pageTurn(direction === 'next');
+    try {
+      sessionStorage.setItem('si.nav.dir', direction === 'next' ? 'forward' : 'backward');
+    } catch {
+      // Without storage the page still turns, just always forwards.
+    }
     window.setTimeout(() => window.location.assign(href), 110);
   }
 
@@ -206,7 +211,19 @@
   });
 
   function chooseStock(next: PaperStock) {
-    pressClient.setStock(next);
+    const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const start = (document as Document & {
+      startViewTransition?: (o: { update: () => void; types: string[] }) => unknown;
+    }).startViewTransition;
+    if (start && !calm && next !== stock) {
+      try {
+        start.call(document, { update: () => pressClient.setStock(next), types: ['ink'] });
+      } catch {
+        pressClient.setStock(next);
+      }
+    } else {
+      pressClient.setStock(next);
+    }
     carbonSynth.tick(1500);
     flashHud(
       next === 'graphite' ? 'Graphite: for reading at night.' : next === 'rag' ? 'Cotton rag: for reading by a window.' : 'Oxide: blueprint paper, for the engineers.'

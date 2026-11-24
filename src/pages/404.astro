@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Kinetic from '../components/Kinetic.astro';
 ---
 
 <BaseLayout
@@ -9,7 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="opus-404">
     <div class="carbon-sheet">
       <p class="datum-tag">Error 404 · Folio not found</p>
-      <h1 class="opus-404-headline">We didn’t print this page.</h1>
+      <h1 class="opus-404-headline"><Kinetic text="We didn’t print this page." /></h1>
       <p class="opus-404-deck">
         Either it never existed, or it was a draft we read once, felt bad about, and pulped. On balance, both are better
         than printing something we couldn’t back up.

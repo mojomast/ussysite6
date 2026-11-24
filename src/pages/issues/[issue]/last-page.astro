@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PressLamp from '../../../components/islands/PressLamp.svelte';
+import Kinetic from '../../../components/Kinetic.astro';
 import { USSYVERSE_STRATIGRAPHY } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -42,10 +43,11 @@ const isCurrent = d.status === 'current';
     data-folio-next={`/source-room?issue=${d.issueNumber}`}
     data-folio-next-label="the Source Room"
   >
+    <div class="opus-dusk" aria-hidden="true"></div>
     <div class="carbon-sheet opus-last-page-inner">
       <p class="datum-tag opus-last-kicker">Issue {d.issueNumber} · {d.coverDate} · The last page</p>
 
-      <h1 class="opus-last-headline">{lastPage.headline}</h1>
+      <h1 class="opus-last-headline"><Kinetic text={lastPage.headline} /></h1>
 
       <div class="opus-last-lines">
         {lastPage.lines.map((line) => (
@@ -81,13 +83,18 @@ const isCurrent = d.status === 'current';
 
       <nav class="cta-row opus-last-nav" aria-label="Where to go from here">
         <a class="btn-primary" href={`/source-room?issue=${d.issueNumber}`}>Take the sources with you →</a>
-        <a class="btn-secondary" href={`/issues/${d.issueNumber}`}>Back to the cover</a>
+        <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}`}>Back to the cover</a>
         <a class="btn-secondary" href={isCurrent ? '/issues/01' : '/issues/02'}>
           {isCurrent ? 'Read Issue 01' : 'Read Issue 02'}
         </a>
       </nav>
 
-      <p class="opus-last-sign">Slop, Illustrated.</p>
+      <p class="opus-last-sign">
+        Slop, Illustrated.
+        <svg class="opus-sign-underline" viewBox="0 0 220 18" aria-hidden="true">
+          <path d="M4 12 C 50 4, 90 16, 130 9 S 200 6, 216 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+      </p>
     </div>
   </article>
 </BaseLayout>

@@ -8,43 +8,15 @@
   box-sizing: border-box;
 }
 
-@view-transition {
-  navigation: auto;
-}
-
-/* Gemini 4 Neon — Class-Scoped View Transition Morph Pairings */
+/* View Transition names that are the same on every page. Per-feature and per-issue
+   names are generated at build time into /vt-names.css. Choreography lives in motion.css. */
 .vt-masthead {
   view-transition-name: si-masthead;
 }
 
 .vt-issue-title {
   view-transition-name: si-issue-title;
-}
-
-.vt-issue-stage {
-  view-transition-name: si-issue-stage;
-}
-
-.vt-article-headline {
-  view-transition-name: si-article-headline;
-}
-
-.vt-article-plate {
-  view-transition-name: si-article-plate;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 240ms;
-  animation-timing-function: var(--ease-neon);
-}
-
-::view-transition-group(si-issue-title),
-::view-transition-group(si-issue-stage),
-::view-transition-group(si-article-headline),
-::view-transition-group(si-article-plate) {
-  animation-duration: 380ms;
-  animation-timing-function: var(--ease-neon);
+  view-transition-class: mo-headline;
 }
 
 html {

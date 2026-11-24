@@ -3,6 +3,7 @@ import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/editorial.css';
 import '../styles/opus.css';
+import '../styles/motion.css';
 import Masthead from '../components/Masthead.astro';
 import FooterColophon from '../components/FooterColophon.astro';
 
@@ -37,10 +38,14 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
 
+    <link rel="stylesheet" href="/vt-names.css" />
+    <link rel="expect" href="#page-end" blocking="render" />
+    <script is:inline src="/motion-boot.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@400..800&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -55,6 +60,7 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
+    <div id="page-end" hidden></div>
 
     <FooterColophon />
     <script>
