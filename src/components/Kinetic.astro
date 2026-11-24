@@ -11,8 +11,9 @@ interface Props {
 
 const { text, class: cls = '' } = Astro.props;
 const words = text.split(/\s+/).filter(Boolean);
+const isSlopWord = (word: string) => /^[^a-z0-9]*slop[^a-z0-9]*$/i.test(word);
 ---
 
-<span class="sr-only">{text}</span><span class={`kt ${cls}`} aria-hidden="true">{words.map((w, i) => (
-  <Fragment><span class="kt-w"><span class="kt-wi">{w}</span></span>{i < words.length - 1 ? ' ' : ''}</Fragment>
+<span class="sr-only">{text}</span><span class={`kt ${cls}`} data-fx-kinetic="1" aria-hidden="true">{words.map((w, i) => (
+  <Fragment><span class="kt-w"><span class={isSlopWord(w) ? 'kt-wi fx-glitch-vis fx-glitch-slop' : 'kt-wi'} data-text={isSlopWord(w) ? w : undefined}>{w}</span></span>{i < words.length - 1 ? ' ' : ''}</Fragment>
 ))}</span>
