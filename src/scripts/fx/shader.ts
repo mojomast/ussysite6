@@ -1,21 +1,21 @@
 /**
  * Wave 9 · shader track entry.
  *
- * Mounts the full-viewport "Ink in Water" living backdrop and raster plate hover displacement
- * ONLY in the 'full' tier on fine pointers. Lite and off tiers keep the static CSS fallback
- * and film grain with zero canvases and zero Three.js imports.
+ * Lazily imports and mounts the full-viewport "Ink in Water" living backdrop and raster plate
+ * hover displacement ONLY in the 'full' tier on fine pointers. Lite and off tiers keep the
+ * static CSS fallback and film grain with zero canvases and zero shader module downloads.
  */
 import { onTier, type FxTier } from './capability';
-import { mountInkBackdrop } from './shader/ink-backdrop';
-import { mountPlateHover } from './shader/plate-hover';
 
 export function init(): () => void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return () => {};
 
+  let gen = 0;
   let teardownBackdrop: (() => void) | null = null;
   let teardownPlates: (() => void) | null = null;
 
   const stop = () => {
+    gen++;
     teardownBackdrop?.();
     teardownBackdrop = null;
     teardownPlates?.();
@@ -29,13 +29,21 @@ export function init(): () => void {
       return;
     }
 
-    if (!teardownBackdrop) {
-      const host = document.querySelector<HTMLElement>('[data-fx-backdrop]');
-      if (host) teardownBackdrop = mountInkBackdrop(host);
+    const token = ++gen;
+    const host = document.querySelector<HTMLElement>('[data-fx-backdrop]');
+
+    if (host && !teardownBackdrop) {
+      void import('./shader/ink-backdrop').then(({ mountInkBackdrop }) => {
+        if (token !== gen || teardownBackdrop) return;
+        teardownBackdrop = mountInkBackdrop(host);
+      });
     }
 
     if (!teardownPlates) {
-      teardownPlates = mountPlateHover();
+      void import('./shader/plate-hover').then(({ mountPlateHover }) => {
+        if (token !== gen || teardownPlates) return;
+        teardownPlates = mountPlateHover();
+      });
     }
   };
 
