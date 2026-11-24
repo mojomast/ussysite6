@@ -1,0 +1,65 @@
+/*
+ * Wave 9 · orchestrator polish, from the research pass (DESIGN.md §9): zero-JS CSS features
+ * that sharpen what's already here. Decoration only on the masthead: a transform, filter or
+ * containment on .press-masthead would become the containing block for the fixed dialogs
+ * inside it (see the note in editorial.css).
+ */
+
+/* 1. The masthead knows when it's stuck (CSS scroll-state queries, no scroll listener).
+      A gilt registration rule draws across under it, and the strapline steps back. */
+.press-masthead {
+  container-type: scroll-state;
+}
+
+.press-masthead::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--fx-gold) 18%, var(--fx-ink) 50%, var(--fx-gold) 82%, transparent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@container scroll-state(stuck: top) {
+  .brand-imprint .datum-tag {
+    opacity: 0.55;
+  }
+
+  .press-masthead::after {
+    transform: scaleX(1);
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .press-masthead::after {
+    transition:
+      transform var(--dur-long) var(--ease-out-expo),
+      opacity var(--dur-medium) var(--ease-out-expo);
+  }
+
+  .brand-imprint .datum-tag {
+    transition: opacity var(--dur-medium) var(--ease-out-expo);
+  }
+}
+
+/* 2. Nav links set in one at a time on a fresh load (not on page turns: the masthead is a
+      shared element and should stay still). sibling-index() needs no per-item variables. */
+@supports (animation-delay: calc(sibling-index() * 1ms)) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not(.is-vt-arrival) .primary-nav .nav-link {
+      animation: fx-nav-set 520ms var(--spring-soft) both;
+      animation-delay: calc(140ms + sibling-index() * var(--stagger));
+    }
+  }
+}
+
+@keyframes fx-nav-set {
+  from {
+    opacity: 0;
+    transform: translateY(-0.6em);
+  }
+}
