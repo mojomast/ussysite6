@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { API_ENABLED, withBase } from '../../lib/paths';
   import { onMount } from 'svelte';
   import { pressClient, type MarginNote } from '../../lib/press-client';
   import { carbonSynth } from '../../lib/carbon-synth';
@@ -69,18 +70,20 @@
     sync();
     const unsub = pressClient.subscribe(sync);
 
-    fetch('/api/health')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.features) {
-          runtimeFlags = {
-            askEditor: Boolean(d.features.askEditor),
-            aiIllustration: Boolean(d.features.aiIllustration),
-            audioEdition: Boolean(d.features.audioEdition)
-          };
-        }
-      })
-      .catch(() => {});
+    if (API_ENABLED) {
+      fetch(withBase('/api/health'))
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d?.features) {
+            runtimeFlags = {
+              askEditor: Boolean(d.features.askEditor),
+              aiIllustration: Boolean(d.features.aiIllustration),
+              audioEdition: Boolean(d.features.audioEdition)
+            };
+          }
+        })
+        .catch(() => {});
+    }
 
     return unsub;
   });
@@ -179,17 +182,17 @@
           </div>
           <div>
             <h3>
-              <a href={`/issues/${item.issueNumber}/${item.articleSlug}`}>{item.title}</a>
+              <a href={withBase(`/issues/${item.issueNumber}/${item.articleSlug}`)}>{item.title}</a>
             </h3>
             <div class="datum-tag">
               {item.category} · {item.techStack.slice(0, 3).join(' / ')} ·
-              <a href={`${item.repoUrl}/tree/${item.sourceRevision}`} target="_blank" rel="noopener">
+              <a href={withBase(`${item.repoUrl}/tree/${item.sourceRevision}`)} target="_blank" rel="noopener">
                 @{item.sourceRevision.slice(0, 7)} ↗
               </a>
             </div>
           </div>
           <div class="press-controls-bar">
-            <a class="ctrl-btn" href={item.repoUrl} target="_blank" rel="noopener">Repo ↗</a>
+            <a class="ctrl-btn" href={withBase(item.repoUrl)} target="_blank" rel="noopener">Repo ↗</a>
             <button
               type="button"
               class="ctrl-btn"
@@ -220,7 +223,7 @@
       <ul class="sources-list">
         {#each savedItems as sItem (sItem.readerServiceNo)}
           <li>
-            <a href={`/issues/${sItem.issueNumber}/${sItem.articleSlug}`}>
+            <a href={withBase(`/issues/${sItem.issueNumber}/${sItem.articleSlug}`)}>
               <strong>#{sItem.readerServiceNo} {sItem.title}</strong>
             </a>
             <span class="datum-tag"> (Iss. {sItem.issueNumber})</span>

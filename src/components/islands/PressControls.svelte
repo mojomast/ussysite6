@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { API_ENABLED, withBase } from '../../lib/paths';
   import { onMount } from 'svelte';
   import { pressClient, type PaperStock } from '../../lib/press-client';
   import { carbonSynth } from '../../lib/carbon-synth';
@@ -129,15 +130,17 @@
       savedNos = next.circledServiceNos;
     });
 
-    fetch('/api/editor/status')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d) {
-          editorEnabled = Boolean(d.enabled && d.configured);
-          if (d.model) editorModel = d.model;
-        }
-      })
-      .catch(() => {});
+    if (API_ENABLED) {
+      fetch(withBase('/api/editor/status'))
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            editorEnabled = Boolean(d.enabled && d.configured);
+            if (d.model) editorModel = d.model;
+          }
+        })
+        .catch(() => {});
+    }
 
     let ussyBuffer = '';
     let lastKeyTime = 0;
@@ -278,7 +281,9 @@
     ];
 
     try {
-      const res = await fetch('/api/editor/ask', {
+      // Static hosts have no editor server: go straight to the local archive search below.
+      if (!API_ENABLED) throw new Error('static host');
+      const res = await fetch(withBase('/api/editor/ask'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: q, history: historyPayload })
@@ -458,7 +463,7 @@
         <ul class="sources-list">
           {#each filteredCatalog.slice(0, 12) as item (item.readerServiceNo)}
             <li>
-              <a href={`/issues/${item.issueNumber}/${item.articleSlug}`} onclick={() => (finderOpen = false)}>
+              <a href={withBase(`/issues/${item.issueNumber}/${item.articleSlug}`)} onclick={() => (finderOpen = false)}>
                 <strong>Issue {item.issueNumber} · #{item.readerServiceNo} — {item.title}</strong>
               </a>
               <div class="datum-tag">{item.category} · {item.techStack.slice(0, 3).join(' · ')}</div>
@@ -519,7 +524,7 @@
               {#if msg.citations && msg.citations.length > 0}
                 <div class="neon-cite-row">
                   {#each msg.citations as cite}
-                    <a class="sha-pill" href={cite.href} onclick={() => (editorOpen = false)}>
+                    <a class="sha-pill" href={withBase(cite.href)} onclick={() => (editorOpen = false)}>
                       {cite.label} ↗
                     </a>
                   {/each}
@@ -593,7 +598,7 @@
               <div class="article-kicker-row">
                 <span class="service-stamp">{layer.era}</span>
                 <strong>{layer.title}</strong>
-                <a class="sha-pill" href={layer.repoUrl} target="_blank" rel="noopener">{layer.repo} ↗</a>
+                <a class="sha-pill" href={withBase(layer.repoUrl)} target="_blank" rel="noopener">{layer.repo} ↗</a>
                 <button
                   type="button"
                   class="ctrl-btn neon-btn-accent"

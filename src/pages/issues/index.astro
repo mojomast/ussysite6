@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CarbonPlateSvg from '../../components/CarbonPlateSvg.astro';
@@ -45,7 +46,7 @@ const articles = await getCollection('articles');
                 <div class={`issue-card-art vt-issue-art-${iss.data.issueNumber}`}>
                   {iss.data.coverArt.src ? (
                     <img
-                      src={iss.data.coverArt.src}
+                      src={withBase(iss.data.coverArt.src)}
                       width={iss.data.coverArt.width || 1600}
                       height={iss.data.coverArt.height || 1200}
                       alt={iss.data.coverArt.alt}
@@ -58,7 +59,7 @@ const articles = await getCollection('articles');
                 <div class="issue-card-body">
                   <span class="datum-tag">{iss.data.themeTag}</span>
                   <h3>
-                    <a href={`/issues/${iss.data.issueNumber}`}>
+                    <a href={withBase(`/issues/${iss.data.issueNumber}`)}>
                       Issue {iss.data.issueNumber}: {iss.data.title}
                     </a>
                   </h3>
@@ -66,14 +67,14 @@ const articles = await getCollection('articles');
                   <ul class="stack-pills">
                     {issArticles.map((a) => (
                       <li>
-                        <a href={`/issues/${iss.data.issueNumber}/${a.data.articleSlug}`}>
+                        <a href={withBase(`/issues/${iss.data.issueNumber}/${a.data.articleSlug}`)}>
                           #{a.data.readerServiceNo} {a.data.title}
                         </a>
                       </li>
                     ))}
                   </ul>
                   <div class="cta-row" aria-label={`Issue ${iss.data.issueNumber} links`}>
-                    <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
+                    <a class="btn-primary" href={withBase(`/issues/${iss.data.issueNumber}`)}>
                       Open Issue {iss.data.issueNumber} ↗
                     </a>
                   </div>

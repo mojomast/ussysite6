@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
@@ -69,7 +70,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     <!-- TOP FOLIO BREADCRUMB -->
     <div class="article-breadcrumb-bar">
       <div class="press-controls-bar">
-        <a class="datum-tag" data-dir="backward" href={`/issues/${d.issueNumber}`}>
+        <a class="datum-tag" data-dir="backward" href={withBase(`/issues/${d.issueNumber}`)}>
           ← Issue {d.issueNumber} contents
         </a>
         <span class="datum-tag">
@@ -80,7 +81,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
         <span class="datum-tag">Checked {d.researchedAt}</span>
         <a
           class="sha-pill"
-          href={`${d.repoUrl}/tree/${d.sourceRevision}`}
+          href={withBase(`${d.repoUrl}/tree/${d.sourceRevision}`)}
           target="_blank"
           rel="noopener"
           aria-label={`Everything here is pinned to commit ${d.sourceRevision.slice(0, 10)}`}
@@ -106,7 +107,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
           <span class="datum-tag"> · {d.byline}</span>
           {d.liveUrl && (
             <span>
-              {' '}· <a class="sha-pill" href={d.liveUrl} target="_blank" rel="noopener">Play it live ↗</a>
+              {' '}· <a class="sha-pill" href={withBase(d.liveUrl)} target="_blank" rel="noopener">Play it live ↗</a>
             </span>
           )}
         </div>
@@ -130,7 +131,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
         <div class="plate-art-box">
           {d.plate.kind === 'blender-webp' && d.plate.src ? (
             <img
-              src={d.plate.src}
+              src={withBase(d.plate.src)}
               width={d.plate.width}
               height={d.plate.height}
               alt={d.plate.alt}
@@ -184,7 +185,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
           <figure class="plate-figure">
             <div class="plate-art-box">
               <img
-                src={d.secondaryMedia.src}
+                src={withBase(d.secondaryMedia.src)}
                 width={d.secondaryMedia.width || 1280}
                 height={d.secondaryMedia.height || 800}
                 alt={d.secondaryMedia.alt || d.secondaryMedia.caption}
@@ -218,7 +219,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
           <div class="code-specimen">
             <div class="code-specimen-header">
               <span>{d.codeExcerpt.title}</span>
-              <a href={d.codeExcerpt.sourceUrl} target="_blank" rel="noopener">
+              <a href={withBase(d.codeExcerpt.sourceUrl)} target="_blank" rel="noopener">
                 {d.codeExcerpt.sourceLabel} ↗
               </a>
             </div>
@@ -262,7 +263,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
           <ul class="sources-list">
             {d.sources.map((src) => (
               <li>
-                <a href={src.url} target="_blank" rel="noopener">
+                <a href={withBase(src.url)} target="_blank" rel="noopener">
                   {src.label} ↗
                 </a>
               </li>
@@ -278,18 +279,18 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     <nav
       class="folio-pager"
       aria-label="Turn the page"
-      data-folio-prev={prevArticle ? `/issues/${d.issueNumber}/${prevArticle.slug}` : `/issues/${d.issueNumber}`}
-      data-folio-next={nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : endHref}
+      data-folio-prev={withBase(prevArticle ? `/issues/${d.issueNumber}/${prevArticle.slug}` : `/issues/${d.issueNumber}`)}
+      data-folio-next={withBase(nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : endHref)}
       data-folio-prev-label={prevArticle ? prevArticle.title : `the Issue ${d.issueNumber} cover`}
       data-folio-next-label={nextArticle ? nextArticle.title : 'the last page'}
     >
       <div>
         {prevArticle ? (
-          <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
+          <a class="btn-secondary" data-dir="backward" href={withBase(`/issues/${d.issueNumber}/${prevArticle.slug}`)}>
             ← {prevArticle.title}
           </a>
         ) : (
-          <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}`}>
+          <a class="btn-secondary" data-dir="backward" href={withBase(`/issues/${d.issueNumber}`)}>
             ← Back to the cover
           </a>
         )}
@@ -301,11 +302,11 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
       </div>
       <div class="pager-next">
         {nextArticle ? (
-          <a class="btn-primary" href={`/issues/${d.issueNumber}/${nextArticle.slug}`}>
+          <a class="btn-primary" href={withBase(`/issues/${d.issueNumber}/${nextArticle.slug}`)}>
             {nextArticle.title} →
           </a>
         ) : (
-          <a class="btn-primary" href={endHref}>
+          <a class="btn-primary" href={withBase(endHref)}>
             Turn to the last page →
           </a>
         )}

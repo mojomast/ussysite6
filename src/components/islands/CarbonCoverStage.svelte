@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { withBase } from '../../lib/paths';
   import { onMount } from 'svelte';
   import { carbonSynth } from '../../lib/carbon-synth';
 
@@ -630,7 +631,7 @@
         <strong>FOLIO {activeItem.folioCode} // {activeItem.title}</strong>
         <span>{activeItem.kicker}</span>
       </div>
-      <a class="btn-secondary" href={`/issues/${activeItem.issueNumber}/${activeItem.articleSlug}`}>
+      <a class="btn-secondary" href={withBase(`/issues/${activeItem.issueNumber}/${activeItem.articleSlug}`)}>
         Read it ↗
       </a>
     </div>

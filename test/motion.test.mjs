@@ -79,8 +79,8 @@ test('motion boot script is external, tiny and sets a page-turn direction', () =
   assert.match(boot, /pagereveal/);
   assert.match(boot, /types\.add/);
   const layout = fs.readFileSync(path.join(ROOT_DIR, 'src/layouts/BaseLayout.astro'), 'utf8');
-  assert.match(layout, /src="\/motion-boot\.js"/);
-  assert.match(layout, /href="\/vt-names\.css"/);
+  assert.match(layout, /src=\{withBase\('\/motion-boot\.js'\)\}/);
+  assert.match(layout, /href=\{withBase\('\/vt-names\.css'\)\}/);
   assert.match(layout, /rel="expect" href="#page-end" blocking="render"/);
 });
 

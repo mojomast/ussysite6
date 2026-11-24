@@ -1,13 +1,14 @@
 {
   "name": "ussysite6",
   "version": "7.0.0",
-  "description": "SLOP ILLUSTRATED (Si.) Living Edition — A source-linked software magazine that keeps publishing",
+  "description": "SLOP ILLUSTRATED (Si.) Living Edition \u2014 A source-linked software magazine that keeps publishing",
   "type": "module",
   "main": "server.mjs",
   "scripts": {
     "dev": "astro dev",
     "dev:api": "tsx watch server.mjs",
     "build": "astro build",
+    "build:pages": "DEPLOY_TARGET=pages astro build",
     "preview": "node server.mjs",
     "start": "node server.mjs",
     "issue:draft": "node scripts/issue-draft.mjs",

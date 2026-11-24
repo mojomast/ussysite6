@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CarbonCoverStage from '../components/islands/CarbonCoverStage.svelte';
@@ -71,13 +72,13 @@ const num = currentIssue.data.issueNumber;
           <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
 
           <div class="cta-row">
-            <a class="btn-primary" href={`/issues/${num}`}>
+            <a class="btn-primary" href={withBase(`/issues/${num}`)}>
               Open Issue {num} ↗
             </a>
-            <a class="btn-secondary" href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
+            <a class="btn-secondary" href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
               Cover story: {leadArticle.data.title}
             </a>
-            <a class="btn-secondary" href={`/issues/${num}#opening`}>
+            <a class="btn-secondary" href={withBase(`/issues/${num}#opening`)}>
               ▶ Watch the opening
             </a>
           </div>
@@ -94,7 +95,7 @@ const num = currentIssue.data.issueNumber;
 
         <div
           class={`vt-issue-art-${num}`}
-          data-folio-next={`/issues/${num}`}
+          data-folio-next={withBase(`/issues/${num}`)}
           data-folio-next-label={`the Issue ${num} cover`}
         >
           <CarbonCoverStage client:load items={coverCells} issueNumber={num} />
@@ -110,7 +111,7 @@ const num = currentIssue.data.issueNumber;
           <span class="datum-tag">In this issue</span>
           <h2 class="section-heading">Eleven Features, <em>One Question</em></h2>
         </div>
-        <a class="btn-secondary" href={`/issues/${num}#contents`}>
+        <a class="btn-secondary" href={withBase(`/issues/${num}#contents`)}>
           Read the editor’s letter ↗
         </a>
       </div>
@@ -121,7 +122,7 @@ const num = currentIssue.data.issueNumber;
             <span class="service-stamp">Cover story · #{leadArticle.data.readerServiceNo}</span>
             <a
               class="sha-pill"
-              href={`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`}
+              href={withBase(`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`)}
               target="_blank"
               rel="noopener"
               aria-label={`Source pinned at commit ${leadArticle.data.sourceRevision.slice(0, 7)}`}
@@ -130,17 +131,17 @@ const num = currentIssue.data.issueNumber;
             </a>
           </div>
           <h3 class="hero-issue-headline">
-            <a href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
+            <a href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
               {leadArticle.data.headline}
             </a>
           </h3>
           <p class="hero-issue-deck">{leadArticle.data.deck}</p>
           <blockquote class="editorial-pullquote">“{leadArticle.data.pullQuote}”</blockquote>
           <div class="cta-row">
-            <a class="btn-primary" href={`/issues/${num}/${leadArticle.data.articleSlug}`}>
+            <a class="btn-primary" href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
               Read the cover story ↗
             </a>
-            <a class="btn-secondary" href={leadArticle.data.repoUrl} target="_blank" rel="noopener">
+            <a class="btn-secondary" href={withBase(leadArticle.data.repoUrl)} target="_blank" rel="noopener">
               Open the repo ↗
             </a>
           </div>
@@ -172,7 +173,7 @@ const num = currentIssue.data.issueNumber;
             <div class="ledger-title-col">
               <span class="datum-tag">{art.data.kicker}</span>
               <h3>
-                <a href={`/issues/${num}/${art.data.articleSlug}`}>{art.data.title}</a>
+                <a href={withBase(`/issues/${num}/${art.data.articleSlug}`)}>{art.data.title}</a>
               </h3>
               <span class="opus-read-mark" aria-live="off"></span>
             </div>
@@ -184,7 +185,7 @@ const num = currentIssue.data.issueNumber;
               <span class="service-stamp">#{art.data.readerServiceNo}</span>
               <a
                 class="sha-pill"
-                href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
+                href={withBase(`${art.data.repoUrl}/tree/${art.data.sourceRevision}`)}
                 target="_blank"
                 rel="noopener"
                 aria-label={`${art.data.title} source, commit ${art.data.sourceRevision.slice(0, 7)}`}
@@ -219,7 +220,7 @@ const num = currentIssue.data.issueNumber;
             const art = currentArticles.find((a) => a.data.articleSlug === slug);
             return (
               <li class="mo-step">
-                <a href={`/issues/${num}/${slug}`}>{line}</a>
+                <a href={withBase(`/issues/${num}/${slug}`)}>{line}</a>
                 {art && <span class="datum-tag">{art.data.title} · No. {art.data.readerServiceNo}</span>}
               </li>
             );
@@ -269,7 +270,7 @@ const num = currentIssue.data.issueNumber;
               <div>
                 <a
                   class="sha-pill"
-                  href={`${d.repoUrl}/tree/${d.commitSha}`}
+                  href={withBase(`${d.repoUrl}/tree/${d.commitSha}`)}
                   target="_blank"
                   rel="noopener"
                   aria-label={`${d.title}, commit ${d.commitSha.slice(0, 7)}`}
@@ -277,7 +278,7 @@ const num = currentIssue.data.issueNumber;
                   @{d.commitSha.slice(0, 7)} ↗
                 </a>
                 <h3>
-                  <a href={d.repoUrl} target="_blank" rel="noopener">{d.title} ↗</a>
+                  <a href={withBase(d.repoUrl)} target="_blank" rel="noopener">{d.title} ↗</a>
                 </h3>
                 <p>{d.note}</p>
               </div>
@@ -313,7 +314,7 @@ const num = currentIssue.data.issueNumber;
                 <div class={`issue-card-art ${iss.data.issueNumber !== num ? `vt-issue-art-${iss.data.issueNumber}` : ''}`}>
                   {iss.data.coverArt.src ? (
                     <img
-                      src={iss.data.coverArt.src}
+                      src={withBase(iss.data.coverArt.src)}
                       width={iss.data.coverArt.width || 1600}
                       height={iss.data.coverArt.height || 1200}
                       alt={iss.data.coverArt.alt}
@@ -327,17 +328,17 @@ const num = currentIssue.data.issueNumber;
                 <div class="issue-card-body">
                   <span class="datum-tag">{iss.data.themeTag}</span>
                   <h3>
-                    <a href={`/issues/${iss.data.issueNumber}`}>{iss.data.title}</a>
+                    <a href={withBase(`/issues/${iss.data.issueNumber}`)}>{iss.data.title}</a>
                   </h3>
                   <p>{iss.data.subtitle}</p>
                   <p class="opus-read-counter" data-read-counter={iss.data.issueNumber} data-read-total={count}>
                     {count} features.
                   </p>
                   <div class="cta-row">
-                    <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
+                    <a class="btn-primary" href={withBase(`/issues/${iss.data.issueNumber}`)}>
                       Open Issue {iss.data.issueNumber} ↗
                     </a>
-                    <a class="btn-secondary" href={`/source-room?issue=${iss.data.issueNumber}`}>
+                    <a class="btn-secondary" href={withBase(`/source-room?issue=${iss.data.issueNumber}`)}>
                       Its sources
                     </a>
                   </div>

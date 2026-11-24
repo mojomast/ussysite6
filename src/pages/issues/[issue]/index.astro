@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths';
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CarbonCoverStage from '../../../components/islands/CarbonCoverStage.svelte';
@@ -72,9 +73,9 @@ const coverCells = issueArticles.map((a) => ({
 
       <div
         class="issue-cover-grid"
-        data-folio-prev="/"
+        data-folio-prev={withBase('/')}
         data-folio-prev-label="the front page"
-        data-folio-next={issueArticles[0] ? `/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}` : '/source-room'}
+        data-folio-next={withBase(issueArticles[0] ? `/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}` : '/source-room')}
         data-folio-next-label={issueArticles[0] ? issueArticles[0].data.title : 'the Source Room'}
       >
         <div class={`vt-issue-art-${issueData.issueNumber}`}>
@@ -85,7 +86,7 @@ const coverCells = issueArticles.map((a) => ({
               <div class="plate-art-box">
                 {issueData.coverArt.src ? (
                   <img
-                    src={issueData.coverArt.src}
+                    src={withBase(issueData.coverArt.src)}
                     width={issueData.coverArt.width || 1600}
                     height={issueData.coverArt.height || 1200}
                     alt={issueData.coverArt.alt}
@@ -117,7 +118,7 @@ const coverCells = issueArticles.map((a) => ({
             {issueArticles.slice(0, 6).map((art) => (
               <li>
                 <span class="datum-tag">{folioBySlug.get(art.data.articleSlug)} · </span>
-                <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>
+                <a href={withBase(`/issues/${issueData.issueNumber}/${art.data.articleSlug}`)}>
                   <strong>{art.data.title}</strong>
                 </a>
                 <div class="datum-tag">{art.data.headline}</div>
@@ -127,7 +128,7 @@ const coverCells = issueArticles.map((a) => ({
 
           <div class="cta-row">
             {issueArticles[0] && (
-              <a class="btn-primary" href={`/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}`}>
+              <a class="btn-primary" href={withBase(`/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}`)}>
                 Start reading ↗
               </a>
             )}
@@ -147,7 +148,7 @@ const coverCells = issueArticles.map((a) => ({
           <div class="plate-art-box">
             {issueData.frontispiece.src ? (
               <img
-                src={issueData.frontispiece.src}
+                src={withBase(issueData.frontispiece.src)}
                 width={issueData.frontispiece.width}
                 height={issueData.frontispiece.height}
                 alt={issueData.frontispiece.alt}
@@ -189,7 +190,7 @@ const coverCells = issueArticles.map((a) => ({
           <span class="datum-tag">Contents · Folios 01 to {String(folios.length).padStart(2, '0')}</span>
           <h2 class="section-heading">The <em>Features</em></h2>
         </div>
-        <a class="btn-secondary" href={`/source-room?issue=${issueData.issueNumber}`}>
+        <a class="btn-secondary" href={withBase(`/source-room?issue=${issueData.issueNumber}`)}>
           Every source in this issue ↗
         </a>
       </div>
@@ -205,7 +206,7 @@ const coverCells = issueArticles.map((a) => ({
             <div class="ledger-title-col">
               <span class="datum-tag">{art.data.kicker}</span>
               <h3>
-                <a href={`/issues/${issueData.issueNumber}/${art.data.articleSlug}`}>{art.data.title}</a>
+                <a href={withBase(`/issues/${issueData.issueNumber}/${art.data.articleSlug}`)}>{art.data.title}</a>
               </h3>
               <span class="opus-read-mark"></span>
             </div>
@@ -217,7 +218,7 @@ const coverCells = issueArticles.map((a) => ({
               <span class="service-stamp">#{art.data.readerServiceNo}</span>
               <a
                 class="sha-pill"
-                href={`${art.data.repoUrl}/tree/${art.data.sourceRevision}`}
+                href={withBase(`${art.data.repoUrl}/tree/${art.data.sourceRevision}`)}
                 target="_blank"
                 rel="noopener"
                 aria-label={`${art.data.title} source, commit ${art.data.sourceRevision.slice(0, 7)}`}
@@ -231,7 +232,7 @@ const coverCells = issueArticles.map((a) => ({
 
       {issueData.lastPage && (
         <p class="opus-last-page-link">
-          <a class="btn-secondary" href={`/issues/${issueData.issueNumber}/last-page`}>Skip to the last page →</a>
+          <a class="btn-secondary" href={withBase(`/issues/${issueData.issueNumber}/last-page`)}>Skip to the last page →</a>
         </p>
       )}
     </div>

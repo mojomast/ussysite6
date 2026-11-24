@@ -1,4 +1,6 @@
 ---
+import { API_ENABLED, withBase } from '../lib/paths';
+import { STRICT_CSP_META } from '../lib/csp';
 import '../styles/tokens.css';
 import '../styles/global.css';
 import '../styles/editorial.css';
@@ -26,22 +28,24 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
 <html lang="en" data-stock="graphite" data-grid="off">
   <head>
     <meta charset="utf-8" />
+    {!API_ENABLED && <meta http-equiv="Content-Security-Policy" content={STRICT_CSP_META} />}
+    {!API_ENABLED && <meta name="robots" content="noindex" />}
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0b0c0e" />
-    <link rel="canonical" href={canonicalUrl} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="Slop Illustrated" href="/rss.xml" />
+    <link rel="canonical" href={withBase(canonicalUrl)} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate" type="application/rss+xml" title="Slop Illustrated" href={withBase('/rss.xml')} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
 
-    <link rel="stylesheet" href="/vt-names.css" />
+    <link rel="stylesheet" href={withBase('/vt-names.css')} />
     <link rel="expect" href="#page-end" blocking="render" />
-    <script is:inline src="/motion-boot.js"></script>
+    <script is:inline src={withBase('/motion-boot.js')}></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../../lib/paths';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PressLamp from '../../../components/islands/PressLamp.svelte';
@@ -38,9 +39,9 @@ const isCurrent = d.status === 'current';
 >
   <article
     class="opus-last-page"
-    data-folio-prev={lastArticle ? `/issues/${d.issueNumber}/${lastArticle.slug}` : `/issues/${d.issueNumber}`}
+    data-folio-prev={withBase(lastArticle ? `/issues/${d.issueNumber}/${lastArticle.slug}` : `/issues/${d.issueNumber}`)}
     data-folio-prev-label={lastArticle ? lastArticle.title : 'the cover'}
-    data-folio-next={`/source-room?issue=${d.issueNumber}`}
+    data-folio-next={withBase(`/source-room?issue=${d.issueNumber}`)}
     data-folio-next-label="the Source Room"
   >
     <div class="opus-dusk" aria-hidden="true"></div>
@@ -62,7 +63,7 @@ const isCurrent = d.status === 'current';
             {USSYVERSE_STRATIGRAPHY.slice(0, -1).map((era) => (
               <li>
                 <span class="opus-strata-era">{era.era}</span>
-                <a href={era.repoUrl} target="_blank" rel="noopener">{era.title}</a>
+                <a href={withBase(era.repoUrl)} target="_blank" rel="noopener">{era.title}</a>
                 <span class="opus-strata-still">still public</span>
               </li>
             ))}
@@ -82,9 +83,9 @@ const isCurrent = d.status === 'current';
       </p>
 
       <nav class="cta-row opus-last-nav" aria-label="Where to go from here">
-        <a class="btn-primary" href={`/source-room?issue=${d.issueNumber}`}>Take the sources with you →</a>
-        <a class="btn-secondary" data-dir="backward" href={`/issues/${d.issueNumber}`}>Back to the cover</a>
-        <a class="btn-secondary" href={isCurrent ? '/issues/01' : '/issues/02'}>
+        <a class="btn-primary" href={withBase(`/source-room?issue=${d.issueNumber}`)}>Take the sources with you →</a>
+        <a class="btn-secondary" data-dir="backward" href={withBase(`/issues/${d.issueNumber}`)}>Back to the cover</a>
+        <a class="btn-secondary" href={withBase(isCurrent ? '/issues/01' : '/issues/02')}>
           {isCurrent ? 'Read Issue 01' : 'Read Issue 02'}
         </a>
       </nav>

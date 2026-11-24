@@ -15,7 +15,7 @@ import sitemap from '@astrojs/sitemap';
  * is deterministically extracted into content-addressed files under `/_astro/` and replaced
  * with external `<script type="module" src="...">` / `<link rel="stylesheet" href="...">` tags.
  */
-function strictCspExternalizer() {
+function strictCspExternalizer({ base = '/', nojekyll = false } = {}) {
   return {
     name: 'carbon-strict-csp-externalizer',
     hooks: {
@@ -58,7 +58,7 @@ function strictCspExternalizer() {
               extractedStyles++;
             }
             changed = true;
-            return `<link rel="stylesheet" href="${posix.join('/_astro', filename)}">`;
+            return `<link rel="stylesheet" href="${posix.join(base, '_astro', filename)}">`;
           });
 
           // 2. Externalize inline executable <script>...</script> blocks
@@ -79,7 +79,7 @@ function strictCspExternalizer() {
               extractedScripts++;
             }
             changed = true;
-            return `<script type="module" src="${posix.join('/_astro', filename)}"></script>`;
+            return `<script type="module" src="${posix.join(base, '_astro', filename)}"></script>`;
           });
 
           if (changed) {
@@ -88,6 +88,8 @@ function strictCspExternalizer() {
         }
 
         await Promise.all(writtenAssets.values());
+        // GitHub Pages runs Jekyll unless told not to, and Jekyll drops the _astro/ directory.
+        if (nojekyll) await writeFile(join(distDir, '.nojekyll'), '', 'utf8');
         logger.info(
           `Externalized ${extractedScripts} inline script(s) and ${extractedStyles} inline style(s) across ${htmlFiles.length} HTML page(s) for strict CSP.`
         );
@@ -96,15 +98,22 @@ function strictCspExternalizer() {
   };
 }
 
+// DEPLOY_TARGET=pages builds the GitHub Pages preview: served from /ussysite6/, no API server,
+// CSP as a meta tag. The default build is the ussy.host one that the Hono server serves.
+const isPages = process.env.DEPLOY_TARGET === 'pages';
+if (isPages) process.env.PUBLIC_SI_STATIC = 'true';
+
 export default defineConfig({
-  site: 'https://ussy.host',
+  site: isPages ? 'https://mojomast.github.io' : 'https://ussy.host',
+  base: isPages ? '/ussysite6' : '/',
+  outDir: isPages ? './dist-pages' : './dist',
   output: 'static',
   trailingSlash: 'ignore',
   integrations: [
     svelte(),
     mdx(),
     sitemap(),
-    strictCspExternalizer()
+    strictCspExternalizer({ base: isPages ? '/ussysite6/' : '/', nojekyll: isPages })
   ],
   build: {
     inlineStylesheets: 'never'

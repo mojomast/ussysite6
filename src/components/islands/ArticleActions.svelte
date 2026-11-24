@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { withBase } from '../../lib/paths';
   import { onMount } from 'svelte';
   import { pressClient } from '../../lib/press-client';
   import { carbonSynth } from '../../lib/carbon-synth';
@@ -76,7 +77,7 @@
     {copiedStatus || 'Copy citation'}
   </button>
 
-  <a class="btn-primary" href={repoUrl} target="_blank" rel="noopener">
+  <a class="btn-primary" href={withBase(repoUrl)} target="_blank" rel="noopener">
     Open the repo ↗
   </a>
 </div>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { API_ENABLED, withBase } from '../../lib/paths';
   import { onDestroy } from 'svelte';
   import { carbonSynth } from '../../lib/carbon-synth';
 
@@ -72,7 +73,8 @@
     narrationBusy = true;
     narrationStatus = 'Asking the server…';
     try {
-      const res = await fetch('/api/audio/edition', {
+      if (!API_ENABLED) throw new Error('static host');
+      const res = await fetch(withBase('/api/audio/edition'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -144,7 +146,7 @@
         >
           Narration
         </button>
-        <a class="ctrl-btn" href={`/issues/${activeTrack.issueNumber}/${activeTrack.articleSlug}`}>
+        <a class="ctrl-btn" href={withBase(`/issues/${activeTrack.issueNumber}/${activeTrack.articleSlug}`)}>
           Read it ↗
         </a>
         <button type="button" class="ctrl-btn" onclick={onClose} aria-label="Close Audio Edition transport">

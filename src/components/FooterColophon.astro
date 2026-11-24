@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
 ---
 
@@ -17,7 +18,7 @@ import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
         <article class="strata-card">
           <div class="article-kicker-row">
             <span class="service-stamp">{layer.era}</span>
-            <a class="datum-tag" href={layer.repoUrl} target="_blank" rel="noopener">
+            <a class="datum-tag" href={withBase(layer.repoUrl)} target="_blank" rel="noopener">
               {layer.repo} ↗
             </a>
           </div>
@@ -44,11 +45,11 @@ import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
     <div class="colophon-bottom">
       <span class="datum-tag">© the people and machines who made it · Nothing here was deleted</span>
       <div class="press-controls-bar">
-        <a class="datum-tag" href="/about">About</a>
-        <a class="datum-tag" href="/issues">Back issues</a>
-        <a class="datum-tag" href="/source-room">Source Room</a>
-        <a class="datum-tag" href="/rss.xml">RSS</a>
-        <a class="datum-tag" href="/sitemap-index.xml">Sitemap</a>
+        <a class="datum-tag" href={withBase('/about')}>About</a>
+        <a class="datum-tag" href={withBase('/issues')}>Back issues</a>
+        <a class="datum-tag" href={withBase('/source-room')}>Source Room</a>
+        <a class="datum-tag" href={withBase('/rss.xml')}>RSS</a>
+        <a class="datum-tag" href={withBase('/sitemap-index.xml')}>Sitemap</a>
       </div>
     </div>
   </div>

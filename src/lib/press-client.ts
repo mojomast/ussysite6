@@ -7,6 +7,8 @@
  * Degrades cleanly to `localStorage` when running as pure static HTML without the API.
  */
 
+import { API_ENABLED, withBase } from './paths';
+
 export type PaperStock = 'graphite' | 'rag' | 'oxide';
 
 export interface MarginNote {
@@ -144,8 +146,8 @@ class PressClient {
     }
     this.notify();
 
-    if (syncServer && typeof fetch === 'function') {
-      fetch('/api/press/state', {
+    if (syncServer && API_ENABLED && typeof fetch === 'function') {
+      fetch(withBase('/api/press/state'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -165,9 +167,9 @@ class PressClient {
   }
 
   async pullRemote(): Promise<void> {
-    if (typeof fetch !== 'function') return;
+    if (!API_ENABLED || typeof fetch !== 'function') return;
     try {
-      const res = await fetch('/api/press/state', {
+      const res = await fetch(withBase('/api/press/state'), {
         headers: { 'X-Reader-Id': this.state.readerId }
       });
       if (!res.ok) return;
@@ -246,9 +248,9 @@ class PressClient {
     this.state.counters.bingoSubmissions = (this.state.counters.bingoSubmissions || 0) + 1;
     this.persist(true);
 
-    if (typeof fetch === 'function') {
+    if (API_ENABLED && typeof fetch === 'function') {
       try {
-        const res = await fetch('/api/source-room/dispatch', {
+        const res = await fetch(withBase('/api/source-room/dispatch'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

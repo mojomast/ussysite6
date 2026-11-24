@@ -1,4 +1,5 @@
 ---
+import { stripBase, withBase } from '../lib/paths';
 import { getCollection } from 'astro:content';
 import { buildIssueFolios } from '../lib/folio';
 import PressControls from './islands/PressControls.svelte';
@@ -7,7 +8,8 @@ interface Props {
   currentPath?: string;
 }
 
-const { currentPath = Astro.url.pathname } = Astro.props;
+const { currentPath: rawPath = Astro.url.pathname } = Astro.props;
+const currentPath = stripBase(rawPath).replace(/(.)\/$/, '$1');
 
 const allArticles = await getCollection('articles');
 const byIssue = new Map<string, typeof allArticles>();
@@ -45,32 +47,32 @@ const isCurrent = (prefix: string) =>
 <header class="press-masthead vt-masthead">
   <div class="carbon-sheet press-masthead-inner">
     <div class="brand-cluster">
-      <a href="/" class="si-badge" aria-label="Slop Illustrated, front page">
+      <a href={withBase('/')} class="si-badge" aria-label="Slop Illustrated, front page">
         Si<span>.</span>
       </a>
       <div class="brand-imprint">
-        <a href="/" class="brand-title">Slop Illustrated</a>
+        <a href={withBase('/')} class="brand-title">Slop Illustrated</a>
         <span class="datum-tag">Software, mostly honest · Vol. 1</span>
       </div>
     </div>
 
     <nav class="primary-nav" aria-label="Sections">
-      <a class="nav-link" href="/" aria-current={isCurrent('/') ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/')} aria-current={isCurrent('/') ? 'page' : undefined}>
         Front Page
       </a>
-      <a class="nav-link" href="/issues/02" aria-current={isCurrent('/issues/02') ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/issues/02')} aria-current={isCurrent('/issues/02') ? 'page' : undefined}>
         Issue 02<span class="nav-link-badge">Wet ink</span>
       </a>
-      <a class="nav-link" href="/issues/01" aria-current={isCurrent('/issues/01') ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/issues/01')} aria-current={isCurrent('/issues/01') ? 'page' : undefined}>
         Issue 01
       </a>
-      <a class="nav-link" href="/issues" aria-current={currentPath === '/issues' ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/issues')} aria-current={currentPath === '/issues' ? 'page' : undefined}>
         Back Issues
       </a>
-      <a class="nav-link" href="/source-room" aria-current={isCurrent('/source-room') ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/source-room')} aria-current={isCurrent('/source-room') ? 'page' : undefined}>
         Source Room
       </a>
-      <a class="nav-link" href="/about" aria-current={isCurrent('/about') ? 'page' : undefined}>
+      <a class="nav-link" href={withBase('/about')} aria-current={isCurrent('/about') ? 'page' : undefined}>
         About
       </a>
     </nav>

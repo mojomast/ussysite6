@@ -8,23 +8,11 @@ import { openPressDatabase, type PressDbHandle } from './db/client.ts';
 import { readerStates, savedProjects, marginDispatches, editorialEvents, audioEditions } from './db/schema.ts';
 import { loadServerCatalog } from '../lib/server-catalog.ts';
 import { buildIssueFolios } from '../lib/folio.ts';
+import { STRICT_CSP_HEADER } from '../lib/csp.ts';
 
 const ROOT_DIR = fileURLToPath(new URL('../..', import.meta.url));
 
-export const STRICT_CSP_HEADER = [
-  "default-src 'self'",
-  "script-src 'self'",
-  "style-src 'self' https://fonts.googleapis.com",
-  "font-src 'self' https://fonts.gstatic.com data:",
-  "connect-src 'self'",
-  "img-src 'self' data: blob:",
-  "media-src 'self' blob:",
-  "worker-src 'self' blob:",
-  "object-src 'none'",
-  "base-uri 'self'",
-  "frame-ancestors 'none'",
-  "form-action 'self'"
-].join('; ');
+export { STRICT_CSP_HEADER };
 
 const COMMON_SECURITY_HEADERS: Record<string, string> = {
   'X-Frame-Options': 'DENY',

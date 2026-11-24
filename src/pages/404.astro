@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../lib/paths';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Kinetic from '../components/Kinetic.astro';
 ---
@@ -19,9 +20,9 @@ import Kinetic from '../components/Kinetic.astro';
         <span>Proof note:</span> <del>this page</del> <ins>stet the rest of the magazine</ins>
       </p>
       <div class="cta-row">
-        <a class="btn-primary" href="/">Back to the front page</a>
-        <a class="btn-secondary" href="/issues/02">Read the new issue</a>
-        <a class="btn-secondary" href="/source-room">Browse every source</a>
+        <a class="btn-primary" href={withBase('/')}>Back to the front page</a>
+        <a class="btn-secondary" href={withBase('/issues/02')}>Read the new issue</a>
+        <a class="btn-secondary" href={withBase('/source-room')}>Browse every source</a>
       </div>
       <p class="datum-tag">Looking for something specific? Press <kbd class="ctrl-kbd">/</kbd> to search everything we’ve printed.</p>
     </div>

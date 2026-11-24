@@ -13,3 +13,4 @@ data/*.db-*
 web/out/
 drafts/
 .playwright-artifacts/
+dist-pages/

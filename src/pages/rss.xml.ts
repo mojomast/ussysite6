@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { withBase } from '../lib/paths';
 
 function escapeXml(value: string): string {
   return String(value || '')
@@ -11,7 +12,8 @@ function escapeXml(value: string): string {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const baseUrl = (site || new URL('https://ussy.host')).toString().replace(/\/$/, '');
+  const origin = (site || new URL('https://ussy.host')).origin;
+  const baseUrl = `${origin}${withBase('/')}`.replace(/\/$/, '');
   const issues = (await getCollection('issues')).sort((a, b) =>
     b.data.issueNumber.localeCompare(a.data.issueNumber)
   );
