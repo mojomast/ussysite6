@@ -6,6 +6,10 @@ import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
 import ArticleActions from '../../../components/islands/ArticleActions.svelte';
 import InteractiveStudy from '../../../components/islands/InteractiveStudy.svelte';
 import Kinetic from '../../../components/Kinetic.astro';
+import DepthLayers from '../../../components/fx/scrolly/DepthLayers.astro';
+import ReadingInkRail from '../../../components/fx/scrolly/ReadingInkRail.astro';
+import StatNumber from '../../../components/fx/scrolly/StatNumber.astro';
+import StatText from '../../../components/fx/scrolly/StatText.astro';
 import { buildIssueFolios } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -67,6 +71,8 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     data-read-article={`${d.issueNumber}/${d.articleSlug}`}
     data-read-total={issueArticleCount}
   >
+    <ReadingInkRail folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
+
     <!-- TOP FOLIO BREADCRUMB -->
     <div class="article-breadcrumb-bar">
       <div class="press-controls-bar">
@@ -94,7 +100,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
     <!-- MONOGRAPH OPENER HEADER -->
     <header class="article-opener-header">
       <div class="article-kicker-row">
-        <span class="service-stamp">No. {d.readerServiceNo}</span>
+        <span class="service-stamp">No. <StatNumber value={d.readerServiceNo} /></span>
         <span class="datum-tag">{d.kicker}</span>
       </div>
 
@@ -127,7 +133,8 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
 
     <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
     <section class="article-hero-media" aria-label="Plate and the short version">
-      <figure class={`plate-figure vt-plate-${d.issueNumber}-${d.articleSlug}`}>
+      <figure class={`plate-figure fx-depth-plate vt-plate-${d.issueNumber}-${d.articleSlug}`}>
+        <DepthLayers zone="plate" folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
         <div class="plate-art-box">
           {d.plate.kind === 'blender-webp' && d.plate.src ? (
             <img
@@ -152,12 +159,12 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
       </figure>
 
       <aside class="glance-ledger-box">
-        <h2>The short version</h2>
+        <h2 id="short-version-heading">The short version</h2>
         <dl class="metrics-dl">
           {d.metrics.map((m) => (
             <div>
               <dt>{m.label}</dt>
-              <dd>{m.value}</dd>
+              <dd><StatText text={m.value} /></dd>
             </div>
           ))}
         </dl>
@@ -208,7 +215,13 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
           />
         )}
 
-        <section class="under-hood-section" aria-labelledby="under-hood-heading">
+        <section class="under-hood-section fx-depth-hood" aria-labelledby="under-hood-heading">
+          <DepthLayers
+            zone="hood"
+            folioCode={folioCode}
+            readerServiceNo={d.readerServiceNo}
+            shortSha={d.sourceRevision.slice(0, 7)}
+          />
           <h2 id="under-hood-heading">Under the hood</h2>
           <ul class="arch-list">
             {d.architecture.map((item) => (
@@ -228,7 +241,8 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
         </section>
       </div>
 
-      <aside aria-label="What it does, what it doesn’t, and the receipts">
+      <aside class="fx-depth-rail" aria-label="What it does, what it doesn’t, and the receipts">
+        <DepthLayers zone="rail" folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
         <div class="sidebar-panel">
           <h3>What it actually does</h3>
           <ul class="sidebar-list">
@@ -259,7 +273,7 @@ const endHref = `/issues/${d.issueNumber}/last-page`;
         )}
 
         <div class="sidebar-panel">
-          <h3>Receipts ({d.sources.length})</h3>
+          <h3>Receipts (<StatNumber value={d.sources.length} />)</h3>
           <ul class="sources-list">
             {d.sources.map((src) => (
               <li>
