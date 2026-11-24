@@ -5,6 +5,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import CarbonCoverStage from '../components/islands/CarbonCoverStage.svelte';
 import CarbonPlateSvg from '../components/CarbonPlateSvg.astro';
 import Kinetic from '../components/Kinetic.astro';
+import StatNumber from '../components/fx/scrolly/StatNumber.astro';
+import StatText from '../components/fx/scrolly/StatText.astro';
 import { buildIssueFolios } from '../lib/folio';
 
 const allIssues = (await getCollection('issues')).sort((a, b) =>
@@ -51,7 +53,7 @@ const num = currentIssue.data.issueNumber;
           On the stands · Issue {num} · {currentIssue.data.coverDate}
         </span>
         <span class="datum-tag">
-          {allArticles.length} features so far · Every claim pinned to a commit · Written with AI, checked by hand
+          <StatNumber value={allArticles.length} /> features so far · Every claim pinned to a commit · Written with AI, checked by hand
         </span>
       </div>
 
@@ -87,7 +89,7 @@ const num = currentIssue.data.issueNumber;
             {currentIssue.data.highlights.map((h) => (
               <div>
                 <dt>{h.label}</dt>
-                <dd>{h.value}</dd>
+                <dd><StatText text={h.value} /></dd>
               </div>
             ))}
           </dl>
@@ -119,7 +121,7 @@ const num = currentIssue.data.issueNumber;
       <article class="cover-story-banner">
         <div>
           <div class="article-kicker-row">
-            <span class="service-stamp">Cover story · #{leadArticle.data.readerServiceNo}</span>
+            <span class="service-stamp">Cover story · #<StatNumber value={leadArticle.data.readerServiceNo} /></span>
             <a
               class="sha-pill"
               href={withBase(`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`)}
@@ -244,9 +246,15 @@ const num = currentIssue.data.issueNumber;
             is our list. It will grow.
           </p>
         </div>
-        <ol class="opus-corrections">
+        <ol class="opus-corrections fx-corrections">
           {currentIssue.data.corrections.map((c) => (
-            <li>{c}</li>
+            <li class="fx-corr-item">
+              <svg class="fx-corr-caret" viewBox="0 0 18 14" width="18" height="14" aria-hidden="true" focusable="false">
+                <path d="M2 12 L9 3 L16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" pathLength="1" />
+              </svg>
+              <span class="fx-corr-strike" aria-hidden="true"></span>
+              <span class="fx-corr-text">{c}</span>
+            </li>
           ))}
         </ol>
       </div>

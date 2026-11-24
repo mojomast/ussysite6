@@ -1,0 +1,48 @@
+---
+interface Props {
+  zone: 'plate' | 'hood' | 'rail';
+  folioCode: string;
+  readerServiceNo: number;
+  shortSha?: string;
+}
+
+const { zone, folioCode, readerServiceNo, shortSha } = Astro.props;
+const label = zone === 'hood' && shortSha ? `@${shortSha}` : `NO.${readerServiceNo}`;
+---
+
+<div class={`fx-depth-layers fx-depth-layers--${zone}`} aria-hidden="true">
+  <!-- Layer 1: hairline architectural grid (slowest) -->
+  <div class="fx-dl fx-dl-grid"></div>
+
+  <!-- Layer 2: monumental folio numeral (medium) -->
+  <div class="fx-dl fx-dl-folio">
+    <span class="fx-dl-num">{folioCode}</span>
+    <span class="fx-dl-tag">{label}</span>
+  </div>
+
+  <!-- Layer 3: registration crosshairs & crop marks (opposite / faster; dropped on lite) -->
+  <div class="fx-dl fx-dl-crosshairs">
+    <span class="fx-dl-bracket fx-dl-bracket--tl"></span>
+    <span class="fx-dl-bracket fx-dl-bracket--tr"></span>
+    <span class="fx-dl-bracket fx-dl-bracket--bl"></span>
+    <span class="fx-dl-bracket fx-dl-bracket--br"></span>
+    <svg class="fx-dl-target fx-dl-target--tr" viewBox="0 0 32 32" width="32" height="32" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="16" cy="16" r="9" />
+        <circle cx="16" cy="16" r="2.2" fill="currentColor" />
+        <path d="M16 1V31 M1 16H31" />
+      </g>
+    </svg>
+    <svg class="fx-dl-target fx-dl-target--bl" viewBox="0 0 28 28" width="28" height="28" focusable="false">
+      <g fill="none" stroke="currentColor" stroke-width="1.2">
+        <circle cx="14" cy="14" r="7.5" />
+        <path d="M14 2V26 M2 14H26" />
+      </g>
+    </svg>
+  </div>
+
+  <!-- Layer 4: coordinate vernier rule (fastest; dropped on lite) -->
+  <div class="fx-dl fx-dl-rule">
+    <span class="fx-dl-ruler-ticks"></span>
+  </div>
+</div>

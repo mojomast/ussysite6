@@ -59,9 +59,9 @@ const isCurrent = d.status === 'current';
       {isCurrent && (
         <section class="opus-strata scroll-reveal" aria-labelledby="strata-heading">
           <h2 id="strata-heading" class="opus-strata-heading">Everything this site used to be is still out there.</h2>
-          <ol class="opus-strata-list">
+          <ol class="opus-strata-list fx-strata-list">
             {USSYVERSE_STRATIGRAPHY.slice(0, -1).map((era) => (
-              <li>
+              <li class="fx-strata-row">
                 <span class="opus-strata-era">{era.era}</span>
                 <a href={withBase(era.repoUrl)} target="_blank" rel="noopener">{era.title}</a>
                 <span class="opus-strata-still">still public</span>

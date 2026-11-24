@@ -6,6 +6,8 @@ import CarbonCoverStage from '../../../components/islands/CarbonCoverStage.svelt
 import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
 import ColdOpen from '../../../components/islands/ColdOpen.svelte';
 import Kinetic from '../../../components/Kinetic.astro';
+import PressRun from '../../../components/fx/scrolly/PressRun.astro';
+import StatText from '../../../components/fx/scrolly/StatText.astro';
 import { buildIssueFolios } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -40,6 +42,18 @@ const coverCells = issueArticles.map((a) => ({
   title: a.data.title,
   kicker: a.data.kicker,
   spotInkHex: a.data.spotInkHex
+}));
+
+const pressRunItems = issueArticles.map((a) => ({
+  articleSlug: a.data.articleSlug,
+  issueNumber: a.data.issueNumber,
+  folioCode: folioBySlug.get(a.data.articleSlug) || '00',
+  readerServiceNo: a.data.readerServiceNo,
+  title: a.data.title,
+  kicker: a.data.kicker,
+  headline: a.data.headline,
+  deck: a.data.deck,
+  sourceRevision: a.data.sourceRevision
 }));
 ---
 
@@ -109,7 +123,7 @@ const coverCells = issueArticles.map((a) => ({
             {issueData.highlights.map((h) => (
               <div>
                 <dt>{h.label}</dt>
-                <dd>{h.value}</dd>
+                <dd><StatText text={h.value} /></dd>
               </div>
             ))}
           </dl>
@@ -181,6 +195,14 @@ const coverCells = issueArticles.map((a) => ({
       </p>
     </div>
   </section>
+
+  <!-- THE PRESS RUN: PINNED HORIZONTAL FEATURE SHEET SEQUENCE -->
+  <PressRun
+    issueNumber={issueData.issueNumber}
+    coverDate={issueData.coverDate}
+    totalFolios={folios.length}
+    items={pressRunItems}
+  />
 
   <!-- COMPLETE FOLIO TABLE OF CONTENTS -->
   <section class="section-block scroll-reveal">

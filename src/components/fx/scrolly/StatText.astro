@@ -1,0 +1,20 @@
+---
+import { parseStatTokens } from '../../../scripts/fx/scrolly/stat-tokens';
+
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const tokens = parseStatTokens(text);
+---
+{tokens.map((token) =>
+  token.kind === 'int' && token.value !== undefined ? (
+    <span class="fx-counter" data-fx-count={token.value}>
+      <span class="fx-counter-real">{token.text}</span>
+      <span class="fx-counter-anim" aria-hidden="true"></span>
+    </span>
+  ) : (
+    token.text
+  )
+)}
