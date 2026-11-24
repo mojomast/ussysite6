@@ -107,9 +107,18 @@ html[data-rizz='max'] .hero-issue-kicker {
 }
 
 html[data-rizz='max'] .btn-primary {
-  background: var(--fx-rizz-hot);
+  background: var(--bg-panel);
   border-color: var(--fx-rizz-gilt);
-  box-shadow: 0 0 22px color-mix(in srgb, var(--fx-rizz-hot) 38%, transparent);
+  color: var(--fx-rizz-gilt);
+  box-shadow:
+    0 0 0 1px var(--fx-rizz-accent),
+    0 0 22px color-mix(in srgb, var(--fx-rizz-accent) 34%, transparent);
+}
+
+html[data-rizz='max'] .btn-primary:hover {
+  background: var(--fx-rizz-gilt);
+  border-color: var(--fx-rizz-accent);
+  color: #0b0c0e;
 }
 
 html[data-rizz='max'] .article-ledger-row {
