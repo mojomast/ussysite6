@@ -1,72 +1,101 @@
-# Darkroom Field Journal
+# DESIGN.md — Gemini 4 Carbon (`C·06`) Visual System
 
-SLOP ILLUSTRATED's visual system is an artwork-led software magazine: expressive openers, calm reading columns, source-supported marginal notes and an accessible repository directory. Its distinctive material is the existing biomechanical cover and slightly absurd Blender still lifes. Product facts and preservation constraints live in `PRODUCT.md`; sources for the design decisions are in `docs/editorial-audit/design-research-2026.md`.
+**Publication:** *SLOP ILLUSTRATED (Si.) — Living Edition* (`ussy.host`)  
+**Art Direction & Foundation Pass:** Gemini 4 Carbon  
+**Follow-Up Polish & Feature Pass:** Gemini 4 Neon (see `PLAN.md`)
 
-## Color
+---
 
-Use the existing CSS custom properties. Darkroom remains the initial mode; the same compositions work in Cream and Blueprint.
+## 1. Design Principles (The Carbon Thesis)
 
-| Role | Darkroom | Cream | Blueprint |
-| --- | --- | --- | --- |
-| `--paper-bg` | `#111110` | `#f5f0e4` | `#0c2340` |
-| `--paper-elevated` | `#1a1917` | `#ece5d5` | `#102e52` |
-| `--paper-card` | `#21201d` | `#faf7f0` | `#153863` |
-| `--ink-primary` | `#f5efe2` | `#141311` | `#f0f6ff` |
-| `--ink-secondary` | `#d4cbb8` | `#38352f` | `#c5dcf7` |
-| `--spot-ink` | `#efb780` | `#bd3925` | `#ffbb83` |
-| `--secondary-ink` | `#c4d8ec` | `#0047ab` | `#aad4ff` |
+**Carbon (`Z = 6`, `12.011 u`)** is the structural element behind both soot-dark pyrolytic graphite and archival cotton paper. Unlike Issue 01's single-scroll "Darkroom Field Journal," Living Edition is an **architectural periodical press** inspired by *Domus*, *MIT Press Swiss Technical Monographs*, and *1970s IBM Systems Journal*:
 
-Project colors identify features through small accents. On dark themes, `--feature-accent` mixes 36% project color with the primary ink so small labels stay legible. Facts, paragraphs and source links use reading inks, rather than arbitrary project colors. Disclosure summaries mix 10% project color into the card surface.
+1. **Exposed Structural Honesty**: Grids are visible (`1px` `--rule-hairline` dividers and `2px` `--ink-primary` section rules). Coordinates, folio numbers, and 40-character Git commit SHAs sit on the surface as primary typographic material, never buried in tooltips.
+2. **Editorial Asymmetry Over SaaS Symmetry**: Never stack three identical rounded cards in a row. Pair monumental serif display headlines against dense monospace provenance ledgers (`5fr / 7fr`, `7fr / 5fr`, and `8fr / 4fr` splits).
+3. **Zero-Slop Provenance**: Conceptual schematics and Blender still lifes are explicitly captioned as editorial illustrations (`CONCEPTUAL SCHEMATIC · NOT TELEMETRY`), while caveats and unrun suites occupy high-visibility `--amber-oxide` callout panels.
+4. **Progressive & Strict-CSP Native**: Every page renders complete, legible semantic HTML before a byte of JavaScript executes, obeys `prefers-reduced-motion: reduce`, and runs under `script-src 'self'; style-src 'self' https://fonts.googleapis.com` with **zero `'unsafe-inline'`**.
 
-## Typography
+---
 
-Six existing families have separate jobs. A single feature uses one headline voice, Newsreader reading text and Space Grotesk utilities; specialist voices enter only where useful.
+## 2. Design Tokens (`src/styles/tokens.css`)
 
-| Role | Family | Feature setting |
-| --- | --- | --- |
-| Identity and expressive headlines | Fraunces | Opener/essay headlines, balanced lines, deliberate optical size |
-| Technical display | Barlow Condensed | Report headlines and Under the hood |
-| Editorial takeaway | Cormorant Garamond | Large italic reading accent, explicitly labelled as editorial |
-| Body and deck | Newsreader | Lead 18px/1.55, 19px/1.5 in wide compositions; deck 19–20px |
-| Controls and facts | Space Grotesk | Mixed-case utility text, definition-list metrics |
-| Code and source coordinates | IBM Plex Mono | Repository excerpts, line numbers and revisions |
+### 2.1 Three Selectable Paper Stocks (`html[data-stock="..."]`)
 
-Lead paragraphs have a 66ch maximum, reduced to 60ch on wide sheets. Display tracking stays at or above −0.035em. Headlines retain the exact catalog wording; routine italic suffixes have been removed. Whitespace, scale and font roles distinguish information without enclosing every group.
+| Token | `graphite` (Default Dark) | `rag` (Daylight Cotton) | `oxide` (Ferric Blueprint) | Role |
+| :--- | :--- | :--- | :--- | :--- |
+| `--bg-canvas` | `#0b0c0e` | `#f4f0e6` | `#071522` | Primary page ground |
+| `--bg-surface` | `#121418` | `#eae4d5` | `#0c1f33` | Ledger & secondary beds |
+| `--bg-panel` | `#181b21` | `#fcfaf5` | `#112942` | Elevated instrument housings & modals |
+| `--bg-code` | `#08090b` | `#15171c` | `#040d16` | Pinned source specimen wells |
+| `--ink-primary` | `#f3efe6` (`16.4:1`) | `#121316` (`15.8:1`) | `#edf5fc` (`16.1:1`) | Headlines & body prose |
+| `--ink-secondary` | `#c2bdb0` (`9.2:1`) | `#343740` (`9.6:1`) | `#b9d0e7` (`9.8:1`) | Decks, captions & secondary copy |
+| `--ink-muted` | `#8b867a` (`5.1:1`) | `#585c67` (`5.7:1`) | `#82a4c6` (`5.6:1`) | Datum labels & folio numerals (WCAG AA+) |
+| `--rule-hairline` | `#262a34` | `#cfc8b6` | `#1d3a59` | `1px` structural grid dividers |
+| `--rule-strong` | `#414756` | `#8e8673` | `#325d8a` | Frame borders & interactive outlines |
+| `--signal-vermilion` | `#ff4422` | `#c4280c` | `#ff7847` | Primary proof mark, drop caps, active stamps |
+| `--phosphor-mint` | `#3ddc97` | `#0b6e46` | `#4ade80` | Verified commit SHAs & saved receipts |
+| `--amber-oxide` | `#f5a623` | `#945200` | `#fbbf24` | Honest boundaries, caveats & stub flags |
 
-## Cover, contents and Source Room
+### 2.2 Four-Voice Typography System
 
-`publication.css` scopes the three non-feature folios to a named `publication` container. Their plain paper backgrounds and quieter running header give the artwork and titles priority. The header uses Space Grotesk with an underlined active folio, rather than individual boxed tabs.
+| Token | Family | Usage & Constraints |
+| :--- | :--- | :--- |
+| `--font-display` | `Instrument Serif` | Masthead (`--text-masthead`), section headings, article headlines (`line-height: 0.98`, `letter-spacing: -0.025em`), pull quotes, drop caps, and folio index numerals. |
+| `--font-structural` | `Syne` | Uppercase masthead super-kicker (`SLOP`), brand imprint, and "Under the Hood" structural headers (`letter-spacing: 0.04em–0.14em`). |
+| `--font-ui` | `Space Grotesk` | Navigation links, repository cards, metric values, and interactive controls. |
+| `--font-prose` | `Newsreader` | Longform monograph copy (`1.135rem`, `line-height: 1.72`, strict `--measure-prose: 62ch` max width). |
+| `--font-mono` | `JetBrains Mono` | Commit SHAs, Reader Service stamps (`#201`), datum coordinates, keyboard shortcuts, and source excerpts (`tabular-nums`). |
 
-- **Cover:** monumental Fraunces identity above an uninterrupted biomechanical plate. Four cover stories and a compact sound feature form a narrow right rail. Eleven numbered annotations retain accessible project names, focus/hover readouts and keyboard navigation. Below 760px container width, the story rail moves beneath the artwork. Compact SVG annotations move beneath the complete image with at least 44 layout pixels per target. The SVG measures `host.clientWidth` before zoom and ignores hidden sheets.
-- **Contents:** an original 4:3 frontispiece and editor's letter beside an aligned eleven-story index. Masthead credits and departments sit below. The title is Barlow Condensed; folio numerals use Cormorant Garamond. At narrow widths the two columns become one reading sequence.
-- **Source Room:** an open directory aligns folio, name/category, technical stack, and repository/save actions. A reading-list margin contains export and notes. It moves below the directory when the sheet is narrower than 1050px, while individual entries recompose at 760px and 440px. The closing credit retains “Slop, Illustrated.”
+### 2.3 Spacing & Container Rhythm
 
-The masthead stacks on the narrowest sheets. Cover art uses `preserveAspectRatio="xMidYMid meet"`; the contents frontispiece explicitly uses `aspect-ratio: 4 / 3` and `object-fit: contain`.
+- Sheet container `.carbon-sheet` caps at `--max-sheet: 1380px` with fluid `clamp(1rem, 3vw, 2.5rem)` horizontal padding.
+- Spacing scale: `--space-1` (`4px`), `--space-2` (`8px`), `--space-3` (`12px`), `--space-4` (`16px`), `--space-5` (`24px`), `--space-6` (`32px`), `--space-7` (`48px`), `--space-8` (`72px`).
+- Zero border-radius (`0px`) on all structural frames, buttons, pills, and modals; the lone exception is the `7px` circular live status LED (`.live-dot`).
 
-## Feature compositions
+---
 
-`js/app.js` assigns an explicit `data-feature-layout`. `index.css` owns one consolidated **DARKROOM FIELD JOURNAL / FEATURES** section. Each `.feature-composition` has six live modules, in narrow-screen DOM order: header, media, prose/takeaway, facts, capabilities, actions. Media tabs switch the original artwork and screenshot/study inside one module.
+## 3. Component & Layout Inventory
 
-The named `feature` container measures the unscaled sheet. Below 760px of content width it has a single column; above that it uses twelve tracks and 32px gaps. The spacing rhythm uses 8, 12, 16, 24, 32 and 48px intervals.
+1. **`Masthead.astro` + `PressControls.svelte`**:
+   - Sticky top press bar (`--header-h: 3.5rem`) with scroll-driven top progress ribbon (`.scroll-progress-bar`), `Si.` inverse badge, issue navigation, 3-stock switcher (`Graphite / Rag / Oxide`), registration grid overlay (`html[data-grid="on"]`), WebAudio Carbon Tonewheel synth toggle, `Ask Editor` modal, `/` catalog search modal, and the `u-s-s-y` archaeological stratigraphy easter egg.
+2. **`CarbonCoverStage.svelte` (WebGPU -> WebGL2 -> Static SVG)**:
+   - Interactive Three.js (`0.187.0`) hexagonal allotrope sculpture for Issue 02. Probes `navigator.gpu.requestAdapter()` for `three/webgpu` (`WebGPURenderer`), falls back to `THREE.WebGLRenderer`, and falls back to an inline SVG lattice under `prefers-reduced-motion: reduce` or software-only environments.
+   - Calls `renderer.setSize(w, h, false)` so `canvas.style` is never mutated (strict CSP compliance).
+   - Pauses `requestAnimationFrame` automatically via `IntersectionObserver`, `document.hidden`, or the user's `[Pause 3D]` control.
+3. **Three Article Monograph Variants (`src/pages/issues/[issue]/[slug].astro`)**:
+   - `data-variant="opener"`: `8fr / 4fr` hero visual plate vs. At-a-Glance spec ledger (used for Cover Story & major openers).
+   - `data-variant="dossier"`: `7fr / 5fr` schematic-and-metrics split for systems/protocol monographs.
+   - `data-variant="essay"`: `6fr / 6fr` balanced plate-and-context split for interface and virtualization essays.
+   - Below the hero, all variants share a `7fr` (`62ch` `Newsreader`) prose + `Under the Hood` code spine beside a `5fr` provenance rail (`Verified Capabilities`, `--amber-oxide` `Field Notes & Honest Boundaries`, `Reading Guide`, and `Commit-Pinned Sources`).
+4. **`CarbonPlateSvg.astro` & Preserved Issue 01 Blender Plates**:
+   - Issue 01 articles mount their preserved `1600×1200` Cycles Blender `.webp` still lifes (`/assets/editorial/...`) and documented screenshots (`/assets/screenshots/...`).
+   - Issue 02 articles mount bespoke `800×600` (`4:3`) Carbon Architectural SVG lithographs using XML presentation attributes (`fill`, `stroke`, `stroke-dasharray`).
+5. **`SourceRoomWorkbench.svelte`**:
+   - Unified 22-repository directory across Issues 01 & 02 with per-reader SQLite state (`X-Reader-Id`), live community save counts, Markdown reading-list export (clipboard + `<textarea>` fallback), and public Margin Dispatches.
 
-- **Opener — OrbitDesktop, JamMate, Warpi:** five-column title beside a seven-column illustration; prose and facts below; full-width capabilities.
-- **Report — CoCS, CoCS-Godot, RouteTok, RGB Flight Indicator, MothBake:** broad condensed headline with adjacent deck; an eight-column illustration beside an evidence rail; prose and takeaway below. Between 760 and 1000px, the image/prose and facts/capabilities use a seven/five split.
-- **Essay — VelvetRP, HermesDashboard, Becomussy:** an indented title, a five-column image margin and a six-column reading spine, with facts and capabilities underneath.
+---
 
-Facts use semantic definition lists, capabilities use ordinary lists, and repository/sound/save actions occupy a quieter utility row. Artwork retains its original 4:3 framing. Sources remain directly accessible below every feature.
+## 4. Motion Language
 
-## Reading modes and motion
+- **Curves**: `--ease-carbon: cubic-bezier(0.22, 1, 0.36, 1)` and `--ease-snap: cubic-bezier(0.16, 1, 0.3, 1)`—fast initial velocity settling into a crisp mechanical stop without rubbery bounce.
+- **Durations**: `140ms` micro-states, `260ms` drawer/panel transitions, `480ms` View Transition cross-fades.
+- **Scroll-Driven CSS**:
+  - `.scroll-progress-bar` uses `animation-timeline: scroll(root block)` gated behind `@supports (animation-timeline: scroll())` and `@media (prefers-reduced-motion: no-preference)`.
+  - `.scroll-reveal` uses `animation-timeline: view()` (`entry 5% cover 24%`) so offscreen sections settle gently into place without JavaScript scroll listeners.
+- **View Transitions**: Multi-page navigation opts into native `@view-transition { navigation: auto; }` and shuts off cleanly under `@media (prefers-reduced-motion: reduce)`.
 
-`publication.css` and `index.css` compose the issue. `page-reader.css` and `js/page-reader.js` scale, center, scroll and turn the original live sheets.
+---
 
-- Compose at the actual available width, capped at 1400px. Do not restore a desktop minimum width on phones.
-- **Fit sheet:** center the complete content-sized sheet with margins.
-- **Fill view:** scale the same composition to cover the reading area, at least at natural size. Text and column placement do not change during the 560ms zoom. A phone therefore reads as a natural-width, vertically scrollable page.
-- **Under the hood:** an 80px minimum tinted summary, 28px heading and clear Explore/Close state. Keep measured, interruptible unfolding and same-frame Fit geometry synchronization; extended engineering prose, architecture, notes and excerpts remain inside.
-- Preserve 3D page turns, per-folio reading position, keyboard navigation, touch scrolling, horizontal Fit swipes and reduced-motion alternatives. Print expands the technical material and both media panels.
+## 5. Strict Guardrails for Gemini 4 Neon (Do & Don't)
 
-Primary feature actions and media tabs have 44px minimum heights. Focus indicators use the theme's secondary ink. Keep labels, captions and provenance attached to the figures or facts they qualify.
+### DO:
+- **DO keep strict CSP unbroken**: Run `npm run build && npm run lint` after every UI change. Never introduce `style="..."` HTML attributes or `element.style.*` / `setAttribute('style', ...)` mutations that trigger `style-src` violations. Use CSS classes, `data-*` selectors, or SVG XML presentation attributes (`fill`, `stroke`, `transform`).
+- **DO preserve every 40-char commit SHA and honest caveat**: Every factual statement about a `mojomast` repo must trace to a real commit SHA in `sources`. Never invent star counts, benchmarks, or features.
+- **DO amplify the Carbon × Neon contrast**: Add kinetic electric highlights, richer View Transition morphs (`view-transition-name` on issue covers/headlines), interactive SVG diagrams, or live runtime capabilities behind the stubbed flags—while keeping the sharp `0px`-radius architectural bones, `Instrument Serif` + `Newsreader` + `JetBrains Mono` hierarchy, and WCAG AA+ contrast across all three paper stocks (`graphite`, `rag`, `oxide`).
+- **DO keep progressive enhancement**: Every route must remain readable and navigable with JavaScript disabled or when `/api/*` is unreachable.
 
-## Maintenance
-
-Avoid reintroducing `nth-child` layout alternation or page-reader rules that reconstruct a second version of a feature. All responsive compositions should be selected by the actual unscaled sheet width. Keep source-only design/skill files out of the static deployment. Existing artwork provenance remains in the asset rebuild notes and screenshot captions.
+### DON'T:
+- **DON'T add `'unsafe-inline'` or `'unsafe-eval'`** to `src/server/app.ts` or `deploy/nginx-ussy.host.conf`.
+- **DON'T introduce generic rounded SaaS cards**, blurred purple-pink hero blobs, Tailwind utility soup, or unattributed AI stock art.
+- **DON'T commit API keys, tokens, `.sqlite` files, or eval canary strings** (`npm run lint` and `npm test` enforce this automatically).
+- **DON'T touch any production server, run `deploy/activate.sh`, or merge the PR**.

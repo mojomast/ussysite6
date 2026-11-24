@@ -1,5 +1,5 @@
 [Unit]
-Description=SLOP ILLUSTRATED // Issue 01 backend
+Description=SLOP ILLUSTRATED (Si.) // Living Edition Hono + SQLite Backend
 After=network.target
 
 [Service]
@@ -10,9 +10,13 @@ Environment=NODE_ENV=production
 Environment=HOST=127.0.0.1
 Environment=PORT=3016
 Environment=PUBLIC_ORIGIN=https://ussy.host
+Environment=DATABASE_PATH=/home/mojo/projects/ussysite6/data/living-edition.sqlite
+EnvironmentFile=-/etc/ussysite6/env
 ExecStart=/home/mojo/.local/bin/node /home/mojo/projects/ussysite6/server.mjs
 Restart=on-failure
 RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
