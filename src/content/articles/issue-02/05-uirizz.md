@@ -63,7 +63,12 @@ plate:
   title: "A Click Is Only a Petition"
   medium: "CARBON LITHOGRAPH · INTERACTION GATE"
   alt: "Editorial diagram of two dark A2UI comparison cards inside a chat stream connected by a dotted petition wire to an interlock switch that opens only when a physical 'yes' keystroke arrives from the chat composer."
-secondaryMedia: null
+secondaryMedia:
+  kind: "svg-study"
+  studyId: "uirizz"
+  width: 800
+  height: 450
+  caption: "Trace how uirizz separates an A2UI button click from a fail-closed typed-yes approval."
 codeExcerpt:
   title: "LISTING 5.1 // FAIL-CLOSED UI ACTION GATE (dashboard/plugin_api.py)"
   lang: "python"

@@ -30,7 +30,7 @@ highlights:
   - label: "Activity Window"
     value: "Oct 18 – Nov 23, 2026"
   - label: "Edition Skin"
-    value: "Gemini 4 Carbon (C·06)"
+    value: "Carbon (C·06) × Neon (Ne·10)"
 dispatches:
   - title: "Comfyrizz — Chat-to-Film Colab Studio"
     repoUrl: "https://github.com/mojomast/comfyrizz"

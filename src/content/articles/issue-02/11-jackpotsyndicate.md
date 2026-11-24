@@ -63,7 +63,12 @@ plate:
   title: "The Midas Lip Sensor"
   medium: "CARBON LITHOGRAPH · DETERMINISTIC KINEMATICS"
   alt: "Cross-section mechanical schematic of three slot reels dropping pachinko spheres through golden pegs onto a reciprocating hydraulic dozer shelf where coins count only past the front lip sensor."
-secondaryMedia: null
+secondaryMedia:
+  kind: "svg-study"
+  studyId: "jackpot"
+  width: 800
+  height: 450
+  caption: "Follow a deterministic token from 3x3 reels and pachinko pins to the Midas lip sensor bankroll commit."
 codeExcerpt:
   title: "LISTING 11.1 // GZIP BUNDLE BUDGET AUDITOR (apps/game/scripts/bundle.ts)"
   lang: "ts"

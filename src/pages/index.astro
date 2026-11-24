@@ -61,7 +61,7 @@ const leadArticle = currentArticles[0];
           </h1>
 
           <span class="hero-issue-kicker">{currentIssue.data.themeTag}</span>
-          <h2 class="hero-issue-headline">{currentIssue.data.title}</h2>
+          <h2 class="hero-issue-headline vt-issue-title">{currentIssue.data.title}</h2>
           <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
 
           <div class="cta-row">
@@ -86,7 +86,11 @@ const leadArticle = currentArticles[0];
           </dl>
         </div>
 
-        <div>
+        <div
+          class="vt-issue-stage"
+          data-folio-next={`/issues/${currentIssue.data.issueNumber}`}
+          data-folio-next-label={`Issue ${currentIssue.data.issueNumber} Cover`}
+        >
           <CarbonCoverStage client:load items={coverCells} issueNumber={currentIssue.data.issueNumber} />
         </div>
       </div>

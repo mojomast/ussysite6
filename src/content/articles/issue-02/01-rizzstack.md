@@ -64,7 +64,12 @@ plate:
   title: "Quarantine Rail for Worker Four"
   medium: "CARBON LITHOGRAPH · VERIFICATION SCHEMATIC"
   alt: "Architectural schematic of the Rizzstack verification gate: four hexagonal bee packets enter an ACDD hash ring; W1 and W2 emerge in phosphor mint to integration while W3 (scope_violation) and W4 (tests_tampered) are shunted onto vermilion quarantine tracks."
-secondaryMedia: null
+secondaryMedia:
+  kind: "svg-study"
+  studyId: "rizzstack"
+  width: 800
+  height: 450
+  caption: "Step through all four scripted reference workers (W1–W4) inside workflow/reference/run_demo.py."
 codeExcerpt:
   title: "LISTING 1.1 // ACDD REFERENCE VERIFIER SUMMARY (reference/run_demo.py)"
   lang: "python"

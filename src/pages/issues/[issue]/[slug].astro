@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
 import ArticleActions from '../../../components/islands/ArticleActions.svelte';
+import InteractiveStudy from '../../../components/islands/InteractiveStudy.svelte';
 import { buildIssueFolios } from '../../../lib/folio';
 
 export async function getStaticPaths() {
@@ -81,7 +82,7 @@ const d = entry.data;
         <span class="datum-tag">· {d.kicker}</span>
       </div>
 
-      <h1 class="article-headline">{d.headline}</h1>
+      <h1 class="article-headline vt-article-headline">{d.headline}</h1>
       <p class="article-deck">{d.deck}</p>
 
       <div class="article-byline-bar">
@@ -110,7 +111,7 @@ const d = entry.data;
 
     <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
     <section class="article-hero-media" aria-label="Editorial Plate & Technical Specifications">
-      <figure class="plate-figure">
+      <figure class="plate-figure vt-article-plate">
         <div class="plate-art-box">
           {d.plate.kind === 'blender-webp' && d.plate.src ? (
             <img
@@ -182,6 +183,15 @@ const d = entry.data;
           </figure>
         )}
 
+        {d.secondaryMedia && d.secondaryMedia.kind === 'svg-study' && d.secondaryMedia.studyId && (
+          <InteractiveStudy
+            client:load
+            studyId={d.secondaryMedia.studyId}
+            caption={d.secondaryMedia.caption}
+            title={d.title}
+          />
+        )}
+
         <section class="under-hood-section" aria-labelledby="under-hood-heading">
           <h2 id="under-hood-heading">Under the Hood // Verified Architecture</h2>
           <ul class="arch-list">
@@ -248,7 +258,14 @@ const d = entry.data;
     </div>
 
     <!-- FOLIO PAGER -->
-    <nav class="folio-pager" aria-label="Folio Navigation">
+    <nav
+      class="folio-pager"
+      aria-label="Folio Navigation"
+      data-folio-prev={prevArticle ? `/issues/${d.issueNumber}/${prevArticle.slug}` : `/issues/${d.issueNumber}`}
+      data-folio-next={nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : `/source-room?issue=${d.issueNumber}`}
+      data-folio-prev-label={prevArticle ? prevArticle.title : `Issue ${d.issueNumber} Cover`}
+      data-folio-next-label={nextArticle ? nextArticle.title : 'The Source Room'}
+    >
       <div>
         {prevArticle ? (
           <a class="btn-secondary" href={`/issues/${d.issueNumber}/${prevArticle.slug}`}>
@@ -260,7 +277,10 @@ const d = entry.data;
           </a>
         )}
       </div>
-      <div>
+      <div class="press-controls-bar">
+        <span class="folio-shortcut-hint" aria-label="Keyboard shortcuts: k previous folio, j next folio">
+          <kbd class="ctrl-kbd">k</kbd> Prev · <kbd class="ctrl-kbd">j</kbd> Next · <kbd class="ctrl-kbd">?</kbd> Keys
+        </span>
         <a class="datum-tag" href={`/source-room?issue=${d.issueNumber}`}>
           SOURCE ROOM ↗
         </a>

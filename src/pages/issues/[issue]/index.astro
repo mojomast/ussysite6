@@ -56,14 +56,20 @@ const coverCells = issueArticles.map((a) => ({
         </span>
       </div>
 
-      <h1 class="masthead-monument">
+      <h1 class="masthead-monument vt-issue-title">
         <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}</span>
         <span class="word-illustrated">{issueData.title}<span class="period-mark">.</span></span>
       </h1>
       <p class="hero-issue-deck">{issueData.subtitle}</p>
 
-      <div class="issue-cover-grid">
-        <div>
+      <div
+        class="issue-cover-grid"
+        data-folio-prev="/"
+        data-folio-prev-label="Newsstand"
+        data-folio-next={issueArticles[0] ? `/issues/${issueData.issueNumber}/${issueArticles[0].data.articleSlug}` : '/source-room'}
+        data-folio-next-label={issueArticles[0] ? issueArticles[0].data.title : 'Source Room'}
+      >
+        <div class="vt-issue-stage">
           {issueData.coverArt.kind === 'webgl-carbon-hive' ? (
             <CarbonCoverStage client:load items={coverCells} issueNumber={issueData.issueNumber} />
           ) : (

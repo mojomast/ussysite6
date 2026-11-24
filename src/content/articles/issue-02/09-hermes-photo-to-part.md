@@ -63,7 +63,12 @@ plate:
   title: "Involute Bouncer & Coin Scale"
   medium: "CARBON LITHOGRAPH · METROLOGY BENCH"
   alt: "Technical drafting plate showing a reference coin beside a rectified mechanical spur gear, an IoU silhouette alignment ring, and a pre_tool_call gate blocking hand-rolled trochoid math."
-secondaryMedia: null
+secondaryMedia:
+  kind: "svg-study"
+  studyId: "photopart"
+  width: 800
+  height: 450
+  caption: "Walk through coin scale calibration, the gear_steer.py involute bouncer, and watertight spur_gear validation."
 codeExcerpt:
   title: "LISTING 9.1 // THE INVOLUTE BOUNCER (plugin/photopart/gear_steer.py)"
   lang: "python"

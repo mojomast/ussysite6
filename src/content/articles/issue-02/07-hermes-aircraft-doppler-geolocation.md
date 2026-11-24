@@ -63,7 +63,12 @@ plate:
   title: "S-Curve Over 4,000 Hz"
   medium: "CARBON LITHOGRAPH · ACOUSTIC SPECTROGRAM"
   alt: "Spectrogram schematic plotting six descending propeller harmonic S-curves across time as an aircraft passes closest approach above a concentric ADS-B probability heatmap."
-secondaryMedia: null
+secondaryMedia:
+  kind: "svg-study"
+  studyId: "doppler"
+  width: 800
+  height: 450
+  caption: "Inspect the 4 kHz STFT whitening, Viterbi harmonic fit, and candid 2/18 held-out benchmark."
 codeExcerpt:
   title: "LISTING 7.1 // MEDIAN-WHITENED MAD SPECTROGRAM (dopplergeo/detect.py)"
   lang: "python"

@@ -31,7 +31,8 @@ const searchCatalog = allArticles
       title: entry.data.title,
       headline: entry.data.headline,
       category: entry.data.category,
-      techStack: entry.data.techStack
+      techStack: entry.data.techStack,
+      flexiFreqs: entry.data.flexiFreqs
     };
   });
 
@@ -41,7 +42,7 @@ const isCurrent = (prefix: string) =>
     : currentPath === prefix || currentPath.startsWith(`${prefix}/`);
 ---
 
-<header class="press-masthead">
+<header class="press-masthead vt-masthead">
   <div class="carbon-sheet press-masthead-inner">
     <div class="brand-cluster">
       <a href="/" class="si-badge" aria-label="Slop Illustrated Home">
@@ -49,7 +50,7 @@ const isCurrent = (prefix: string) =>
       </a>
       <div class="brand-imprint">
         <a href="/" class="brand-title">Slop Illustrated</a>
-        <span class="datum-tag">LIVING EDITION // C·06</span>
+        <span class="datum-tag">CARBON × NEON // C·06 + Ne·10</span>
       </div>
     </div>
 
