@@ -60,7 +60,7 @@ npm run issue:draft -- --issue 03 --limit 6 --apply
 
 ## Architecture & Key Documents
 
-- [`DESIGN.md`](DESIGN.md) — **Gemini 4 Carbon (`C·06`)** base press system + **Gemini 4 Neon (`Ne·10`)** interactive/motion layer, paper stock tokens (`graphite`, `rag`, `oxide`), 4-voice typography, and strict CSP guardrails.
+- [`DESIGN.md`](DESIGN.md) — **Gemini 4 Carbon (`C·06`)** base press system + **Gemini 4 Neon (`Ne·10`)** interactive layer + **Opus (`Au·79`)** voice and **Motion (`Mo·42`)** layers, paper stock tokens (`graphite`, `rag`, `oxide`), 4-voice typography, and strict CSP guardrails.
 - [`PLAN.md`](PLAN.md) — Phase 1 to Phase 3 roadmap & verification checklist.
 - [`DESIGN.md` §7](DESIGN.md) — the Opus voice guide (house style, banned phrasing, pulled pull quotes) and the signature moments: cold open, Corrections, proofreader's ticks, the last page and its lamp, opt-in sound.
 - [`src/components/islands/InteractiveStudy.svelte`](src/components/islands/InteractiveStudy.svelte) — 10 keyboard-accessible interactive step-through monograph studies across Issues 01 & 02.

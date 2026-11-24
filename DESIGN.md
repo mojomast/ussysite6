@@ -174,3 +174,53 @@ The magazine sounds like a good editor who has read the code: dry on the surface
 ### 7.4 Guardrails Opus kept
 
 Strict CSP is unchanged: no inline styles or scripts, and timing lives in CSS `nth-child` delays, never `style=""`. The WebGPU > WebGL2 > SVG cover chain is untouched. The Gemini endpoints stay behind `FEATURE_*` flags, off by default, with no keys committed. The new islands are small (`ColdOpen`, `PressLamp`) and the tracker is a few kilobytes; none of them pulls in Three.js.
+
+## 8. Motion Layer (`Mo·42`): Page Turns, Springs & Ink
+
+**Layer author:** Claude Opus 5.5, Phase 4. Carbon set the type, Neon wired the instruments, Opus wrote the words. The motion layer makes the paper behave like paper: pages turn, ink bleeds, stamps land, and the press slams shut. It lives in `src/styles/motion.css` (loaded last) plus four small hooks. No motion library: CSS does almost all of it, and the JavaScript adds 2.9 kB gzipped across the islands.
+
+### 8.1 Principles
+
+1. **Motion explains the press.** Every animation maps to a physical act: turning a page, inking a plate, stamping a proof, pulling a lamp chain. If a motion can't name its verb, it gets cut.
+2. **The compositor does the work.** Keyframes animate `transform`, `opacity`, `filter`, `clip-path`, `stroke-dashoffset` and the `wght` axis only. `test/motion.test.mjs` fails the build if a keyframe touches anything that reflows.
+3. **Full-viewport layers never get filters.** Blur on a page-sized snapshot cost the page turn 30fps on a throttled mobile profile, so page turns, scrollytelling steps and the dusk vignette use only transform and opacity. Blur is reserved for small, one-shot elements such as letters, the pull quote and the sign-off lines.
+4. **Scroll is a timeline, not an event.** Parallax, reveals, the scrollytelling meter and the last-page dusk use `animation-timeline: scroll()` / `view()`, so they run without a scroll handler. The cover's 3D tilt is the one passive scroll listener; it writes a number and the render loop reads it.
+5. **Reduced motion is calm and complete.** Under `prefers-reduced-motion: reduce`, nothing starts hidden, nothing moves, and cross-document view transitions are not even opted into (`@view-transition` sits inside a `no-preference` query). Study packets are not rendered at all, the cover is the static SVG lattice, and the cold open shows its finished frame. Every hidden start state lives inside a `no-preference` query, and a test enforces that.
+6. **Strict CSP survives.** Per-element view-transition names come from a build-generated stylesheet (`/vt-names.css`), never `style=""`. Staggers are `nth-child` custom properties. Data-driven SVG motion is declarative SMIL (`<animateMotion>`), which needs no script and no inline style.
+
+### 8.2 Tokens (`src/styles/motion.css`)
+
+Springs are CSS `linear()` curves sampled from a damped spring simulation (mass 1):
+
+| Token | Stiffness / damping | Duration | Used for |
+| :--- | :--- | :--- | :--- |
+| `--spring-snappy` | k520 / c34 | 410ms | Buttons, chips, nav underline, study tabs |
+| `--spring-bouncy` | k300 / c14 | 1150ms | `aria-pressed` toggles, the lamp swing, the period drop |
+| `--spring-soft` | k120 / c17 | 870ms | Shared-element morphs, masthead letters |
+| `--spring-stamp` | k700 / c20 | 760ms | The read stamp, the cold-open seal |
+
+| Curve / duration | Value | Used for |
+| :--- | :--- | :--- |
+| `--ease-out-expo` | `cubic-bezier(0.16, 1, 0.3, 1)` | Arrivals, reveals, the ink flood |
+| `--ease-in-out-quint` | `cubic-bezier(0.83, 0, 0.17, 1)` | The outgoing page, the plates opening |
+| `--ease-press` | `cubic-bezier(0.7, 0, 0.84, 0)` | The cold-open plates slamming shut |
+| `--dur-micro` / `-short` / `-medium` / `-long` / `-scene` | 120 / 240 / 420 / 700 / 1100ms | Hover, press, reveal, page turn, cinematic beats |
+| `--stagger` | 45ms | Per-word and per-letter cascades |
+
+### 8.3 Signature motions
+
+1. **Page turns** (every route). Cross-document View Transitions: the old page swings away on its spine (`rotateY(-22deg)`) while the new one slides in from the fore-edge. Direction is real, not cosmetic. `public/motion-boot.js` (524 B, render-blocking by design) reads `data-dir="backward"` links, the j/k folio keys and `navigation.activation` (so the browser Back button turns pages backwards), then adds a `forward`/`backward` view-transition type.
+2. **Shared-element morphs.** Headlines (`hl-{issue}-{slug}`), feature plates (`plate-…`) and issue covers (`issue-art-n`) carry the same name on every page they appear, so cover → contents → feature → back, and the archive → issue, morph in place on the soft spring. `<link rel="expect" blocking="render">` holds the first frame until all named elements are parsed. Names are unique per page, and both the built stylesheet and a headless sweep of all 30 routes check this.
+3. **Ink flood.** Changing paper stock (Graphite, Rag, Oxide) is a same-document view transition of type `ink`: the new stock spreads out from the stock controls as a `clip-path` circle.
+4. **Kinetic type.** `Kinetic.astro` splits headlines into words at build time (the sentence stays whole for screen readers and search). Words rise out of their own baseline in a 45ms cascade, held back on page-turn arrival so they land after the morph. The masthead drops S-L-O-P letter by letter while the Syne `wght` axis presses from 420 to 800; *Illustrated* bleeds in like wet ink and the full stop drops last. On hover the letters breathe on the weight axis.
+5. **Scroll-driven reading.** Plates parallax inside their frames, contents rows and side panels rise in, the drop cap settles, and the pull quote slides in, all on `view()` timelines. The hero and issue masthead drift on `scroll(root)`.
+6. **Pinned scrollytelling** (Issue 02 front page, "If you let machines write the code…"). A sticky question with a progress meter driven by a named `view-timeline`; five verbatim lines from the editor's letter come into focus one at a time, each linked to its feature, ending on the gilt coda.
+7. **Living studies.** Each step remounts its diagram: lines draw themselves (`stroke-dashoffset`), boxes and nodes spring in, labels fade up. Data packets travel the real path: a worker's patch to the bwrap gate and out to *integrated* or *quarantine* (Rizzstack); a click to the approval gate (uirizz); a radar sweep along the Doppler curve; a coin over the pusher's lip (Jackpot). The photo-to-part gear turns once the template exists. Packets pause offscreen (`pauseAnimations()`) and are never rendered under reduced motion.
+8. **The swarm** (cover, WebGPU and WebGL2). 1,600 bees (700 on phones) orbit the hive. Positions are computed on the GPU from a per-particle seed: TSL `SpriteNodeMaterial` with instanced attributes on WebGPU, and a GLSL `ShaderMaterial` on WebGL2. The CPU updates five uniforms per frame. The swarm leans toward the pointer, bursts when you pick a cell, and loosens while the hive tilts away and the camera dollies back as you scroll off the cover. A one-shot quality governor halves the swarm and drops to 1x pixels if the median frame exceeds 22ms. "Hold still" stops everything, and the SVG lattice remains the fallback.
+9. **Cinematic cold open.** Two dark plates slam shut on a press thunk, with a flash of warm paper light and a 260ms impact shake. The press-run log types out, then S-L-O-P bleeds in letter by letter, *Illustrated.* follows, and the gilt seal stamps down on the stamp spring with an ink splash. On exit the plates part like a press opening onto the cover. Skip, focus return and reduced-motion behaviour are unchanged from §7.3.
+10. **The last page at dusk.** A vignette closes in as you scroll to the sign-off (named `view-timeline`, `timeline-scope: --dusk`). The sign-off lines come up out of the dark, *Slop, Illustrated.* gets a hand-drawn gilt underline, and the lamp swings on its chain when pulled. Leave the light on and the vignette lifts while dust drifts in the lamplight.
+11. **Springs everywhere you touch.** Buttons lift and press, toggles bounce into their pressed state, nav underlines draw on a spring, the read tick pops and the "Marked read" stamp lands, and the counter pops when the issue is complete.
+
+### 8.4 Measured (headless Chrome 157, 4× CPU throttle, SwiftShader software GPU)
+
+Feature pages, studies and the last page hold 59.5–60fps on both phone and desktop profiles with zero long tasks; the page-turn arrival holds 60fps on the phone profile. The live 3D cover is the expensive part, and only because this machine has no GPU: WebGL2 runs it at 45–60fps, while WebGPU on SwiftShader reaches about 49fps on the phone and 13fps at desktop size (it was 17fps before the swarm, so the existing scene is most of that cost). On real hardware it is GPU-bound and cheap: 0.3–0.6ms of main-thread JavaScript per frame even under 4× throttle.
