@@ -6,7 +6,13 @@
 
   let leftOn = $state(false);
   let mounted = $state(false);
+  let swinging = $state(false);
   let message = $state('');
+  let swingTimer: number | undefined;
+
+  function syncRoot() {
+    document.documentElement.dataset.lamp = leftOn ? 'on' : 'off';
+  }
 
   onMount(() => {
     mounted = true;
@@ -16,6 +22,11 @@
       leftOn = false;
     }
     if (leftOn) message = 'You left it on last time. It’s still on.';
+    syncRoot();
+    return () => {
+      window.clearTimeout(swingTimer);
+      delete document.documentElement.dataset.lamp;
+    };
   });
 
   function toggle() {
@@ -26,11 +37,26 @@
       // The lamp still works, it just won't remember.
     }
     carbonSynth.lamp(leftOn);
+    syncRoot();
+    swinging = false;
+    window.clearTimeout(swingTimer);
+    requestAnimationFrame(() => {
+      swinging = true;
+      swingTimer = window.setTimeout(() => (swinging = false), 1200);
+    });
     message = leftOn ? 'Okay. We’ll leave it on for you.' : 'Lights out. Goodnight.';
   }
 </script>
 
-<figure class={`opus-lamp ${leftOn ? 'is-left-on' : ''}`} aria-label="The press-room reading lamp">
+<figure class={`opus-lamp ${leftOn ? 'is-left-on' : ''} ${swinging ? 'is-swinging' : ''}`} aria-label="The press-room reading lamp">
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
+  <span class="opus-mote" aria-hidden="true"></span>
   <svg class="opus-lamp-svg" viewBox="0 0 240 260" width="240" height="260" aria-hidden="true">
     <defs>
       <radialGradient id="opus-lamp-pool" cx="50%" cy="10%" r="80%">

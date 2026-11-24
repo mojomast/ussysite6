@@ -15,10 +15,12 @@
   const LINE_START_MS = 500;
   const LINE_STEP_MS = 380;
   const TITLE_MS = 4100;
-  const CLOSE_MS = 6600;
+  const EXIT_MS = 6000;
+  const EXIT_DURATION_MS = 660;
 
   let mounted = $state(false);
   let open = $state(false);
+  let leaving = $state(false);
   let staticMode = $state(false);
   let skipButton = $state<HTMLButtonElement | null>(null);
   let timers: number[] = [];
@@ -48,6 +50,7 @@
     staticMode = reduce;
     if (reduce && !force) return;
     clearTimers();
+    leaving = false;
     open = true;
     try {
       sessionStorage.setItem(`si.coldopen.${issueNumber}`, 'seen');
@@ -59,19 +62,32 @@
 
     if (staticMode) return;
 
+    timers.push(window.setTimeout(() => carbonSynth.thunk(), 360));
     lines.forEach((_, i) => {
       timers.push(window.setTimeout(() => carbonSynth.tick(1200 + (i % 3) * 140), LINE_START_MS + i * LINE_STEP_MS));
     });
     timers.push(window.setTimeout(() => carbonSynth.thunk(), TITLE_MS + 380));
-    timers.push(window.setTimeout(() => close(), CLOSE_MS));
+    timers.push(window.setTimeout(() => close(), EXIT_MS));
+  }
+
+  function finish() {
+    open = false;
+    leaving = false;
+    const main = document.getElementById('main-content');
+    main?.focus({ preventScroll: true });
   }
 
   function close() {
-    if (!open) return;
+    if (!open || leaving) return;
     clearTimers();
-    open = false;
-    const main = document.getElementById('main-content');
-    main?.focus({ preventScroll: true });
+    if (staticMode) {
+      finish();
+      return;
+    }
+    // The press opens; the cover is underneath.
+    leaving = true;
+    carbonSynth.pageTurn(true);
+    timers.push(window.setTimeout(finish, EXIT_DURATION_MS));
   }
 
   onMount(() => {
@@ -112,13 +128,16 @@
 {#if open}
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <div
-    class={`opus-cold-open ${staticMode ? 'is-static' : ''}`}
+    class={`opus-cold-open ${staticMode ? 'is-static' : ''} ${leaving ? 'is-leaving' : ''}`}
     role="dialog"
     aria-modal="true"
     aria-label={`Opening sequence for Issue ${issueNumber}`}
     tabindex="-1"
     onclick={close}
   >
+    <div class="co-plate co-plate--top" aria-hidden="true"></div>
+    <div class="co-plate co-plate--bottom" aria-hidden="true"></div>
+    <div class="co-flash" aria-hidden="true"></div>
     <div class="opus-cold-open-inner">
       <ol class="opus-co-log" aria-label="Press run log">
         {#each parsed as line}
@@ -134,7 +153,12 @@
 
       <div class="opus-co-title">
         <span class="opus-co-seal" aria-hidden="true">Si.</span>
-        <p class="opus-co-masthead">SLOP <em>Illustrated.</em></p>
+        <span class="co-splash" aria-hidden="true"></span>
+        <p class="opus-co-masthead">
+          <span class="sr-only">SLOP Illustrated.</span>
+          <span class="co-letters" aria-hidden="true"><span>S</span><span>L</span><span>O</span><span>P</span></span>
+          <em class="co-ill" aria-hidden="true">Illustrated.</em>
+        </p>
         <p class="opus-co-issue">Issue {issueNumber} · {issueTitle}</p>
       </div>
     </div>
