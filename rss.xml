@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Slop Illustrated</title>
+    <link>https://ussy.host</link>
+    <atom:link href="https://ussy.host/rss.xml" rel="self" type="application/rss+xml" />
+    <description>A magazine about software made by one person and a crew of machines. Every claim links to its commit. New issues arrive as pull requests.</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>Worker Four Deleted the Assertions. The Factory Noticed. (Rizzstack &amp; Workflow, Issue 02)</title>
+      <link>https://ussy.host/issues/02/rizzstack</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/rizzstack</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Agent Factory / Verification Protocol</category>
+      <description>Rizzstack is a software factory where cheap agents write the patches and frozen contracts decide whether any of it counts. Its demo includes a worker who cheats on purpose, so you can watch it get caught. Four repositories, one protocol: workflow is the method, bundlebees the dispatcher, hyvv the worker host, and OrbitDesktop’s Hive the read-only console. The offline demo needs Python 3, git and nothing else. Pinned to https://github.com/mojomast/workflow/tree/c8ef4c8.</description>
+    </item>
+    <item>
+      <title>Four Tools, 585 Tokens, and Nobody Gets the Car Keys (BundleBees, Issue 02)</title>
+      <link>https://ussy.host/issues/02/bundlebees</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/bundlebees</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Hermes Plugin / Worker Orchestration</category>
+      <description>BundleBees lets a Hermes agent send work to disposable coding sandboxes and watch it come back, without ever holding a token, writing its own HTTP client or applying a patch itself. The release is v0.1.1, with verification left to a CLI a human runs. The untagged autonomy layer on main, with durable jobs, queues and recovery, is covered by deterministic CI that never calls a model. Pinned to https://github.com/mojomast/bundlebees/tree/cb8946e.</description>
+    </item>
+    <item>
+      <title>One Host, Many Sealed Cells, and the Keys Never Leave the Building (hyvv, Issue 02)</title>
+      <link>https://ussy.host/issues/02/hyvv</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/hyvv</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Sandbox Host / API Contract</category>
+      <description>hyvv runs the sandboxes on a machine you own, keeps the provider keys to itself, and answers only to coordinators that speak its versioned /v1 contract. Launcher 0.1.15 is the released runtime. The /v1 reference adds artifact pinning and per-attempt capabilities, and the README’s status table is generated from a JSON file so the prose cannot run ahead of the code. Pinned to https://github.com/mojomast/hyvv/tree/9691837.</description>
+    </item>
+    <item>
+      <title>Checking on the Night Shift Without Waking Anyone Up (Orbit Control Plane, Issue 02)</title>
+      <link>https://ussy.host/issues/02/orbit-control-plane</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/orbit-control-plane</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Tailnet Control Plane / Observability</category>
+      <description>A small dashboard for Orbit’s board, Grok Bots rooms and local workers, reachable over Tailscale. It does not modify Orbit. It does not even need npm install. Node 22.13 or newer and its built-in SQLite module. Orbit and the workers push state in; a sidecar connector on the Orbit host pulls queued changes out and applies them through Orbit’s own loopback APIs. Pinned to https://github.com/mojomast/orbit-control-plane/tree/5b3c899.</description>
+    </item>
+    <item>
+      <title>A Click Is Not a Yes (uirizz, Issue 02)</title>
+      <link>https://ussy.host/issues/02/uirizz</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/uirizz</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Agent UI / Declarative Surfaces</category>
+      <description>uirizz lets a Hermes agent draw real cards in chat, comparisons, forms and status boards, and makes sure that pressing a button on one never sends, ships or deletes anything by itself. One tool, a2ui_render, using the official A2UI v1.0 Basic Catalog. Desktop and Webapp show the card; the CLI and Telegram get the required fallback text. Anything with a side effect waits for a typed yes. Pinned to https://github.com/mojomast/uirizz/tree/98b795a.</description>
+    </item>
+    <item>
+      <title>A Film Crew in Thirty-Seven Folders (open-higgsfield-skills, Issue 02)</title>
+      <link>https://ussy.host/issues/02/open-higgsfield-skills</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/open-higgsfield-skills</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Generative Video / Agent Skills</category>
+      <description>An agent-agnostic pack that teaches a coding agent to plan, shoot and cut a short film on your own ComfyUI, using only models whose weights you can download. 37 Agent Skills and a routing table of 70 routes. The 86-second demo ran 14 jobs on one Google Colab RTX PRO 6000 in about 8.5 compute units, including the roughly 99 GB model download. Pinned to https://github.com/mojomast/open-higgsfield-skills/tree/5a1a2d4.</description>
+    </item>
+    <item>
+      <title>Every Plane Overhead Is a Witness. Most of Them Are Unreliable. (Aircraft Doppler Geolocation, Issue 02)</title>
+      <link>https://ussy.host/issues/02/hermes-aircraft-doppler-geolocation</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/hermes-aircraft-doppler-geolocation</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Signal Processing / Acoustic Geolocation</category>
+      <description>A plugin that tries to work out where a recording was made from the faint Doppler whine of aircraft passing overhead, matched against public ADS-B flight tracks. It publishes its failure rate on the first screen of the README. v0.3.1. Clean multi-pass recordings locate to within about 1 km. On unseen held-out clips, 2 of 18 came in under 3 km. The method comes from a video by colsto, who released no code. Pinned to https://github.com/mojomast/hermes-aircraft-doppler-geolocation/tree/14b4b0c.</description>
+    </item>
+    <item>
+      <title>It Will Find Any Ship on Earth. It Will Not Find Your Ex. (Eye Of Hermes (EOH), Issue 02)</title>
+      <link>https://ussy.host/issues/02/eoh</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/eoh</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Geospatial Pane / Public OSINT</category>
+      <description>Eye Of Hermes puts a fork of Bilawal Sidhu’s God’s Eye View beside the chat and lets the agent fly it: aircraft, ships, satellites, weather, and public radio receivers you can listen to where they stand. Plugin id godseye, v0.2.10. The agent drives the globe through the app’s own voice-action runner. Searching for a person, recognising faces or tracking an individual is refused before the call reaches the globe. Pinned to https://github.com/mojomast/EOH/tree/9d433e4.</description>
+    </item>
+    <item>
+      <title>The Model Spent Forty Turns Doing Gear Math by Hand. Now There’s a Bouncer. (photo-to-part, Issue 02)</title>
+      <link>https://ussy.host/issues/02/hermes-photo-to-part</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/hermes-photo-to-part</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Parametric CAD / 3D Printing</category>
+      <description>photo-to-part turns a photo with a coin in it, a few measurements or a messy scan into a solid you can print, then checks the mesh and renders it beside the original so you can compare. Six local tools on trimesh and manifold3d, no network connections, a 40-call session budget, and build approval that can no longer be switched off with an environment variable. Pinned to https://github.com/mojomast/hermes-photo-to-part/tree/af108f4.</description>
+    </item>
+    <item>
+      <title>640 by 480, Sixteen Colours, Two Pilots (TempleOS for Hermes, Issue 02)</title>
+      <link>https://ussy.host/issues/02/hermes-templeos</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/hermes-templeos</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>QEMU Virtualization / Shared Screen</category>
+      <description>A Hermes plugin that boots a TempleOS-family guest in QEMU with networking off, and lets you and the agent share one live screen. Touch the keyboard and the agent waits. v0.2.3. Defaults to Temple of Hermes 0.1.3, a public-domain TinkerOS fork; stock TempleOS 5.03, TinkerOS and ZealOS are optional. QEMU and ISOs are not bundled. Made in memory of Terry A. Davis. Pinned to https://github.com/mojomast/hermes-templeos/tree/bd70784.</description>
+    </item>
+    <item>
+      <title>The Money Isn’t Real Until It Falls Off the Edge (Jackpot Syndicate, Issue 02)</title>
+      <link>https://ussy.host/issues/02/jackpotsyndicate</link>
+      <guid isPermaLink="true">https://ussy.host/issues/02/jackpotsyndicate</guid>
+      <pubDate>Mon, 23 Nov 2026 12:00:00 GMT</pubDate>
+      <category>Deterministic Game / Factory Dogfood</category>
+      <description>Slot reels feed a pachinko field, the balls become coins on a pusher shelf, and your bankroll only moves when a coin actually drops over the lip. Play money, no accounts, no network calls. 226 passing tests, 10 of 10 browser journeys in Chromium and in Firefox, a golden replay of a winning run, and 67 of 71 sprites locked with 4 honest placeholders. Built with rizzstack and Hermes. Pinned to https://github.com/mojomast/jackpotsyndicate/tree/b8cd1fe.</description>
+    </item>
+    <item>
+      <title>Let the Agent Rearrange the Furniture (OrbitDesktop, Issue 01)</title>
+      <link>https://ussy.host/issues/01/orbitdesktop</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/orbitdesktop</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Agent Workspace / Spatial UI</category>
+      <description>OrbitDesktop is a browser desktop for chats, terminals and small apps. A bound Hermes agent can look at the layout and, if you let it, move things around. Movable windows by default. A tiled Docking layout and a Three.js + CSS3D spatial view if you want them. The agent’s controller is read-only until mutations are explicitly allowed. Pinned to https://github.com/mojomast/orbitdesktop/tree/9c4069a.</description>
+    </item>
+    <item>
+      <title>The Dragon Is Real When the Server Says So (VelvetRP, Issue 01)</title>
+      <link>https://ussy.host/issues/01/velvetrp</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/velvetrp</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Narrative Systems / Collaborative Fiction</category>
+      <description>A campaign RPG where the model narrates and a Fastify server keeps the books. Up to twelve characters, one shared table, and a receipt for every action that actually happened. Campaign recall keeps track of who said what, who saw what, and who only heard about it at the tavern. The server validates mechanical actions before the narration may call them outcomes. Pinned to https://github.com/mojomast/velvetrp/tree/4447d2c.</description>
+    </item>
+    <item>
+      <title>The Drummer Waits for the One (JamMate, Issue 01)</title>
+      <link>https://ussy.host/issues/01/jammate</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/jammate</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Audio Engineering / Real-Time DSP</category>
+      <description>An offline-first guitar rig with an experimental drummer that listens to you play, finds the bar line, and comes in on it. Raphael Fukuda’s Guitar Companion supplies the amps, cabinets and effects. JamMate adds the Musical Clock, the tempo readout, and a drummer polite enough to wait for the downbeat. Pinned to https://github.com/mojomast/jammate/tree/0bb4893.</description>
+    </item>
+    <item>
+      <title>Sixty Times a Second, the Server Decides Who Died (CoCS // Colosseum of Competitive Slop, Issue 01)</title>
+      <link>https://ussy.host/issues/01/cocs</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/cocs</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Multiplayer Game Server / Netcode</category>
+      <description>A Three.js arena shooter where parody AI operators settle their differences, with an authoritative server, client prediction, and a LAN mode that needs no account. Nine operators, seven harnesses, ten weapons, five vehicle chassis and up to sixteen bots in Combined Arms. One JavaScript simulation is shared by the client, the server and the tests. Pinned to https://github.com/mojomast/cocs/tree/9a89e80.</description>
+    </item>
+    <item>
+      <title>Same Fight, New Body (CoCS-Godot, Issue 01)</title>
+      <link>https://ussy.host/issues/01/cocs-godot</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/cocs-godot</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Godot Port / Real-Time Rendering</category>
+      <description>A native Godot 4.5 client for CoCS. Godot handles the hands, the eyes and the ears. The original Node.js server still decides what happened. A playable prototype with separate labs for particles, shaders and materials. It targets Godot’s GL Compatibility renderer, and the four-chapter Quiet Relay campaign runs against a bundled local Node server. Pinned to https://github.com/mojomast/cocs-godot/tree/1f1e5f5.</description>
+    </item>
+    <item>
+      <title>It Will Not Swap Models Mid-Sentence (RouteTok, Issue 01)</title>
+      <link>https://ussy.host/issues/01/routetok</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/routetok</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Local LLM Routing / Observability</category>
+      <description>A local gateway in front of many model providers. It retries a failing provider before the answer starts. If a stream breaks after that, it tells you, instead of quietly changing brains. One Node process with no runtime npm dependencies, OpenAI- and Anthropic-compatible endpoints, an operations dashboard and Prometheus metrics. Fallback only happens before the first token commits. Pinned to https://github.com/mojomast/routetok/tree/7016c8d.</description>
+    </item>
+    <item>
+      <title>Your Keyboard Is Now Air Traffic Control (RGBAgentFlightIndicator, Issue 01)</title>
+      <link>https://ussy.host/issues/01/rgbagentflightindicator</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/rgbagentflightindicator</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Hardware Telemetry / Ambient Interfaces</category>
+      <description>A Python daemon that gives every agent session its own lamp. Green means working, white means done, blinking red means somebody needs you. Twelve lanes by default, mapped onto each keyboard’s own lamps. Two backends are verified on real hardware. The rest are written to their documented protocols and labelled that way. Pinned to https://github.com/mojomast/rgbagentflightindicator/tree/fc7378d.</description>
+    </item>
+    <item>
+      <title>Every Texture Gets a Birth Certificate (MothBake, Issue 01)</title>
+      <link>https://ussy.host/issues/01/mothbake</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/mothbake</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Build Systems / Binary Serialization</category>
+      <description>An offline-first asset baker that records what made each texture, sound and archive, so you can rebuild it later without the network. The recipe, the raw result, the local bake and the export each get their own SHA-256 identity. Billable live calls are off by default and need an approval that matches the exact spending plan. Pinned to https://github.com/mojomast/mothbake/tree/93e1825.</description>
+    </item>
+    <item>
+      <title>Same Terminal. Your Model. No Sign-In at the Door. (Warpi, Issue 01)</title>
+      <link>https://ussy.host/issues/01/warpi</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/warpi</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Systems Programming / AI Terminal</category>
+      <description>Warpi keeps Warp’s terminal and block interface and puts a local Pi agent behind it, pointed at whichever OpenAI-compatible endpoint you choose. Warp built the terminal, the blocks, the approval cards and the diffs. This fork adds the Pi bridge, provider profiles, and a way past the account gate in the agent path. It is not affiliated with Warp. Pinned to https://github.com/mojomast/warpi/tree/760f4fe.</description>
+    </item>
+    <item>
+      <title>A Window Into the Drawer Where the Subagents Work (HermesDashboard, Issue 01)</title>
+      <link>https://ussy.host/issues/01/hermesdashboard</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/hermesdashboard</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Agent Observability / Operator Console</category>
+      <description>A standalone web dashboard for people who already run Hermes: streaming chat, a session browser, a live drawer for child agents, and a graph of everything they touched. It needs a working Hermes install, its home directory and its state.db. It is a window onto Hermes, not a replacement for it. Pinned to https://github.com/mojomast/hermesdashboard/tree/74ef867.</description>
+    </item>
+    <item>
+      <title>How to Wake Up as the Same Agent (Becomussy, Issue 01)</title>
+      <link>https://ussy.host/issues/01/becomussy</link>
+      <guid isPermaLink="true">https://ussy.host/issues/01/becomussy</guid>
+      <pubDate>Tue, 13 Oct 2026 12:00:00 GMT</pubDate>
+      <category>Agent Identity / Memory Architecture</category>
+      <description>Typed memories, a reflection journal and a versioned self-model, with one firm rule: the important changes to who the agent is must go past a human. Memory, threads, reflection, a self-model and revision proposals are built. Search is keyword-based today. Vector search and drift detection are planned, and labelled as planned. Pinned to https://github.com/mojomast/becomussy/tree/7ac531e.</description>
+    </item>
+  </channel>
+</rss>

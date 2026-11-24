@@ -1,0 +1,1 @@
+import{k as e}from"./client.BIgarLIO.js";e(),typeof window<`u`&&((globalThis.__svelte??={}).v??=new Set).add(`5`);
