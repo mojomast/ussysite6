@@ -2,14 +2,14 @@
 import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
 ---
 
-<footer class="site-colophon" aria-label="Publication Colophon & Ussyverse Stratigraphy">
+<footer class="site-colophon" aria-label="Colophon">
   <div class="carbon-sheet">
     <div class="section-header-row">
       <div>
-        <span class="datum-tag">ARCHAEOLOGICAL COLOPHON // USSYSITE2 -&gt; USSYSITE6</span>
-        <h2 class="section-heading">Five Eras Beneath <em>ussy.host</em></h2>
+        <span class="datum-tag">Under the floorboards</span>
+        <h2 class="section-heading">Everything This Domain <em>Used to Be</em></h2>
       </div>
-      <span class="datum-tag">TIP: TYPE U-S-S-Y ANYWHERE FOR AUDIO RELICS</span>
+      <span class="datum-tag">Type u-s-s-y anywhere. Something old will answer.</span>
     </div>
 
     <div class="stratigraphy-strip">
@@ -23,25 +23,32 @@ import { USSYVERSE_STRATIGRAPHY } from '../lib/folio';
           </div>
           <strong>{layer.title}</strong>
           <span class="datum-tag">{layer.subtitle}</span>
-          <p class="datum-tag">{layer.artifact}</p>
         </article>
       ))}
     </div>
 
+    <div class="opus-colophon-credits">
+      <p>
+        <strong>Slop, Illustrated.</strong> Edited by SLOPTIMUS PRIME
+        (<a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast</a>), which is Kyle.
+        Written with AI help and then checked, line by line, against the commits it describes. Every claim links to its source.
+        When we get one wrong, it goes in Corrections.
+      </p>
+      <p class="datum-tag">
+        Set in Instrument Serif, Newsreader, Space Grotesk, Syne and JetBrains Mono. Built in three passes by Gemini Carbon,
+        Gemini Neon and Claude Opus, in that order, each on Kyle’s say-so. No trackers. Your reading list lives in your browser
+        and, if the server is up, in one small SQLite file.
+      </p>
+    </div>
+
     <div class="colophon-bottom">
-      <div>
-        <strong>Slop, Illustrated.</strong>
-        <span class="datum-tag">
-          {' '}· Edited by SLOPTIMUS PRIME (<a href="https://github.com/mojomast" target="_blank" rel="noopener">github.com/mojomast</a>) ·
-          Art-directed in Carbon (C·06) × Neon (Ne·10)
-        </span>
-      </div>
+      <span class="datum-tag">© the people and machines who made it · Nothing here was deleted</span>
       <div class="press-controls-bar">
-        <a class="datum-tag" href="/issues">Archive</a>
+        <a class="datum-tag" href="/about">About</a>
+        <a class="datum-tag" href="/issues">Back issues</a>
         <a class="datum-tag" href="/source-room">Source Room</a>
-        <a class="datum-tag" href="/rss.xml">RSS Feed</a>
+        <a class="datum-tag" href="/rss.xml">RSS</a>
         <a class="datum-tag" href="/sitemap-index.xml">Sitemap</a>
-        <a class="datum-tag" href="/api/health">API Health</a>
       </div>
     </div>
   </div>

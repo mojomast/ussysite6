@@ -70,7 +70,7 @@
   async function requestServerNarration() {
     if (!activeTrack || narrationBusy) return;
     narrationBusy = true;
-    narrationStatus = 'Checking FEATURE_AUDIO_EDITION…';
+    narrationStatus = 'Asking the server…';
     try {
       const res = await fetch('/api/audio/edition', {
         method: 'POST',
@@ -82,9 +82,9 @@
         })
       });
       const data = await res.json();
-      narrationStatus = data.message || data.error || 'Audio narration stub responded.';
+      narrationStatus = data.stub ? 'Narration is switched off on this site. The chords are all yours.' : data.message || 'The narrator answered.';
     } catch {
-      narrationStatus = 'Offline static preview — client WebAudio Carbon Tonewheel active.';
+      narrationStatus = 'No server here, so no narrator. The chords still work.';
     } finally {
       narrationBusy = false;
     }
@@ -96,12 +96,12 @@
 </script>
 
 {#if open && activeTrack}
-  <aside class="neon-audio-dock" aria-label="Audio Edition Flexi-Disc Transport">
+  <aside class="neon-audio-dock" aria-label="Flexi-disc player">
     <div class="carbon-sheet neon-audio-dock-inner">
       <div class="press-controls-bar">
         <span class="neon-pill">
           <span class="neon-pulse-dot" aria-hidden="true"></span>
-          33⅓ AUDIO EDITION
+          FLEXI-DISC · 33⅓
         </span>
 
         <div class={`neon-eq-bars ${playing ? 'is-live' : ''}`} aria-hidden="true">
@@ -117,7 +117,7 @@
             ISS.{activeTrack.issueNumber} · FOLIO {activeTrack.folioCode} — {activeTrack.title}
           </strong>
           <span class="datum-tag">
-            {narrationStatus || `Track ${trackIdx + 1}/${tracks.length} · WebAudio Tonewheel (${activeTrack.flexiFreqs.map((f) => Math.round(f)).join(' / ')} Hz)`}
+            {narrationStatus || `Track ${trackIdx + 1} of ${tracks.length} · every feature has its own chord (${activeTrack.flexiFreqs.map((f) => Math.round(f)).join(' · ')} Hz)`}
           </span>
         </div>
       </div>
@@ -127,25 +127,25 @@
           ⏮ Prev
         </button>
         <button type="button" class="ctrl-btn neon-btn-accent" aria-pressed={playing} onclick={togglePlay}>
-          {playing ? '⏸ Pause' : '▶ Play Chord'}
+          {playing ? '⏸ Pause' : '▶ Play'}
         </button>
         <button type="button" class="ctrl-btn" onclick={() => playTrack(trackIdx + 1)} aria-label="Next folio track">
           Next ⏭
         </button>
         <button type="button" class="ctrl-btn" aria-pressed={autoCycle} onclick={toggleAutoCycle}>
-          {autoCycle ? 'Loop: On' : 'Auto-Step'}
+          {autoCycle ? 'Playing the side' : 'Play the whole side'}
         </button>
         <button
           type="button"
           class="ctrl-btn"
           disabled={narrationBusy}
           onclick={requestServerNarration}
-          title="Probe feature-flagged server TTS narration endpoint"
+          title="Ask the server for a narrated reading (switched off by default)"
         >
-          TTS Stub
+          Narration
         </button>
         <a class="ctrl-btn" href={`/issues/${activeTrack.issueNumber}/${activeTrack.articleSlug}`}>
-          Open ↗
+          Read it ↗
         </a>
         <button type="button" class="ctrl-btn" onclick={onClose} aria-label="Close Audio Edition transport">
           ✕

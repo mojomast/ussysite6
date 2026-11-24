@@ -45,30 +45,33 @@ const isCurrent = (prefix: string) =>
 <header class="press-masthead vt-masthead">
   <div class="carbon-sheet press-masthead-inner">
     <div class="brand-cluster">
-      <a href="/" class="si-badge" aria-label="Slop Illustrated Home">
+      <a href="/" class="si-badge" aria-label="Slop Illustrated, front page">
         Si<span>.</span>
       </a>
       <div class="brand-imprint">
         <a href="/" class="brand-title">Slop Illustrated</a>
-        <span class="datum-tag">CARBON × NEON // C·06 + Ne·10</span>
+        <span class="datum-tag">Software, mostly honest · Vol. 1</span>
       </div>
     </div>
 
-    <nav class="primary-nav" aria-label="Primary Publication Navigation">
+    <nav class="primary-nav" aria-label="Sections">
       <a class="nav-link" href="/" aria-current={isCurrent('/') ? 'page' : undefined}>
-        Newsstand
+        Front Page
       </a>
       <a class="nav-link" href="/issues/02" aria-current={isCurrent('/issues/02') ? 'page' : undefined}>
-        Issue 02<span class="nav-link-badge">NEW</span>
+        Issue 02<span class="nav-link-badge">Wet ink</span>
       </a>
       <a class="nav-link" href="/issues/01" aria-current={isCurrent('/issues/01') ? 'page' : undefined}>
-        Issue 01 Archive
+        Issue 01
       </a>
       <a class="nav-link" href="/issues" aria-current={currentPath === '/issues' ? 'page' : undefined}>
-        All Issues
+        Back Issues
       </a>
       <a class="nav-link" href="/source-room" aria-current={isCurrent('/source-room') ? 'page' : undefined}>
         Source Room
+      </a>
+      <a class="nav-link" href="/about" aria-current={isCurrent('/about') ? 'page' : undefined}>
+        About
       </a>
     </nav>
 

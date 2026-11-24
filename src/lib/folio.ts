@@ -65,55 +65,55 @@ export const USSYVERSE_STRATIGRAPHY: UssyEraRelic[] = [
     era: 'ERA II',
     repo: 'ussysite2',
     repoUrl: 'https://github.com/mojomast/ussysite2',
-    title: 'Cybernetic Constellation',
-    subtitle: 'Three.js Spatial Index & Hidden 6DOF Space Combat',
-    artifact: 'Jump Gate Nav Beacon · Keycode: USSY',
-    chordLabel: 'Cold-Jump Fifths',
+    title: 'A Constellation You Could Fly',
+    subtitle: 'A Three.js project index with a spaceship hidden inside',
+    artifact: 'Type u-s-s-y and the projects became planets',
+    chordLabel: 'the jump-gate fifths',
     freqs: [196.0, 293.66, 392.0, 587.33],
-    lore: 'Typing u-s-s-y outside an input field transformed the portfolio constellation into dockable project planets with shield bleedthrough, heat management, and dock-only skill trees.'
+    lore: 'The portfolio was a field of stars. Type u-s-s-y and it became a cockpit: project nodes turned into planets you could land on, with enemy ships, weapons that overheat and a skill tree you could only spend at a dock.'
   },
   {
     era: 'ERA III',
     repo: 'ussysite3',
     repoUrl: 'https://github.com/mojomast/ussysite3',
-    title: 'Planetary Biomes & Sublight Autopilot',
-    subtitle: '23 Deterministic Worlds Across Ten Morphology Families',
-    artifact: '3× Magma Cores · 3× Synaptic Pearls',
-    chordLabel: 'Orbital Sublight Sus4',
+    title: 'Twenty-Three Planets',
+    subtitle: 'Every project got a world you could walk on',
+    artifact: 'Three magma cores bought a faster engine',
+    chordLabel: 'the sublight drift',
     freqs: [220.0, 293.66, 329.63, 440.0],
-    lore: 'Added atmospheric entry, on-foot surface harvesting, guided resource expeditions, and 10 Hz ticketed SSE multiplayer telemetry with authority-gated WebAudio.'
+    lore: 'Twenty-three project planets across ten kinds of terrain. You could enter the atmosphere, land, walk around on foot, gather resources and fly home with them, while other pilots sent their positions ten times a second.'
   },
   {
     era: 'ERA IV',
     repo: 'ussysite4',
     repoUrl: 'https://github.com/mojomast/ussysite4',
     title: 'The Helix Organum',
-    subtitle: 'Subterranean Pipe Organ & Ferrofluid Nave Basin',
-    artifact: 'Stops I–XI · Sub-Floor Crypt Reliquary (y = -14.2)',
-    chordLabel: 'Windchest Open Diapason',
+    subtitle: 'A pipe organ buried underground, one stop per project',
+    artifact: 'A crypt under the floor, left dormant for an easter egg',
+    chordLabel: 'the open diapason',
     freqs: [130.81, 196.0, 261.63, 392.0],
-    lore: 'Replaced outer space with salt-glass Voronoi caustics, 60,000 curl-noise pneuma particles, and a smooth-minimum ferrofluid pool rising into Rosensweig peaks beneath eleven harmonic repository stops.'
+    lore: 'Space was traded for a cathedral underground: eleven repositories as organ stops along a glass helix, a ferrofluid pool that rose beneath whichever one you chose, and a reliquary under the floor left dormant, waiting for an easter egg that never came.'
   },
   {
     era: 'ERA V',
     repo: 'ussysite5',
     repoUrl: 'https://github.com/mojomast/ussysite5',
-    title: 'SOLARIS // VESPERS',
-    subtitle: 'Golden Hour Tidepool Sanctuary & Bioluminescent Lagoon',
-    artifact: 'Paper Wish Lantern · Aeolian Cmaj9 Crown',
-    chordLabel: 'Solaris Cmaj9 Aeolian',
+    title: 'Solaris, at Golden Hour',
+    subtitle: 'A tidepool sanctuary that changed with the light',
+    artifact: 'A paper lantern, written on and set adrift',
+    chordLabel: 'the golden-hour ninth',
     freqs: [261.63, 329.63, 392.0, 493.88],
-    lore: 'Four living coastal moods (17:48 Solaris to 05:36 Aurora), 80,000 dinoflagellate plankton particles, and travertine pavilions where visitors cast wish lanterns adrift onto glowing water ripples.'
+    lore: 'Four moods of the same shore, from golden hour to dawn mist. You could tap the water to make it ripple and chime, write a reflection on a paper lantern, and let it drift out onto the lagoon.'
   },
   {
     era: 'ERA VI',
     repo: 'ussysite6',
     repoUrl: 'https://github.com/mojomast/ussysite6',
-    title: 'SLOP ILLUSTRATED · Living Edition',
-    subtitle: 'Source-Linked Periodical Press (Issue 01 Darkroom -> Issue 02 Carbon)',
-    artifact: 'Reader Service #101–#211 · SQLite Source Room',
-    chordLabel: 'Carbon Allotrope C6/9',
+    title: 'A Magazine That Keeps Publishing',
+    subtitle: 'The field journal of Issue 01, and this Living Edition',
+    artifact: 'Reader numbers #101 to #211, and counting',
+    chordLabel: 'the press chord',
     freqs: [261.63, 329.63, 440.0, 587.33],
-    lore: 'Turned the Ussyverse into a multi-issue software periodical where every claim carries a 40-char commit SHA, new issues arrive as pull requests from real GitHub activity, and each redesign skins the same archival content.'
+    lore: 'It stopped being a place you visit and became something that comes out. Every claim is pinned to a commit. New issues arrive as pull requests, and a person reads them before they print.'
   }
 ];

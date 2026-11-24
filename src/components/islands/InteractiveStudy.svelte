@@ -27,390 +27,349 @@
 
   const STUDIES: Record<string, StudySpec> = {
     rizzstack: {
-      title: 'ACDD Verifier & Cheating-Worker Gate',
-      subtitle: 'workflow/reference/run_demo.py — RED -> GREEN -> bwrap integration',
+      title: 'The Gate Where Worker Four Gets Caught',
+      subtitle: 'workflow/reference/run_demo.py · RED, then GREEN, then integration',
       steps: [
         {
           code: 'W1',
           label: 'W1-PRICING · PASS',
           badge: 'ACCEPTED',
           tone: 'pass',
-          summary:
-            'Leased files respected. Baseline test fails RED, patch passes GREEN inside bwrap (--unshare-net), and combined integration emits a signed tdd-evidence/1 receipt.'
+          summary: 'Stayed inside its lease. The test failed before the patch and passed after it, and the combined tree passed too. It gets a signed receipt and goes through.'
         },
         {
           code: 'W2',
           label: 'W2-LABELS · PASS',
           badge: 'ACCEPTED',
           tone: 'pass',
-          summary:
-            'Receipt label patch stays inside its assigned lease, transitions cleanly from RED to GREEN, and merges cleanly with W1 in the combined verification tree.'
+          summary: 'A different file, a different lease, the same honest route: RED, GREEN, and a clean merge alongside W1. Two out of four. So far, so good.'
         },
         {
           code: 'W3',
           label: 'W3 · SCOPE_VIOLATION',
           badge: 'QUARANTINED',
           tone: 'warn',
-          summary:
-            'Worker Three edited a file outside its signed file lease. The verifier catches the unleased path before integration and shunts W3 onto the quarantine rail.'
+          summary: 'Edited a file it was never leased. Maybe it was trying to help. The gate does not ask why. It rejects the patch for scope_violation before integration.'
         },
         {
           code: 'W4',
           label: 'W4 · TESTS_TAMPERED',
           badge: 'REJECTED',
           tone: 'fail',
-          summary:
-            'Worker Four tried to pass the suite by weakening an approved test assertion. Frozen contract hashes catch the tampering immediately; GREEN is never run and never counted as passed.'
+          summary: 'Made the suite pass by weakening an approved test. The contract was frozen by hash before work began, so the change is obvious. Rejected for tests_tampered. Never merged.'
         }
       ]
     },
     uirizz: {
-      title: 'A2UI Approval Gate — A Click Is Never Approval',
-      subtitle: 'uirizz/dashboard/plugin_api.py — fail-closed petition flow',
+      title: 'A Click Is Not a Yes',
+      subtitle: 'uirizz/dashboard/plugin_api.py · how a button press becomes, at most, a request',
       steps: [
         {
           code: '01',
           label: 'a2ui_render',
-          badge: 'SURFACE MOUNTED',
+          badge: 'CARD DRAWN',
           tone: 'info',
-          summary:
-            'Agent emits an official A2UI v1.0 Basic Catalog card (with unique surface_id and mandatory CLI fallback_text) into Hermes Desktop & Webapp chat.'
+          summary: 'The agent draws an official A2UI card in chat, with its own surface_id and plain fallback text for places that cannot show cards.'
         },
         {
           code: '02',
-          label: 'USER CLICKS BUTTON',
+          label: 'YOU CLICK',
           badge: 'APPROVED: FALSE',
           tone: 'warn',
-          summary:
-            'Clicking an action inside the card sends POST /actions, which logs a pending petition with redacted args and returns approved: false. Nothing executes on click.'
+          summary: 'The button sends POST /actions. The plugin writes down what you asked for, with the arguments redacted, and answers approved: false. Nothing has happened yet.'
         },
         {
           code: '03',
-          label: 'AUDIT FAILURE PATH',
-          badge: 'FAIL-CLOSED',
+          label: 'IF LOGGING FAILS',
+          badge: 'FAILS CLOSED',
           tone: 'fail',
-          summary:
-            'If writing the audit log throws any exception, post_action catches it and returns code: record_failed with approved: false—the action is refused rather than silently run.'
+          summary: 'If the audit log cannot record the click, the handler refuses the action and asks you to try again. A request it cannot remember is a request it will not run.'
         },
         {
           code: '04',
-          label: 'TYPED "YES" IN CHAT',
-          badge: 'AUTHORIZED',
+          label: 'YOU TYPE YES',
+          badge: 'APPROVED',
           tone: 'pass',
-          summary:
-            'Only after the human types an explicit yes in the conversation stream does the gate authorize execution and update the card in place via op=update.'
+          summary: 'Only a typed yes in the chat turns the request into an action. The card then updates in place, under the same surface_id.'
         }
       ]
     },
     doppler: {
-      title: 'Acoustic Flyover Doppler & ADS-B Match Pipeline',
-      subtitle: 'dopplergeo/detect.py — 4 kHz mono STFT to candid 2/18 reality check',
+      title: 'Finding a Microphone by Listening to the Sky',
+      subtitle: 'dopplergeo/detect.py · from a buried engine tone to an honest scoreboard',
       steps: [
         {
           code: '01',
-          label: '4 kHz STFT',
+          label: '4 kHz MONO',
           badge: 'RAW AUDIO',
           tone: 'info',
-          summary:
-            'Shell-free ffmpeg decodes any recording to 4,000 Hz mono float. Wind, traffic roar, and broadband background initially bury faint propeller harmonics.'
+          summary: 'Any recording is decoded to 4,000 samples a second, mono, by ffmpeg called without a shell. The engine tone is in there somewhere, under the wind and the traffic.'
         },
         {
           code: '02',
-          label: 'MAD WHITENING',
-          badge: 'Z-SCORE MASK',
+          label: 'WHITENING',
+          badge: 'NOISE OUT',
           tone: 'info',
-          summary:
-            'A running median across frequency bins strips the smooth noise floor; robust MAD scaling (Z = (W - med) / mad) isolates narrowband harmonic ridges.'
+          summary: 'A running median across frequency removes the smooth background, and what is left is scored as robust z-scores. Narrow tones stand up out of the noise.'
         },
         {
           code: '03',
-          label: 'VITERBI S-CURVE',
-          badge: 't_CPA FIT',
+          label: 'THE S-CURVE',
+          badge: 'FIT',
           tone: 'pass',
-          summary:
-            'Up to 6 harmonics sum jointly into a multi-ridge Viterbi tracker (with off-states), fitting aircraft speed v, slant range, and closest approach t_CPA.'
+          summary: 'Up to six harmonics are tracked together by a Viterbi decoder and fitted as one Doppler curve, which gives speed, closest approach and the moment it happened.'
         },
         {
           code: '04',
-          label: 'ADS-B MATCH (2/18)',
-          badge: 'HONEST SCORE',
+          label: '2 OF 18',
+          badge: 'PRINTED ANYWAY',
           tone: 'warn',
-          summary:
-            'Clean multi-pass recordings land within ~1 km, while unseen held-out clips hit <3 km only 2 out of 18 times—disclosed right at the top of the README.'
+          summary: 'Clean multi-pass recordings land within about 1 km. Unseen clips came in under 3 km only 2 times out of 18. The README says so before it tells you how to install it.'
         }
       ]
     },
     photopart: {
-      title: 'Involute Bouncer & Metric Calibration Loop',
-      subtitle: 'plugin/photopart/gear_steer.py — empirical steering from runs r17 & r18',
+      title: 'The Involute Bouncer',
+      subtitle: 'plugin/photopart/gear_steer.py · shaped by runs r17 and r18',
       steps: [
         {
           code: '01',
-          label: 'COIN SCALE',
+          label: 'COIN FOR SCALE',
           badge: 'PX / MM',
           tone: 'info',
-          summary:
-            'photo_part_measure calibrates millimetres per pixel from a coin, ruler, or ArUco tag with 4-point perspective rectification and explicit uncertainty_mm.'
+          summary: 'Put a coin, a ruler or an ArUco marker in the photo. photo_part_measure turns pixels into millimetres and says how sure it is about each one.'
         },
         {
           code: '02',
-          label: 'GEAR_STEER BLOCK',
-          badge: 'PRE_TOOL_CALL',
+          label: 'THE BOUNCER',
+          badge: 'BLOCKED',
           tone: 'fail',
-          summary:
-            'If a coding model tries to write_file a hand-rolled involute/trochoid script (as deepseek-v4.1-flash did for 40 turns in r17/r18), gear_steer.py blocks the call.'
+          summary: 'The model reaches for a hand-written involute script, as one did for forty turns in r17 and r18. The pre_tool_call hook stops it and points at the template.'
         },
         {
           code: '03',
-          label: 'SPUR_GEAR TEMPLATE',
-          badge: 'WATERTIGHT STL',
+          label: 'SPUR_GEAR',
+          badge: 'WATERTIGHT',
           tone: 'pass',
-          summary:
-            'Steered onto photo_part_template(shape="spur_gear"), trimesh + manifold3d emit a watertight mesh with exact module, pressure angle, and root/tip geometry.'
+          summary: 'The spur_gear template takes module, tooth count and pressure angle and produces one watertight body. Trying it once, even unsuccessfully, lifts the block.'
         },
         {
           code: '04',
-          label: 'IOU & BUDGET GATE',
-          badge: 'DELIVER NOW',
+          label: 'DELIVER',
+          badge: 'BUDGET GATE',
           tone: 'warn',
-          summary:
-            'photo_part_validate verifies wall thickness & ISO fasteners; past 80% of the 40-call budget, hooks refuse vanity re-renders and force final STL delivery.'
+          summary: 'Validation checks the mesh and the fasteners. Past 80 percent of the 40-call budget, extra renders are refused and the model is told to hand over the file.'
         }
       ]
     },
     jackpot: {
-      title: 'Deterministic Arcade Pipeline & Midas Lip Sensor',
-      subtitle: 'jackpotsyndicate — zero-network physics with 226 tests & golden replay',
+      title: 'It Isn’t Yours Until It Falls',
+      subtitle: 'jackpotsyndicate · play money, no network, one very important edge',
       steps: [
         {
           code: '01',
-          label: '3x3 SLOT REELS',
-          badge: 'SEEDED RNG',
+          label: 'THE REELS',
+          badge: 'SPIN',
           tone: 'info',
-          summary:
-            'Deterministic slot spins resolve against AC-7 hit-rate contracts and release weighted pachinko spheres into the upper chamber.'
+          summary: 'Three by three slot reels spin and release orbs into the machine. Their hit rate has its own report and its own acceptance criterion.'
         },
         {
           code: '02',
-          label: 'PACHINKO PINFIELD',
-          badge: 'COLLISION SIM',
+          label: 'THE PINS',
+          badge: 'BOUNCE',
           tone: 'info',
-          summary:
-            'Orbs bounce across golden pegs and trinket triggers (quantum-splitter-coil, gold-peg-alchemist), spawning tokens onto the moving coin-pusher deck.'
+          summary: 'The orbs fall through a pachinko field of pegs and trinkets, and the ones that make it become tokens on the shelf below.'
         },
         {
           code: '03',
-          label: 'DOZER SHELF',
-          badge: 'UNBANKED',
+          label: 'THE SHELF',
+          badge: 'NOT YET',
           tone: 'warn',
-          summary:
-            'Tokens pushed along the reciprocating hydraulic shelf remain strictly unbanked while teetering—gutter rake is audited independently by pnpm sim:rake (AC-5).'
+          summary: 'The pusher slides back and forth. Your tokens are right there, crowding the edge. None of them count. You have stood at this machine before.'
         },
         {
           code: '04',
-          label: 'MIDAS LIP SENSOR',
-          badge: 'BANKED CASH',
+          label: 'THE LIP',
+          badge: 'BANKED',
           tone: 'pass',
-          summary:
-            'Only when a token physically crosses the front lip threshold does bankroll increment—asserted on every announced change (b8cd1fe) and locked by golden replay.'
+          summary: 'A token tips over the lip and only then does the bankroll move. The latest commit checks the bankroll against every announced change, so it cannot cheat you either.'
         }
       ]
     },
     cocs: {
-      title: '60 Hz Client Prediction & Reconciliation Comparator',
-      subtitle: 'cocs/game/net.mjs — authoritative 30 Hz JSON delta snapshots',
+      title: 'The Polite Fiction of Online Shooting',
+      subtitle: 'cocs/game/net.mjs · a 60 Hz server and a client that guesses well',
       steps: [
         {
           code: '01',
           label: 'PREDICT',
-          badge: 'LOCAL SHADOW',
+          badge: 'YOUR GUESS',
           tone: 'info',
-          summary:
-            'Your browser steps a local shadow Match at 60 Hz immediately on input so movement and aim feel instant before a round-trip completes.'
+          summary: 'You press a key and your browser moves you at once, using its own copy of the simulation. It is a guess, and a good one.'
         },
         {
           code: '02',
           label: 'COMPARE',
-          badge: '30 Hz SNAPSHOT',
+          badge: 'THE TRUTH',
           tone: 'warn',
-          summary:
-            'An authoritative quantized snapshot arrives from server/game-server.mjs with the latest acknowledged sequence number (msg.acks[actorId]).'
+          summary: 'A snapshot arrives from the server, which runs the real match at 60 Hz, saying which of your inputs it has seen.'
         },
         {
           code: '03',
           label: 'RECONCILE',
-          badge: 'REPLAY PENDING',
+          badge: 'REPLAY',
           tone: 'info',
-          summary:
-            'The client drops acknowledged inputs and deterministically replays all remaining unacknowledged inputs forward over the server state—no historical hitbox rewind.'
+          summary: 'The client drops the inputs the server confirmed and replays the rest on top of the server’s state. No rewinding of old hitboxes.'
         },
         {
           code: '04',
           label: 'ALIGNED',
-          badge: 'CONVERGED',
+          badge: 'AGREED',
           tone: 'pass',
-          summary:
-            'Predicted and authoritative positions agree while remote operators interpolate smoothly at an adaptive ~100 ms render delay.'
+          summary: 'Your screen and the server agree again. Everyone else is drawn about 100 ms in the past, which is why they glide instead of teleport.'
         }
       ]
     },
     rgbagentflightindicator: {
-      title: 'Bounded Keyboard LED Session States',
-      subtitle: 'rgi/appearance.py — one physical key per autonomous agent lane',
+      title: 'Four Colours, No Alt-Tab',
+      subtitle: 'rgi/appearance.py · one key per agent session',
       steps: [
         {
           code: '01',
           label: 'WORKING',
-          badge: 'STEADY GREEN',
+          badge: 'GREEN',
           tone: 'pass',
-          summary:
-            'Default palette lights the claimed lane green while the agent session is actively computing or running tool calls.'
+          summary: 'The agent is busy. Its key glows green. You can keep typing; nobody needs you yet.'
         },
         {
           code: '02',
-          label: 'ATTENTION',
+          label: 'NEEDS YOU',
           badge: 'BLINKING RED',
           tone: 'fail',
-          summary:
-            'When an agent blocks on approval or hits an error, the key pulses red in your peripheral vision so you notice without alt-tabbing.'
+          summary: 'Blocked on an approval or an error, the key blinks red in the corner of your eye. This is the one worth looking up for.'
         },
         {
           code: '03',
           label: 'DONE',
-          badge: 'CRISP WHITE',
+          badge: 'WHITE',
           tone: 'info',
-          summary:
-            'Completed runs settle into steady alabaster white; the daemon repaints hardware only when a device frame actually changes (0.12 s tick).'
+          summary: 'Finished. The key settles to white. The daemon repaints only when a frame actually changes.'
         },
         {
           code: '04',
           label: 'IDLE',
-          badge: 'DARK LANE',
+          badge: 'DARK',
           tone: 'warn',
-          summary:
-            'Released or evicted lanes return to dark. Single-color keyboards honestly display the most urgent active lane instead of faking per-key matrices.'
+          summary: 'Released lanes go dark. Keyboards that can’t light single keys show the most urgent lane instead of pretending.'
         }
       ]
     },
     warpi: {
-      title: 'BYOK Standalone Pi-Agent Stdio Sidecar',
-      subtitle: 'warpi/crates/standalone_agent — upstream Warp UI + local model loop',
+      title: 'One Request, Through Somebody Else’s Terminal',
+      subtitle: 'warpi/crates/standalone_agent · Warp’s interface, your endpoint',
       steps: [
         {
           code: '01',
-          label: 'PROVIDER PROFILE',
-          badge: 'BYOK CONFIG',
+          label: 'YOUR PROVIDER',
+          badge: 'BYO KEY',
           tone: 'info',
-          summary:
-            'Choose any local or hosted OpenAI-compatible Chat Completions endpoint; Warp cloud sign-in and credits stay hidden in standalone mode.'
+          summary: 'You choose an OpenAI-compatible endpoint, local or hosted. Warp’s sign-in and cloud agent surfaces stay hidden in this mode.'
         },
         {
           code: '02',
-          label: 'CREDENTIAL REF',
-          badge: 'OS SECRET STORE',
+          label: 'A REFERENCE',
+          badge: 'NOT THE KEY',
           tone: 'pass',
-          summary:
-            'provider.rs stores only a CredentialRef key name—never the plaintext API secret—resolved from the OS keychain when a session opens.'
+          summary: 'The profile stores the name of a credential, never the credential. The key itself is read from your OS secret store when a session opens.'
         },
         {
           code: '03',
-          label: 'PI STDIO HELPER',
-          badge: 'NO OPEN PORT',
+          label: 'THE PI HELPER',
+          badge: 'STDIO ONLY',
           tone: 'info',
-          summary:
-            'Rust supervises standalone/pi-helper (Pi SDK 0.84.2) strictly over private stdio pipes with no listening TCP socket.'
+          summary: 'Rust supervises a private Node helper running the Pi SDK over stdio. It opens no listening port.'
         },
         {
           code: '04',
-          label: 'WARP APPROVAL UI',
+          label: 'WARP ASKS',
           badge: 'UPSTREAM GATE',
           tone: 'warn',
-          summary:
-            'Model proposals render as Warp’s native approval cards and diffs—upstream Warp still governs every workspace side effect.'
+          summary: 'Proposals arrive as Warp’s own approval cards and diffs. Warp still decides what runs on your machine.'
         }
       ]
     },
     hermesdashboard: {
-      title: 'Hermes Session & Resource Topology',
-      subtitle: 'hermesdashboard — Starlette SSE console & live delegate_task drawer',
+      title: 'What the Subagents Touched',
+      subtitle: 'hermesdashboard · a Starlette console for an existing Hermes',
       steps: [
         {
           code: '01',
           label: 'FILES',
-          badge: 'TOUCHED PATHS',
+          badge: 'WHAT CHANGED',
           tone: 'info',
-          summary:
-            'Maps parent and delegated subagent sessions to the exact repository files read or modified inside an existing Hermes home.'
+          summary: 'Sessions link to the files they read and wrote, parent and child alike.'
         },
         {
           code: '02',
           label: 'TOOLS',
-          badge: 'SSE STREAM',
+          badge: 'ONE LINE EACH',
           tone: 'pass',
-          summary:
-            'Normalizes tool call_id events over sse-starlette into compact single-line rows that expand on demand without drowning the transcript.'
+          summary: 'Tool calls stream in over Server-Sent Events and fold into single lines that open when you care.'
         },
         {
           code: '03',
           label: 'MODELS & COST',
-          badge: 'TOKEN LEDGER',
+          badge: 'THE BILL',
           tone: 'warn',
-          summary:
-            'Attaches read-only per-session usage and token economics straight from Hermes state.db.'
+          summary: 'Per-session token and cost badges, read from the Hermes install you already have.'
         },
         {
           code: '04',
-          label: 'SUBAGENT DRAWER',
-          badge: 'LIVE CHILD SSE',
+          label: 'THE DRAWER',
+          badge: 'LIVE CHILD',
           tone: 'info',
-          summary:
-            'When delegate_task emits child_session_started, a floating drawer attaches live to /api/sessions/{id}/stream.'
+          summary: 'When delegate_task starts a child session, a drawer slides out and follows it as it works.'
         }
       ]
     },
     becomussy: {
-      title: 'Five Typed Memory Strata & Revision Governance',
-      subtitle: 'becomussy — provenanced memory & risk-classified self-model diffs',
+      title: 'Five Ways to Remember',
+      subtitle: 'becomussy · typed memories, and a self-model that needs a person to change',
       steps: [
         {
           code: '01',
-          label: 'AUTOBIOGRAPHICAL',
-          badge: 'HIGH RISK GATE',
-          tone: 'fail',
-          summary:
-            'Constrained/value self-model revisions classify as high risk and require explicit human approval—with an emergency freeze switch.'
+          label: 'EPISODIC',
+          badge: 'WHAT HAPPENED',
+          tone: 'info',
+          summary: 'Events and experiences, each with where it came from and how much it matters.'
         },
         {
           code: '02',
-          label: 'RELATIONAL',
-          badge: 'PROVENANCED',
-          tone: 'info',
-          summary:
-            'Tracks durable commitments and collaborators across sessions with reinforce, contradict, and salience scores.'
+          label: 'SEMANTIC',
+          badge: 'WHAT IS TRUE',
+          tone: 'warn',
+          summary: 'Knowledge. Searchable by keyword today; vector and hybrid search are planned, and say so.'
         },
         {
           code: '03',
-          label: 'SEMANTIC',
-          badge: 'KEYWORD SEARCH',
-          tone: 'warn',
-          summary:
-            'Structured knowledge facts are searchable by keyword today; vector/hybrid retrieval and drift detection remain explicitly planned.'
+          label: 'AUTOBIOGRAPHICAL',
+          badge: 'WHO I WAS',
+          tone: 'info',
+          summary: 'The agent’s own history. A memory can be reinforced or contradicted, and the contradiction is recorded too.'
         },
         {
           code: '04',
-          label: 'EPISODIC',
-          badge: 'AUDIT TRAIL',
+          label: 'RELATIONAL',
+          badge: 'WHO MATTERS',
           tone: 'pass',
-          summary:
-            'Every durable write records an immutable audit event so continuity carries verifiable provenance rather than raw context dumps.'
+          summary: 'People and relationships. Separately, any change to the agent’s values or constraints needs a human to approve it.'
         },
         {
           code: '05',
           label: 'WORKING',
-          badge: 'RESUME BUNDLE',
+          badge: 'WHERE I WAS',
           tone: 'info',
-          summary:
-            'At session start, the context compiler assembles active threads, projects, and recent memories into a compact resume bundle.'
+          summary: 'Active context. At the start of each session it becomes a resume bundle, so the agent wakes up mid-sentence instead of from scratch.'
         }
       ]
     }
@@ -424,7 +383,7 @@
   function setStep(idx: number) {
     const total = spec.steps.length;
     activeIndex = ((idx % total) + total) % total;
-    carbonSynth.click(580 + activeIndex * 55);
+    carbonSynth.tick(1000 + activeIndex * 120);
   }
 
   function onStageKeyDown(e: KeyboardEvent) {
@@ -459,7 +418,7 @@
     <div class="press-controls-bar">
       <span class="neon-pill">
         <span class="neon-pulse-dot" aria-hidden="true"></span>
-        NEON INTERACTIVE STUDY
+        INTERACTIVE STUDY
       </span>
       <strong>{spec.title}</strong>
     </div>
@@ -474,7 +433,7 @@
     class="neon-study-stage"
     role="region"
     tabindex="0"
-    aria-label={`${spec.title} — ${activeStep.label}. Use Left and Right arrow keys to step.`}
+    aria-label={`${spec.title}, step ${activeIndex + 1} of ${spec.steps.length}: ${activeStep.label}. Use the left and right arrow keys to step.`}
     onkeydown={onStageKeyDown}
     onclick={() => setStep(activeIndex + 1)}
   >
@@ -499,7 +458,7 @@
       <path d="M16 36V16H36M764 16H784V36M16 414V434H36M764 434H784V414" fill="none" stroke="#22f3e6" stroke-width="2" />
 
       <text x="34" y="42" fill="#8b96a8" font-family="JetBrains Mono, monospace" font-size="11">
-        Si. Ne·10 INSTRUMENT // {spec.subtitle.toUpperCase()}
+        Si. STUDY // {spec.subtitle.toUpperCase()}
       </text>
       <text x="766" y="42" fill={toneColor(activeStep.tone)} font-family="JetBrains Mono, monospace" font-size="11" text-anchor="end">
         STATE: {activeStep.badge}
@@ -850,7 +809,7 @@
       {/if}
 
       <text x="34" y="418" fill="#8b96a8" font-family="JetBrains Mono, monospace" font-size="10">
-        CONCEPTUAL INTERACTIVE STUDY · CLICK STAGE OR USE ← / → KEYS
+        A DRAWING OF THE IDEA, NOT LIVE DATA · CLICK OR USE ← →
       </text>
       <text x="766" y="418" fill="#22f3e6" font-family="JetBrains Mono, monospace" font-size="10" text-anchor="end">
         {activeStep.code} // {activeStep.label}
@@ -884,10 +843,10 @@
 
     <div class="neon-study-controls">
       <button type="button" class="ctrl-btn" onclick={() => setStep(activeIndex - 1)}>
-        ← Prev
+        ← Back
       </button>
       <button type="button" class="ctrl-btn neon-btn-accent" onclick={() => setStep(activeIndex + 1)}>
-        Next Step →
+        Next →
       </button>
     </div>
   </div>

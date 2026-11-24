@@ -31,7 +31,7 @@
 
   function selectCell(idx: number) {
     selectedIdx = idx;
-    carbonSynth.click(620 + idx * 24);
+    carbonSynth.tick(1100 + idx * 40);
   }
 
   onMount(() => {
@@ -380,14 +380,14 @@
   }
 </script>
 
-<div class={`cover-stage-frame ${rendererMode !== 'STATIC SVG' ? 'is-neon-live' : ''}`} aria-label="Interactive Carbon × Neon Lattice Cover Index">
+<div class={`cover-stage-frame ${rendererMode !== 'STATIC SVG' ? 'is-neon-live' : ''}`} aria-label="Cover plate: eleven features as cells in a hive. Choose one below.">
   <div class="cover-stage-topbar">
-    <span>PLATE I // CARBON × NEON ALLOTROPE · 11 CELLS</span>
+    <span>PLATE I · THE HIVE · {items.length} CELLS</span>
     <div class="press-controls-bar">
       <span class="renderer-pill">RENDERER: {rendererMode}</span>
       {#if rendererMode !== 'STATIC SVG'}
         <button type="button" class="ctrl-btn neon-btn-accent" aria-pressed={paused} onclick={() => (paused = !paused)}>
-          {paused ? 'Resume 3D' : 'Pause 3D'}
+          {paused ? 'Resume motion' : 'Hold still'}
         </button>
       {/if}
     </div>
@@ -408,7 +408,7 @@
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 800 600"
         role="img"
-        aria-label="Pyrolytic Carbon × Neon Lattice with eleven repository cells"
+        aria-label="A drawing of the hive: a dark hexagon at the centre and eleven numbered cells around it"
       >
         <rect width="800" height="600" fill="#070a0f" />
         <circle cx="400" cy="300" r="215" fill="none" stroke="#252a36" stroke-width="1.5" stroke-dasharray="6 4" />
@@ -449,7 +449,7 @@
     ></canvas>
   </div>
 
-  <div class="cover-node-strip" role="listbox" aria-label="Select featured repository cell">
+  <div class="cover-node-strip" role="listbox" aria-label="Pick a feature">
     {#each items as item, idx (item.readerServiceNo)}
       <button
         type="button"
@@ -472,7 +472,7 @@
         <span>{activeItem.kicker}</span>
       </div>
       <a class="btn-secondary" href={`/issues/${activeItem.issueNumber}/${activeItem.articleSlug}`}>
-        Open Monograph ↗
+        Read it ↗
       </a>
     </div>
   {/if}

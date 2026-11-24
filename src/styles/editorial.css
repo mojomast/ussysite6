@@ -8,8 +8,8 @@
   top: 0;
   z-index: 100;
   min-height: var(--header-h);
-  background: color-mix(in srgb, var(--bg-canvas) 90%, transparent);
-  backdrop-filter: blur(12px);
+  /* No backdrop-filter here: it would become the containing block for the fixed dialogs inside the masthead. */
+  background: color-mix(in srgb, var(--bg-canvas) 97%, transparent);
   border-bottom: 1px solid var(--rule-hairline);
 }
 

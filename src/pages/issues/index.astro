@@ -10,23 +10,22 @@ const articles = await getCollection('articles');
 ---
 
 <BaseLayout
-  title="All Issues & Archive · SLOP ILLUSTRATED (Si.) Living Edition"
-  description="Browse every published issue of Slop Illustrated, including Issue 02 (The Autonomous Shift) and archived Issue 01 (Software, Shown & Explained)."
+  title="Back Issues · Slop Illustrated"
+  description="Every issue of Slop Illustrated, still in print: Issue 02, Who Watches the Bees?, and Issue 01, Show Your Work."
 >
   <section class="section-block">
     <div class="carbon-sheet">
       <div class="section-header-row">
         <div>
-          <span class="datum-tag">COMPLETE ARCHIVE // LIVING PERIODICAL MODEL</span>
-          <h1 class="section-heading">Published <em>Issues</em></h1>
+          <span class="datum-tag">Back issues</span>
+          <h1 class="section-heading">Nothing Goes <em>Out of Print</em></h1>
         </div>
-        <span class="datum-tag">{issues.length} ISSUES · {articles.length} VERIFIED MONOGRAPHS</span>
+        <span class="datum-tag">{issues.length} issues · {articles.length} features</span>
       </div>
 
       <p class="hero-issue-deck">
-        Each edition of <strong>Slop Illustrated</strong> is authored as typed Markdown/MDX frontmatter from real public
-        commits, releases, and source files in <code>github.com/mojomast</code>. Redesigns reskin the press without
-        rewriting the archive.
+        Every issue is written from real public commits in <code>github.com/mojomast</code> and kept here as plain
+        Markdown. When the magazine gets a new look, the old issues get the new type. Their facts stay exactly as they were.
       </p>
 
       <div class="issues-rack">
@@ -39,7 +38,7 @@ const articles = await getCollection('articles');
               <div>
                 <div class="issue-card-top">
                   <span class="service-stamp">
-                    ISSUE {iss.data.issueNumber} · {iss.data.status.toUpperCase()}
+                    Issue {iss.data.issueNumber} · {iss.data.status === 'current' ? 'On the stands' : 'In the archive'}
                   </span>
                   <span class="datum-tag">{iss.data.coverDate}</span>
                 </div>
@@ -75,7 +74,7 @@ const articles = await getCollection('articles');
                   </ul>
                   <div class="cta-row" aria-label={`Issue ${iss.data.issueNumber} links`}>
                     <a class="btn-primary" href={`/issues/${iss.data.issueNumber}`}>
-                      Read Issue {iss.data.issueNumber} Cover &amp; Contents ↗
+                      Open Issue {iss.data.issueNumber} ↗
                     </a>
                   </div>
                 </div>

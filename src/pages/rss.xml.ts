@@ -29,10 +29,10 @@ export const GET: APIRoute = async ({ site }) => {
       const d = art.data;
       const link = `${baseUrl}/issues/${d.issueNumber}/${d.articleSlug}`;
       const pubDate = new Date(`${d.researchedAt || issueDates.get(d.issueNumber) || '2026-11-23'}T12:00:00Z`).toUTCString();
-      const description = `${d.deck} — ${d.glanceNote} Source pinned at ${d.repoUrl}/tree/${d.sourceRevision}`;
+      const description = `${d.deck} ${d.glanceNote} Pinned to ${d.repoUrl}/tree/${d.sourceRevision.slice(0, 7)}.`;
       return [
         '    <item>',
-        `      <title>${escapeXml(`Issue ${d.issueNumber} · #${d.readerServiceNo} ${d.title}: ${d.headline}`)}</title>`,
+        `      <title>${escapeXml(`${d.headline} (${d.title}, Issue ${d.issueNumber})`)}</title>`,
         `      <link>${escapeXml(link)}</link>`,
         `      <guid isPermaLink="true">${escapeXml(link)}</guid>`,
         `      <pubDate>${pubDate}</pubDate>`,
@@ -47,10 +47,10 @@ export const GET: APIRoute = async ({ site }) => {
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
     '  <channel>',
-    '    <title>SLOP ILLUSTRATED (Si.) — Living Edition</title>',
+    '    <title>Slop Illustrated</title>',
     `    <link>${escapeXml(baseUrl)}</link>`,
     `    <atom:link href="${escapeXml(`${baseUrl}/rss.xml`)}" rel="self" type="application/rss+xml" />`,
-    '    <description>A source-linked digital software magazine by SLOPTIMUS PRIME. Every monograph is commit-SHA pinned.</description>',
+    '    <description>A magazine about software made by one person and a crew of machines. Every claim links to its commit. New issues arrive as pull requests.</description>',
     '    <language>en-us</language>',
     `    <lastBuildDate>${latestPubDate}</lastBuildDate>`,
     itemsXml,

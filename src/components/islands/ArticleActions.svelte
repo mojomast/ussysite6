@@ -39,7 +39,7 @@
 
   function toggleSave() {
     saved = pressClient.toggleServiceNo(readerServiceNo);
-    carbonSynth.click(saved ? 780 : 520);
+    carbonSynth.tick(saved ? 1700 : 900);
   }
 
   function playSketch() {
@@ -50,33 +50,33 @@
     const line = `${title} — Slop Illustrated Issue ${issueNumber} (#${readerServiceNo}), source pinned at ${repoUrl}/tree/${sourceRevision}`;
     try {
       await navigator.clipboard.writeText(line);
-      copiedStatus = 'Citation copied';
+      copiedStatus = 'Copied. Pinned to the commit.';
       setTimeout(() => {
         copiedStatus = '';
-      }, 2400);
+      }, 2600);
     } catch {
-      copiedStatus = `Pinned @ ${sourceRevision.slice(0, 7)}`;
+      copiedStatus = `Couldn’t copy. It’s @${sourceRevision.slice(0, 7)}`;
     }
   }
 </script>
 
 <div class="press-controls-bar" role="group" aria-label="Article Actions">
   <button type="button" class="ctrl-btn" aria-pressed={saved} onclick={toggleSave}>
-    {saved ? `✓ Saved (#${readerServiceNo})` : `+ Save #${readerServiceNo}`}
+    {saved ? `Saved ✓ #${readerServiceNo}` : `Save for later · #${readerServiceNo}`}
     {#if communityCount > 0}
-      <span>· {communityCount}</span>
+      <span>· {communityCount} {communityCount === 1 ? 'reader' : 'readers'}</span>
     {/if}
   </button>
 
   <button type="button" class="ctrl-btn" onclick={playSketch}>
-    ◎ Tone Sketch
+    ◎ Play its chord
   </button>
 
   <button type="button" class="ctrl-btn" onclick={copyCitation}>
-    {copiedStatus || 'Copy Pin'}
+    {copiedStatus || 'Copy citation'}
   </button>
 
   <a class="btn-primary" href={repoUrl} target="_blank" rel="noopener">
-    Repository ↗
+    Open the repo ↗
   </a>
 </div>

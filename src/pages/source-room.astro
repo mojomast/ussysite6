@@ -35,22 +35,23 @@ const sourceItems = allArticles
 ---
 
 <BaseLayout
-  title="The Source Room · SLOP ILLUSTRATED (Si.) Living Edition"
-  description="Browse all 22 source-linked mojomast repositories across Issues 01 & 02, sync your personal reading list via Hono + SQLite, export Markdown, and post margin dispatches."
+  title="The Source Room · Slop Illustrated"
+  description="Every repository we have written about, in one directory. Save the ones you want to read, copy them as Markdown, and leave a note in the margin."
 >
   <section class="section-block">
     <div class="carbon-sheet">
       <div class="section-header-row">
         <div>
-          <span class="datum-tag">THE SOURCE DIRECTORY // SQLITE + DRIZZLE READER DESK</span>
+          <span class="datum-tag">The Source Room</span>
           <h1 class="section-heading">The Issue Ends. <em>The Code Stays Open.</em></h1>
         </div>
-        <span class="datum-tag">{sourceItems.length} VERIFIED REPOSITORIES</span>
+        <span class="datum-tag">{sourceItems.length} repositories, each pinned to a commit</span>
       </div>
 
       <p class="hero-issue-deck">
-        Rebuilt on Hono, Drizzle, and SQLite so your saved repositories stay scoped to your own reader token while
-        community save counts and margin dispatches aggregate across the press.
+        Everything we have written about, in one place. Save what you want to read next and take the list with you. In
+        Issue 01 this room kept one reading list for everybody at once. Now it keeps yours, and only counts how many
+        other people saved the same thing.
       </p>
 
       <SourceRoomWorkbench client:load items={sourceItems} />

@@ -87,28 +87,28 @@
 
   function toggleItem(no: number, title: string) {
     const active = pressClient.toggleServiceNo(no);
-    carbonSynth.click(active ? 760 : 500);
-    statusMsg = `${title} ${active ? 'saved to' : 'removed from'} your Source Room list.`;
+    carbonSynth.tick(active ? 1700 : 900);
+    statusMsg = active ? `${title} is on your list.` : `${title} is off your list.`;
     markdownFallback = '';
   }
 
   function saveAllShown() {
     const merged = [...new Set([...savedNos, ...visibleItems.map((i) => i.readerServiceNo)])];
     pressClient.setAllServiceNos(merged);
-    statusMsg = `Saved ${visibleItems.length} visible repositories.`;
+    statusMsg = `All ${visibleItems.length} on screen are saved. Ambitious.`;
     markdownFallback = '';
   }
 
   function clearAll() {
     pressClient.setAllServiceNos([]);
-    statusMsg = 'Cleared your reading list.';
+    statusMsg = 'List cleared. A clean desk.';
     markdownFallback = '';
   }
 
   async function copyMarkdown() {
     if (savedItems.length === 0) return;
     const md = [
-      '# SLOP ILLUSTRATED (Si.) — My Source Room Reading List',
+      '# My reading list, from Slop Illustrated',
       '',
       ...savedItems.map(
         (item) =>
@@ -119,11 +119,11 @@
 
     try {
       await navigator.clipboard.writeText(md);
-      statusMsg = `Copied ${savedItems.length} repositories as Markdown.`;
+      statusMsg = `Copied ${savedItems.length} ${savedItems.length === 1 ? 'link' : 'links'} as Markdown, commits included.`;
       markdownFallback = '';
     } catch {
       markdownFallback = md;
-      statusMsg = 'Clipboard unavailable—select and copy the Markdown below.';
+      statusMsg = 'Your browser won’t let us copy. The Markdown is below; select it and copy it yourself.';
     }
   }
 
@@ -134,8 +134,8 @@
     });
     if (created) {
       noteDraft = '';
-      statusMsg = 'Margin dispatch recorded.';
-      carbonSynth.click(820);
+      statusMsg = 'Written in the margin.';
+      carbonSynth.tick(1500);
     }
   }
 </script>
@@ -145,7 +145,7 @@
     <div class="source-filter-bar" role="region" aria-label="Filter repositories">
       <div class="stock-group" role="group" aria-label="Filter by issue">
         <button type="button" class="ctrl-btn" aria-pressed={issueFilter === 'all'} onclick={() => (issueFilter = 'all')}>
-          All Issues ({items.length})
+          Both issues ({items.length})
         </button>
         <button type="button" class="ctrl-btn" aria-pressed={issueFilter === '02'} onclick={() => (issueFilter = '02')}>
           Issue 02
@@ -158,9 +158,9 @@
       <input
         type="search"
         class="source-search-input"
-        placeholder="Filter by name, language, or domain…"
+        placeholder="Filter by name, language or topic"
         bind:value={searchQuery}
-        aria-label="Filter repository directory"
+        aria-label="Filter the directory"
       />
 
       <button type="button" class="ctrl-btn" aria-pressed={onlySaved} onclick={() => (onlySaved = !onlySaved)}>
@@ -168,7 +168,7 @@
       </button>
     </div>
 
-    <ul class="source-catalog-list" aria-label="Verified repository directory">
+    <ul class="source-catalog-list" aria-label="Every repository we have written about">
       {#each visibleItems as item (item.readerServiceNo)}
         {@const isSaved = savedNos.includes(item.readerServiceNo)}
         {@const saves = communityCounts[String(item.readerServiceNo)] || 0}
@@ -196,14 +196,14 @@
               aria-pressed={isSaved}
               onclick={() => toggleItem(item.readerServiceNo, item.title)}
             >
-              {isSaved ? '✓ Saved' : '+ Save'}{saves > 0 ? ` (${saves})` : ''}
+              {isSaved ? 'Saved ✓' : 'Save'}{saves > 0 ? ` (${saves})` : ''}
             </button>
           </div>
         </li>
       {:else}
         <li class="source-catalog-item">
           <div class="datum-tag">00</div>
-          <div>No repositories match your current filter.</div>
+          <div>Nothing matches. Try fewer words, or a different issue.</div>
           <div></div>
         </li>
       {/each}
@@ -212,8 +212,8 @@
 
   <aside class="source-desk-sticky" aria-label="Personal Reading List & Margin Dispatches">
     <div class="article-kicker-row">
-      <span class="service-stamp">READER DESK</span>
-      <span class="datum-tag">{String(savedItems.length).padStart(2, '0')} / {items.length} SAVED</span>
+      <span class="service-stamp">YOUR DESK</span>
+      <span class="datum-tag">{savedItems.length} of {items.length} saved</span>
     </div>
 
     {#if savedItems.length > 0}
@@ -229,45 +229,46 @@
       </ul>
     {:else}
       <p class="datum-tag">
-        Save any project across Issue 01 or Issue 02 to build a portable, per-reader SQLite-synced reading list.
+        Nothing here yet. Press Save on anything that made you curious and it will wait for you, on this device and,
+        if the server is up, in a small SQLite file that only knows you by a random number.
       </p>
     {/if}
 
     <div class="cta-row">
-      <button type="button" class="ctrl-btn" onclick={saveAllShown}>Save Shown</button>
+      <button type="button" class="ctrl-btn" onclick={saveAllShown}>Save everything shown</button>
       <button type="button" class="ctrl-btn" disabled={savedItems.length === 0} onclick={clearAll}>Clear</button>
       <button type="button" class="btn-primary" disabled={savedItems.length === 0} onclick={copyMarkdown}>
-        Export Markdown ↗
+        Copy as Markdown
       </button>
     </div>
 
     <p class="datum-tag" role="status" aria-live="polite">{statusMsg}</p>
 
     {#if markdownFallback}
-      <label class="datum-tag" for="md-export-fallback">Copy Markdown manually:</label>
+      <label class="datum-tag" for="md-export-fallback">Your list, ready to copy:</label>
       <textarea id="md-export-fallback" class="source-search-input" rows="5" readonly value={markdownFallback}></textarea>
     {/if}
 
     <hr />
 
     <form onsubmit={submitNote}>
-      <label class="datum-tag" for="margin-dispatch-input">LEAVE A MARGIN DISPATCH (MAX 180 CHARS)</label>
+      <label class="datum-tag" for="margin-dispatch-input">WRITE IN THE MARGIN · 180 CHARACTERS</label>
       <div class="source-filter-bar">
         <input
           id="margin-dispatch-input"
           type="text"
           maxlength="180"
           class="source-search-input"
-          placeholder="Note on an article or architecture choice…"
+          placeholder="A note for the next reader. Be kind, be specific."
           bind:value={noteDraft}
         />
-        <button type="submit" class="ctrl-btn">Post</button>
+        <button type="submit" class="ctrl-btn">Pin it</button>
       </div>
     </form>
 
     {#if dispatches.length > 0 || localNotes.length > 0}
       <div class="sidebar-panel">
-        <h3>Recent Press Dispatches</h3>
+        <h3>Lately, in the margins</h3>
         <ul class="sources-list">
           {#each (dispatches.length > 0 ? dispatches : localNotes).slice(0, 5) as note (note.id)}
             <li>{note.text}</li>
@@ -277,19 +278,19 @@
     {/if}
 
     <div class="sidebar-panel">
-      <h3>Runtime Feature Flags (Neon Handoff Ready)</h3>
+      <h3>Switched off on purpose</h3>
       <ul class="sources-list">
         <li>
-          <strong>Ask the Editor (Gemini Flash-Lite):</strong>
-          <span class="datum-tag"> {runtimeFlags.askEditor ? 'LIVE' : 'STUB INTERFACE'}</span>
+          <strong>Ask the Editor, live:</strong>
+          <span class="datum-tag"> {runtimeFlags.askEditor ? 'on' : 'off, answering from the archive'}</span>
         </li>
         <li>
-          <strong>Per-Issue AI Illustration:</strong>
-          <span class="datum-tag"> {runtimeFlags.aiIllustration ? 'LIVE' : 'STUB (/api/illustrations/status)'}</span>
+          <strong>Generated illustrations:</strong>
+          <span class="datum-tag"> {runtimeFlags.aiIllustration ? 'on' : 'off, the plates are drawn by hand and by Blender'}</span>
         </li>
         <li>
-          <strong>Audio Edition Narration:</strong>
-          <span class="datum-tag"> {runtimeFlags.audioEdition ? 'LIVE' : 'STUB + WEBAUDIO SYNTH'}</span>
+          <strong>Narrated audio edition:</strong>
+          <span class="datum-tag"> {runtimeFlags.audioEdition ? 'on' : 'off, the flexi-disc still plays chords'}</span>
         </li>
       </ul>
     </div>

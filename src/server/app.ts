@@ -630,7 +630,7 @@ export function createLivingApp(options: LivingAppOptions = {}) {
               systemInstruction: {
                 parts: [
                   {
-                    text: 'You are SLOPTIMUS PRIME, Editor-in-Chief of Slop Illustrated. Answer concisely, wittily, and strictly from the provided commit-pinned monograph context. Never invent repositories, benchmarks, or commit hashes.'
+                    text: 'You are the editor of Slop Illustrated, a magazine that knows most machine writing is slop and checks everything. Answer in two to four short sentences, dry and warm, using only the grounded context. Name the project and the issue. If the context does not answer the question, say so plainly. Never invent repositories, numbers, quotes or commits. Avoid filler words like delve, tapestry or seamless.'
                   }
                 ]
               },
@@ -672,13 +672,12 @@ export function createLivingApp(options: LivingAppOptions = {}) {
       }
     }
 
-    const summaryLines = topMatches.map(
-      (m) => `${m.title} (Iss.${m.issueNumber}, @${m.sourceRevision.slice(0, 7)}): ${m.glanceNote}`
-    );
+    const lead = topMatches[0];
+    const others = topMatches.slice(1).map((m) => `${m.title} (Issue ${m.issueNumber})`);
     const stubReply =
       scored.length > 0
-        ? `[Press-Desk BM25 Stub · ${model} off] ${summaryLines.join(' — ')}`
-        : `[Press-Desk BM25 Stub · ${model} off] Live synthesis is gated behind FEATURE_ASK_EDITOR=true. Start with ${topMatches[0].title} (${topMatches[0].headline}) or press / to search all 22 monographs.`;
+        ? `From the archive: ${lead.title}, Issue ${lead.issueNumber}. “${lead.headline}” ${lead.glanceNote}${others.length ? ` Also worth a look: ${others.join(' and ')}.` : ''}`
+        : `Nothing in the archive matches that, and the live editor is switched off, so we won’t guess. The cover story is a good place to start: ${lead.title}, “${lead.headline}” Or press / to search everything.`;
 
     return c.json({
       ok: true,
@@ -716,7 +715,7 @@ export function createLivingApp(options: LivingAppOptions = {}) {
         code: 'feature_flagged_off',
         model: env.GEMINI_ILLUSTRATION_MODEL || DEFAULT_ILLUSTRATION_MODEL,
         message:
-          'Per-issue runtime AI illustration is behind FEATURE_AI_ILLUSTRATION. Issue 01 uses Cycles Blender WebP plates; Issue 02 ships deterministic Carbon × Neon SVG lithographs.'
+          'Generated illustrations are switched off. Issue 01’s plates are Blender renders and Issue 02’s are drawn in SVG, by design.'
       },
       501
     );
@@ -756,7 +755,7 @@ export function createLivingApp(options: LivingAppOptions = {}) {
           stub: true,
           code: 'feature_flagged_off',
           model,
-          message: `Narrated Audio Edition (${model}) is gated behind FEATURE_AUDIO_EDITION=true. The docked 33⅓ RPM WebAudio Tonewheel transport is active locally.`
+          message: `Narration is switched off on this site (FEATURE_AUDIO_EDITION). The flexi-disc still plays every feature’s chord.`
         },
         501
       );
@@ -768,7 +767,7 @@ export function createLivingApp(options: LivingAppOptions = {}) {
         stub: true,
         code: 'tts_provider_not_wired',
         model,
-        message: `SQLite audio_editions cache ready; wire live ${model} streaming credentials on the host to synthesize narration.`
+        message: `Narration is enabled but no voice is wired up yet. The cache table is ready for ${model}.`
       },
       501
     );
@@ -853,6 +852,21 @@ export function createLivingApp(options: LivingAppOptions = {}) {
       } catch {
         continue;
       }
+    }
+
+    const notFoundPage = join(distDir, '404.html');
+    const wantsHtml = !extname(decoded) || decoded.endsWith('.html');
+    if (wantsHtml && existsSync(notFoundPage)) {
+      const page = await readFile(notFoundPage);
+      return new Response(method === 'HEAD' ? null : page, {
+        status: 404,
+        headers: {
+          ...COMMON_SECURITY_HEADERS,
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Security-Policy': STRICT_CSP_HEADER,
+          'Cache-Control': 'no-cache'
+        }
+      });
     }
 
     return c.text('Not Found', 404);

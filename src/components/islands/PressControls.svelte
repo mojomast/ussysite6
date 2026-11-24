@@ -31,6 +31,7 @@
   let stock = $state<PaperStock>('graphite');
   let gridOn = $state(false);
   let audioDockOpen = $state(false);
+  let soundOn = $state(false);
   let savedNos = $state<number[]>([]);
 
   let finderOpen = $state(false);
@@ -50,10 +51,10 @@
   let hudTimer: ReturnType<typeof setTimeout> | null = null;
 
   const STARTER_PROMPTS = [
-    'Which Nov 2026 repos have zero npm dependencies?',
     'Why did photo-to-part build gear_steer.py?',
-    'Compare bundlebees and hyvv contracts',
-    'How honest is aircraft Doppler geolocation?'
+    'Which projects run with zero npm dependencies?',
+    'What’s the difference between bundlebees and hyvv?',
+    'How often does the Doppler plugin actually find you?'
   ];
 
   const audioTracks = $derived(
@@ -99,17 +100,19 @@
     const host = document.querySelector(`[${attr}]`);
     const href = host?.getAttribute(attr);
     if (!href) {
-      flashHud(direction === 'next' ? 'END OF FOLIO SEQUENCE' : 'AT COVER FOLIO');
+      flashHud(direction === 'next' ? 'That’s the last page. There is no next.' : 'You’re at the front. Nothing before this.');
       return;
     }
     const label = host?.getAttribute(labelAttr) || href;
-    flashHud(`${direction === 'next' ? 'NEXT ->' : '<- PREV'} ${label.toUpperCase()}`);
-    carbonSynth.click(direction === 'next' ? 740 : 540);
-    window.location.assign(href);
+    flashHud(`${direction === 'next' ? 'Turning to' : 'Back to'} ${label}`);
+    carbonSynth.pageTurn(direction === 'next');
+    window.setTimeout(() => window.location.assign(href), 110);
   }
 
   onMount(() => {
     pressClient.init();
+    soundOn = carbonSynth.isEnabled();
+    const unsubSound = carbonSynth.subscribe((on) => (soundOn = on));
     const initial = pressClient.getState();
     stock = initial.printMode;
     gridOn = initial.gridOverlay;
@@ -187,8 +190,8 @@
         if (ussyBuffer === 'ussy') {
           ussyBuffer = '';
           strataOpen = true;
-          carbonSynth.playChord([196.0, 293.66, 392.0, 587.33]);
-          flashHud('USSYVERSE STRATIGRAPHY UNLOCKED');
+          carbonSynth.thunk();
+          flashHud('You found the basement.');
         }
       }
     };
@@ -196,6 +199,7 @@
     window.addEventListener('keydown', onKeyDown);
     return () => {
       unsub();
+      unsubSound();
       if (hudTimer) clearTimeout(hudTimer);
       window.removeEventListener('keydown', onKeyDown);
     };
@@ -203,21 +207,26 @@
 
   function chooseStock(next: PaperStock) {
     pressClient.setStock(next);
-    carbonSynth.click(720);
-    flashHud(`STOCK: ${next.toUpperCase()}`);
+    carbonSynth.tick(1500);
+    flashHud(
+      next === 'graphite' ? 'Graphite: for reading at night.' : next === 'rag' ? 'Cotton rag: for reading by a window.' : 'Oxide: blueprint paper, for the engineers.'
+    );
   }
 
   function handleGridToggle() {
     gridOn = pressClient.toggleGrid();
-    carbonSynth.click(540);
-    flashHud(`REGISTRATION GRID: ${gridOn ? 'ON' : 'OFF'}`);
+    carbonSynth.tick(1100);
+    flashHud(gridOn ? 'Grid on. This is what the layout is hiding.' : 'Grid off.');
   }
 
   function handleAudioDockToggle() {
     audioDockOpen = !audioDockOpen;
-    if (audioDockOpen) {
-      carbonSynth.click(680);
-    }
+    if (audioDockOpen) carbonSynth.tick(1300);
+  }
+
+  function handleSoundToggle() {
+    carbonSynth.setEnabled(!soundOn);
+    flashHud(carbonSynth.isEnabled() ? 'Sound on. Quietly.' : 'Sound off. The press is silent.');
   }
 
   async function askEditor(questionText: string) {
@@ -248,7 +257,7 @@
         {
           id: `e_${Date.now()}`,
           role: 'editor',
-          text: data.reply || data.error || 'The Editor stepped out for toner.',
+          text: data.reply || data.error || 'The editor stepped out. Try again in a moment.',
           stub: Boolean(data.stub),
           model: data.model || editorModel,
           citations: Array.isArray(data.citations) ? data.citations : []
@@ -273,8 +282,8 @@
           model: editorModel,
           text:
             localHits.length > 0
-              ? `[Static Offline Stub] Ask-the-Editor API is unreachable, but ${localHits.map((h) => `${h.title} (Issue ${h.issueNumber})`).join(', ')} matched locally.`
-              : `[Static Offline Stub] Ask-the-Editor runs behind FEATURE_ASK_EDITOR (${editorModel}) on the Hono backend.`,
+              ? `The press desk is offline, but the archive isn’t. Try ${localHits.map((h) => `${h.title} (Issue ${h.issueNumber})`).join(', ')}.`
+              : 'The press desk is offline and nothing in the archive matched. Press / to search everything.',
           citations: localHits.map((h) => ({
             label: `Issue ${h.issueNumber} · ${h.title}`,
             href: `/issues/${h.issueNumber}/${h.articleSlug}`
@@ -328,9 +337,19 @@
     class="ctrl-btn"
     aria-pressed={gridOn}
     onclick={handleGridToggle}
-    title="Toggle structural registration grid"
+    title="Show the layout grid"
   >
     Grid
+  </button>
+
+  <button
+    type="button"
+    class="ctrl-btn"
+    aria-pressed={soundOn}
+    onclick={handleSoundToggle}
+    title="Interface sounds. Off unless you turn them on."
+  >
+    {soundOn ? '♪ Sound on' : 'Sound off'}
   </button>
 
   <button
@@ -338,9 +357,9 @@
     class="ctrl-btn neon-btn-accent"
     aria-pressed={audioDockOpen}
     onclick={handleAudioDockToggle}
-    title="Open 33⅓ RPM Audio Edition transport dock"
+    title="Open the flexi-disc player"
   >
-    {audioDockOpen ? 'Audio: Docked' : 'Audio'}
+    {audioDockOpen ? 'Flexi-disc ▾' : 'Flexi-disc'}
   </button>
 
   <button
@@ -352,9 +371,9 @@
       finderOpen = false;
       shortcutsOpen = false;
     }}
-    title={`Ask SLOPTIMUS PRIME (${editorModel} behind FEATURE_ASK_EDITOR)`}
+    title="Ask the editor about anything in the archive"
   >
-    Ask Editor
+    Ask the Editor
   </button>
 
   <button
@@ -366,7 +385,7 @@
       editorOpen = false;
       shortcutsOpen = false;
     }}
-    title="Search all issues and repositories (/)"
+    title="Search every issue (/)"
   >
     Find <kbd class="ctrl-kbd">/</kbd>
   </button>
@@ -388,7 +407,7 @@
   <div class="carbon-modal-backdrop" role="presentation" onclick={(e) => e.target === e.currentTarget && (finderOpen = false)}>
     <div class="carbon-modal" role="dialog" aria-modal="true" aria-labelledby="finder-dialog-title">
       <div class="carbon-modal-header">
-        <strong id="finder-dialog-title" class="datum-tag">CATALOG INDEX // 22 MONOGRAPHS ACROSS ISSUES 01 &amp; 02</strong>
+        <strong id="finder-dialog-title" class="datum-tag">FIND · 22 FEATURES ACROSS TWO ISSUES</strong>
         <button type="button" class="ctrl-btn" onclick={() => (finderOpen = false)}>Close [Esc]</button>
       </div>
       <div class="carbon-modal-body">
@@ -396,12 +415,12 @@
           <input
             type="search"
             class="source-search-input"
-            placeholder="Search repo, stack, category, or Reader Service # (e.g. rizzstack, templeos, 207)…"
+            placeholder="Try gear, TempleOS, SQLite, or a reader number like 207"
             bind:value={finderQuery}
-            aria-label="Search magazine catalog"
+            aria-label="Search every issue"
           />
           <button type="button" class="ctrl-btn" aria-pressed={savedOnly} onclick={() => (savedOnly = !savedOnly)}>
-            Saved Only ({savedNos.length})
+            Only what I saved ({savedNos.length})
           </button>
         </div>
         <ul class="sources-list">
@@ -413,7 +432,7 @@
               <div class="datum-tag">{item.category} · {item.techStack.slice(0, 3).join(' · ')}</div>
             </li>
           {:else}
-            <li class="datum-tag">No matching monographs found.</li>
+            <li class="datum-tag">Nothing by that name. Either it doesn’t exist, or we haven’t written about it yet.</li>
           {/each}
         </ul>
       </div>
@@ -428,18 +447,18 @@
         <div class="press-controls-bar">
           <span class="neon-pill">
             <span class="neon-pulse-dot" aria-hidden="true"></span>
-            {editorEnabled ? `LIVE · ${editorModel}` : `STUB · ${editorModel}`}
+            {editorEnabled ? `Live · ${editorModel}` : 'Archive mode'}
           </span>
-          <strong id="ask-editor-title" class="datum-tag">ASK THE EDITOR WIRE</strong>
+          <strong id="ask-editor-title" class="datum-tag">ASK THE EDITOR</strong>
         </div>
         <button type="button" class="ctrl-btn" onclick={() => (editorOpen = false)}>Close [Esc]</button>
       </div>
 
       <div class="neon-drawer-body">
         <p class="datum-tag">
-          Multi-turn press desk grounded strictly in our 22 commit-pinned monographs. When
-          <code>FEATURE_ASK_EDITOR=true</code> + <code>GEMINI_API_KEY</code> are set on the server,
-          <code>{editorModel}</code> synthesizes replies; otherwise deterministic BM25 press-desk search answers directly.
+          Ask about anything we’ve printed. Right now the live editor is switched off, so answers come straight from the
+          archive with links to the features they’re from. When the site’s owner turns on
+          <code>FEATURE_ASK_EDITOR</code>, <code>{editorModel}</code> writes the reply, still using only what we’ve printed.
         </p>
 
         <div class="neon-starter-chips" aria-label="Suggested editor prompts">
@@ -459,9 +478,9 @@
           {#each editorMessages as msg (msg.id)}
             <article class={`neon-msg ${msg.role === 'user' ? 'neon-msg--user' : 'neon-msg--editor'}`}>
               <div class="neon-msg-role">
-                <span>{msg.role === 'user' ? 'READER QUERY' : 'SLOPTIMUS PRIME · DESK WIRE'}</span>
+                <span>{msg.role === 'user' ? 'You asked' : 'The editor'}</span>
                 {#if msg.model}
-                  <span>{msg.stub ? 'BM25 STUB' : msg.model}</span>
+                  <span>{msg.stub ? 'from the archive' : msg.model}</span>
                 {/if}
               </div>
               <p>{msg.text}</p>
@@ -477,8 +496,8 @@
             </article>
           {:else}
             <div class="sidebar-panel">
-              <h3>Press Desk Ready</h3>
-              <p class="datum-tag">Pick a starter chip above or ask a follow-up question below.</p>
+              <h3>The desk is open</h3>
+              <p class="datum-tag">Pick a question above, or type your own. Follow-ups remember the last few turns.</p>
             </div>
           {/each}
         </div>
@@ -489,12 +508,12 @@
           <input
             type="text"
             class="source-search-input"
-            placeholder="Ask a question or follow-up…"
+            placeholder="Ask about any project in either issue…"
             bind:value={editorPrompt}
             aria-label="Question for the Editor"
           />
           <button type="submit" class="btn-primary" disabled={editorBusy}>
-            {editorBusy ? 'Checking…' : 'Send'}
+            {editorBusy ? 'Checking the files…' : 'Ask'}
           </button>
         </div>
       </form>
@@ -506,17 +525,18 @@
   <div class="carbon-modal-backdrop" role="presentation" onclick={(e) => e.target === e.currentTarget && (shortcutsOpen = false)}>
     <div class="carbon-modal" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
       <div class="carbon-modal-header">
-        <strong id="shortcuts-title" class="datum-tag">NEON KEYBOARD FOLIO SHORTCUTS</strong>
+        <strong id="shortcuts-title" class="datum-tag">KEYBOARD</strong>
         <button type="button" class="ctrl-btn" onclick={() => (shortcutsOpen = false)}>Close [Esc]</button>
       </div>
       <div class="carbon-modal-body">
         <ul class="sources-list">
-          <li><kbd class="ctrl-kbd">j</kbd> or <kbd class="ctrl-kbd">]</kbd> — Jump to Next Folio in current issue</li>
-          <li><kbd class="ctrl-kbd">k</kbd> or <kbd class="ctrl-kbd">[</kbd> — Jump to Previous Folio</li>
-          <li><kbd class="ctrl-kbd">/</kbd> — Open 22-Monograph Catalog Finder</li>
-          <li><kbd class="ctrl-kbd">←</kbd> / <kbd class="ctrl-kbd">→</kbd> — Step through Interactive Monograph Studies when focused</li>
-          <li><kbd class="ctrl-kbd">u</kbd> <kbd class="ctrl-kbd">s</kbd> <kbd class="ctrl-kbd">s</kbd> <kbd class="ctrl-kbd">y</kbd> — Unlock Ussyverse Archaeological Stratigraphy (Eras II–VI)</li>
-          <li><kbd class="ctrl-kbd">?</kbd> — Toggle this Keyboard Reference</li>
+          <li><kbd class="ctrl-kbd">j</kbd> or <kbd class="ctrl-kbd">]</kbd> Next page in this issue</li>
+          <li><kbd class="ctrl-kbd">k</kbd> or <kbd class="ctrl-kbd">[</kbd> Previous page</li>
+          <li><kbd class="ctrl-kbd">/</kbd> Find anything we’ve printed</li>
+          <li><kbd class="ctrl-kbd">←</kbd> <kbd class="ctrl-kbd">→</kbd> Step through an interactive study once it has focus</li>
+          <li><kbd class="ctrl-kbd">u</kbd> <kbd class="ctrl-kbd">s</kbd> <kbd class="ctrl-kbd">s</kbd> <kbd class="ctrl-kbd">y</kbd> Go down to the basement</li>
+          <li><kbd class="ctrl-kbd">?</kbd> This list</li>
+          <li><kbd class="ctrl-kbd">Esc</kbd> Close whatever is open</li>
         </ul>
       </div>
     </div>
@@ -527,13 +547,13 @@
   <div class="carbon-modal-backdrop" role="presentation" onclick={(e) => e.target === e.currentTarget && (strataOpen = false)}>
     <div class="carbon-modal" role="dialog" aria-modal="true" aria-labelledby="strata-dialog-title">
       <div class="carbon-modal-header">
-        <strong id="strata-dialog-title" class="datum-tag">USSYVERSE ARCHAEOLOGICAL STRATIGRAPHY // KEYCODE: U-S-S-Y</strong>
+        <strong id="strata-dialog-title" class="datum-tag">THE BASEMENT · EVERYTHING THIS DOMAIN USED TO BE</strong>
         <button type="button" class="ctrl-btn" onclick={() => (strataOpen = false)}>Close [Esc]</button>
       </div>
       <div class="carbon-modal-body">
         <p class="datum-tag">
-          Five geological layers of <code>ussy.host</code> preserved beneath the floorboards—from 6DOF space flight and
-          the subterranean Helix Organum pipe organ to Solaris tidepool wish lanterns and Carbon × Neon Press.
+          Before it was a magazine, this domain was a spaceship, a planet you could walk on, an organ underground and a tidepool
+          at golden hour. None of them were deleted. Each one still has its repository, and each one has a chord.
         </p>
         <ul class="sources-list">
           {#each USSYVERSE_STRATIGRAPHY as layer}
@@ -551,7 +571,7 @@
                 </button>
               </div>
               <p>{layer.lore}</p>
-              <div class="datum-tag">Relic: {layer.artifact}</div>
+              <div class="datum-tag">What we kept: {layer.artifact}</div>
             </li>
           {/each}
         </ul>
