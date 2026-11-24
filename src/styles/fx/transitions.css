@@ -1,1 +1,910 @@
-/* Wave 9 · transitions. Owned by the transitions track; see DESIGN.md §9. Gate motion on html[data-fx] and prefers-reduced-motion. */
+/* ==========================================================================
+   WAVE 9 · TRANSITIONS TRACK
+   Builds on src/styles/motion.css §1 without regressing default page turns,
+   shared headline/plate/issue morphs, the stock ink flood, or reduced motion.
+   - Compositor-friendly properties only (transform, opacity, clip-path,
+     mask-position, filter on small morph elements only — never full-viewport).
+   - Every transition stays under ~900ms total.
+   ========================================================================== */
+
+/* Decorative transition props exist only while html.is-vt-active is set. */
+.fx-vt-reg,
+.fx-vt-pt,
+.fx-vt-pb,
+.fx-vt-sm,
+.fx-vt-ik,
+.fx-vt-cr,
+.fx-vt-ir,
+.fx-vt-sc {
+  position: fixed;
+  pointer-events: none;
+  z-index: var(--fx-z-overlay);
+}
+
+/* Registration marks & CMYK calibration bar */
+.fx-vt-reg {
+  inset: 0;
+  background-repeat: no-repeat;
+  background-image:
+    /* Top-left crop & registration target */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76'%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.25'%3E%3Cpath d='M22 2v16M2 22h16M28 8h28M8 28v28'/%3E%3Ccircle cx='34' cy='34' r='8'/%3E%3Cpath d='M34 21v26M21 34h26'/%3E%3C/g%3E%3Ccircle cx='34' cy='34' r='2.2' fill='%23ff4422'/%3E%3Cpath d='M22 22h4v4h-4z' fill='%2322f3e6'/%3E%3C/svg%3E"),
+    /* Top-right crop & registration target */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76'%3E%3Cg transform='translate(76,0) scale(-1,1)'%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.25'%3E%3Cpath d='M22 2v16M2 22h16M28 8h28M8 28v28'/%3E%3Ccircle cx='34' cy='34' r='8'/%3E%3Cpath d='M34 21v26M21 34h26'/%3E%3C/g%3E%3Ccircle cx='34' cy='34' r='2.2' fill='%23ff4422'/%3E%3Cpath d='M22 22h4v4h-4z' fill='%2322f3e6'/%3E%3C/g%3E%3C/svg%3E"),
+    /* Bottom-left crop & registration target */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76'%3E%3Cg transform='translate(0,76) scale(1,-1)'%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.25'%3E%3Cpath d='M22 2v16M2 22h16M28 8h28M8 28v28'/%3E%3Ccircle cx='34' cy='34' r='8'/%3E%3Cpath d='M34 21v26M21 34h26'/%3E%3C/g%3E%3Ccircle cx='34' cy='34' r='2.2' fill='%23ff4422'/%3E%3Cpath d='M22 22h4v4h-4z' fill='%2322f3e6'/%3E%3C/g%3E%3C/svg%3E"),
+    /* Bottom-right crop & registration target */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 76 76'%3E%3Cg transform='translate(76,76) scale(-1,-1)'%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.25'%3E%3Cpath d='M22 2v16M2 22h16M28 8h28M8 28v28'/%3E%3Ccircle cx='34' cy='34' r='8'/%3E%3Cpath d='M34 21v26M21 34h26'/%3E%3C/g%3E%3Ccircle cx='34' cy='34' r='2.2' fill='%23ff4422'/%3E%3Cpath d='M22 22h4v4h-4z' fill='%2322f3e6'/%3E%3C/g%3E%3C/svg%3E"),
+    /* Top-center alignment crosshair */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 220 22'%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.1'%3E%3Cpath d='M8 11h86M126 11h86M110 2v18'/%3E%3Ccircle cx='110' cy='11' r='6.5'/%3E%3C/g%3E%3Ccircle cx='110' cy='11' r='2' fill='%23ff4422'/%3E%3C/svg%3E"),
+    /* Bottom-center CMYK + spot ink calibration bar */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 24'%3E%3Crect x='34' y='3' width='272' height='18' fill='%230b0c0e' stroke='%23e8c36a' stroke-width='1'/%3E%3Crect x='38' y='6' width='22' height='12' fill='%2300b7eb'/%3E%3Crect x='62' y='6' width='22' height='12' fill='%2300b7eb' fill-opacity='0.48'/%3E%3Crect x='86' y='6' width='22' height='12' fill='%23ec008c'/%3E%3Crect x='110' y='6' width='22' height='12' fill='%23ec008c' fill-opacity='0.48'/%3E%3Crect x='134' y='6' width='22' height='12' fill='%23ffe600'/%3E%3Crect x='158' y='6' width='22' height='12' fill='%23ffe600' fill-opacity='0.5'/%3E%3Crect x='182' y='6' width='22' height='12' fill='%23111318' stroke='%23555b66' stroke-width='0.8'/%3E%3Crect x='206' y='6' width='22' height='12' fill='%236b7280'/%3E%3Crect x='230' y='6' width='22' height='12' fill='%23ff4422'/%3E%3Crect x='254' y='6' width='22' height='12' fill='%23e8c36a'/%3E%3Crect x='278' y='6' width='24' height='12' fill='%2322f3e6'/%3E%3Cg fill='none' stroke='%23e8c36a' stroke-width='1.1'%3E%3Ccircle cx='14' cy='12' r='6'/%3E%3Cpath d='M14 3v18M5 12h18'/%3E%3Ccircle cx='326' cy='12' r='6'/%3E%3Cpath d='M326 3v18M317 12h18'/%3E%3C/g%3E%3C/svg%3E");
+  background-position:
+    12px 12px,
+    calc(100% - 12px) 12px,
+    12px calc(100% - 12px),
+    calc(100% - 12px) calc(100% - 12px),
+    50% 10px,
+    50% calc(100% - 12px);
+  background-size:
+    72px 72px,
+    72px 72px,
+    72px 72px,
+    72px 72px,
+    200px 20px,
+    min(340px, 78vw) 24px;
+}
+
+/* Platen press halves for 'press' route transition (matches cold open steel plates) */
+.fx-vt-pt,
+.fx-vt-pb {
+  left: 0;
+  right: 0;
+  height: 50.6vh;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 140% at 50% 100%, #10141c 0%, #050608 74%);
+}
+
+.fx-vt-pt {
+  top: 0;
+  border-bottom: 2px solid var(--fx-gold);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+}
+
+.fx-vt-pb {
+  bottom: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.026) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 140% at 50% 0%, #10141c 0%, #050608 74%);
+  border-top: 2px solid var(--fx-gold);
+  box-shadow: 0 -12px 36px rgba(0, 0, 0, 0.65);
+}
+
+/* Warm gilt impression seam between meeting platen plates */
+.fx-vt-sm {
+  left: 0;
+  right: 0;
+  top: calc(50vh - 30px);
+  height: 60px;
+  background: radial-gradient(
+    70% 55% at 50% 50%,
+    rgba(255, 248, 224, 0.92) 0%,
+    rgba(232, 195, 106, 0.45) 38%,
+    rgba(255, 68, 34, 0.16) 62%,
+    transparent 82%
+  );
+}
+
+/* Turbulent wet-ink crest leading edge for 'ink-wipe' route transition */
+.fx-vt-ik {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 34vw;
+  min-width: 220px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 200' preserveAspectRatio='none'%3E%3Cpath fill='%23050608' fill-opacity='0.94' d='M16 0H66C84 12 48 22 86 34C108 42 56 54 78 68C104 82 44 92 94 104C116 110 52 124 76 136C102 150 48 162 88 176C110 184 58 192 68 200H14C32 188 12 174 28 158C40 144 8 128 24 112C38 96 6 82 26 64C40 50 10 34 28 18C38 10 22 4 16 0Z'/%3E%3Cpath fill='none' stroke='%23ff4422' stroke-width='3.2' d='M66 0C84 12 48 22 86 34C108 42 56 54 78 68C104 82 44 92 94 104C116 110 52 124 76 136C102 150 48 162 88 176C110 184 58 192 68 200'/%3E%3Cpath fill='none' stroke='%23e8c36a' stroke-width='1.4' stroke-opacity='0.85' d='M58 0C76 12 40 22 78 34C100 42 48 54 70 68C96 82 36 92 86 104C108 110 44 124 68 136C94 150 40 162 80 176C102 184 50 192 60 200'/%3E%3Ccircle fill='%23ff4422' cx='98' cy='28' r='3.6'/%3E%3Ccircle fill='%23050608' stroke='%23ff4422' stroke-width='1.2' cx='108' cy='72' r='4.2'/%3E%3Ccircle fill='%23e8c36a' cx='106' cy='106' r='2.6'/%3E%3Ccircle fill='%23ff4422' cx='96' cy='148' r='3.8'/%3E%3Ccircle fill='%23e8c36a' cx='112' cy='176' r='2.4'/%3E%3Cellipse fill='%23ff4422' cx='92' cy='54' rx='5.5' ry='2'/%3E%3Cellipse fill='%23050608' stroke='%23e8c36a' stroke-width='1' cx='98' cy='128' rx='6' ry='2.4'/%3E%3C/svg%3E");
+}
+
+/* Center spine paper crease for 'fold' route transition */
+.fx-vt-cr {
+  top: 0;
+  bottom: 0;
+  left: calc(50vw - 26px);
+  width: 52px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 0, 0, 0.58) 44%,
+    rgba(232, 195, 106, 0.85) 50%,
+    rgba(0, 0, 0, 0.58) 56%,
+    transparent 100%
+  );
+}
+
+/* Warm gilt iris pinpoint for 'dusk' route transition */
+.fx-vt-ir {
+  left: calc(50vw - 80px);
+  top: calc(52vh - 80px);
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #fff9e3 0%,
+    rgba(232, 195, 106, 0.92) 22%,
+    rgba(232, 195, 106, 0.34) 48%,
+    transparent 72%
+  );
+}
+
+/* Neon scanline sweep for html[data-rizz='max'] */
+.fx-vt-sc {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 24vh;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(34, 243, 230, 0.08) 45%,
+      rgba(34, 243, 230, 0.34) 84%,
+      rgba(34, 243, 230, 0.85) 95%,
+      #22f3e6 97.5%,
+      #ffffff 98.5%,
+      #ff4422 100%
+    ),
+    repeating-linear-gradient(0deg, rgba(34, 243, 230, 0.22) 0 1px, transparent 1px 4px);
+}
+
+html[data-rizz='max'] .fx-vt-pt {
+  border-bottom-color: var(--fx-signal);
+}
+
+html[data-rizz='max'] .fx-vt-pb {
+  border-top-color: var(--fx-signal);
+}
+
+html[data-rizz='max'] .fx-vt-sm {
+  background: radial-gradient(
+    75% 60% at 50% 50%,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(34, 243, 230, 0.6) 34%,
+    rgba(255, 68, 34, 0.35) 60%,
+    transparent 84%
+  );
+}
+
+/* Lite tier drops the decorative registration overlay and scanline completely */
+html[data-fx='lite'] .fx-vt-reg,
+html.is-vt-lite .fx-vt-reg,
+html[data-fx='lite'] .fx-vt-sc,
+html.is-vt-lite .fx-vt-sc {
+  display: none;
+  view-transition-name: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Bind transition prop names ONLY during active cross-document view transitions */
+  html.is-vt-active:not([data-fx='lite']):not(.is-vt-lite) .fx-vt-reg {
+    view-transition-name: fx-vt-reg;
+  }
+
+  html.is-vt-active .fx-vt-pt {
+    view-transition-name: fx-vt-pt;
+  }
+
+  html.is-vt-active .fx-vt-pb {
+    view-transition-name: fx-vt-pb;
+  }
+
+  html.is-vt-active .fx-vt-sm {
+    view-transition-name: fx-vt-sm;
+  }
+
+  html.is-vt-active .fx-vt-ik {
+    view-transition-name: fx-vt-ik;
+  }
+
+  html.is-vt-active .fx-vt-cr {
+    view-transition-name: fx-vt-cr;
+  }
+
+  html.is-vt-active .fx-vt-ir {
+    view-transition-name: fx-vt-ir;
+  }
+
+  html.is-vt-active[data-rizz='max']:not([data-fx='lite']):not(.is-vt-lite) .fx-vt-sc {
+    view-transition-name: fx-vt-sc;
+  }
+
+  /* ------------------------------------------------------------------------
+     Layer stacking order across all view transitions
+     ------------------------------------------------------------------------ */
+  ::view-transition-group(root) {
+    z-index: 1;
+  }
+
+  ::view-transition-group(*.mo-plate),
+  ::view-transition-group(*.mo-issue) {
+    z-index: 10;
+  }
+
+  ::view-transition-group(*.mo-headline),
+  ::view-transition-group(*.mo-chip),
+  ::view-transition-group(*.mo-stamp) {
+    z-index: 15;
+  }
+
+  ::view-transition-group(si-masthead) {
+    z-index: 20;
+  }
+
+  ::view-transition-group(*.mo-brand) {
+    z-index: 25;
+  }
+
+  ::view-transition-group(fx-vt-cr),
+  ::view-transition-group(fx-vt-ir) {
+    z-index: 30;
+    animation: none;
+  }
+
+  ::view-transition-group(fx-vt-pt),
+  ::view-transition-group(fx-vt-pb) {
+    z-index: 40;
+    animation: none;
+  }
+
+  ::view-transition-group(fx-vt-sm),
+  ::view-transition-group(fx-vt-ik) {
+    z-index: 45;
+    animation: none;
+  }
+
+  ::view-transition-group(fx-vt-sc) {
+    z-index: 50;
+    animation: none;
+  }
+
+  ::view-transition-group(fx-vt-reg) {
+    z-index: 60;
+    animation: none;
+  }
+
+  /* ------------------------------------------------------------------------
+     2. Registration-marks overlay (all full-tier cross-document transitions)
+     ------------------------------------------------------------------------ */
+  ::view-transition-new(fx-vt-reg) {
+    animation: fx-reg-flash 760ms var(--ease-out-expo) both;
+    mix-blend-mode: normal;
+  }
+
+  html[data-rizz='max']::view-transition-new(fx-vt-reg) {
+    animation: fx-reg-flash-max 800ms var(--ease-out-expo) both;
+  }
+
+  /* ------------------------------------------------------------------------
+     1a. Route 'press' (to an article): platen halves close, press, then part
+     ------------------------------------------------------------------------ */
+  html:active-view-transition-type(press)::view-transition-old(root) {
+    animation: fx-press-old 820ms var(--ease-in-out-quint) both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(press)::view-transition-new(root) {
+    animation: fx-press-new 820ms var(--ease-out-expo) both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(press):active-view-transition-type(backward)::view-transition-old(root) {
+    animation-name: fx-press-old-back;
+  }
+
+  html:active-view-transition-type(press):active-view-transition-type(backward)::view-transition-new(root) {
+    animation-name: fx-press-new-back;
+  }
+
+  html:active-view-transition-type(press)::view-transition-new(fx-vt-pt) {
+    animation: fx-platen-top 820ms linear both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(press)::view-transition-new(fx-vt-pb) {
+    animation: fx-platen-bottom 820ms linear both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(press)::view-transition-new(fx-vt-sm) {
+    animation: fx-platen-seam 820ms var(--ease-out-expo) both;
+    transform-origin: 0% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(press):active-view-transition-type(backward)::view-transition-new(fx-vt-sm) {
+    transform-origin: 100% 50%;
+  }
+
+  /* Max rizz: stronger platen slam + camera impact shake */
+  html[data-rizz='max']:active-view-transition-type(press)::view-transition-group(root) {
+    animation: fx-press-shake 840ms linear both;
+  }
+
+  html[data-rizz='max']:active-view-transition-type(press)::view-transition-new(fx-vt-pt) {
+    animation: fx-platen-top-max 840ms linear both;
+  }
+
+  html[data-rizz='max']:active-view-transition-type(press)::view-transition-new(fx-vt-pb) {
+    animation: fx-platen-bottom-max 840ms linear both;
+  }
+
+  /* ------------------------------------------------------------------------
+     1b. Route 'ink-wipe' (to an issue cover): irregular turbulent ink sweep
+     ------------------------------------------------------------------------ */
+  html:active-view-transition-type(ink-wipe)::view-transition-old(root) {
+    animation: fx-ink-wipe-old 820ms cubic-bezier(0.37, 0, 0.63, 1) both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(ink-wipe)::view-transition-new(root) {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 100' preserveAspectRatio='none'%3E%3Cpath fill='%23000' d='M0 0H120C132 6 108 11 136 17C152 21 112 27 130 34C148 41 106 46 142 52C156 55 110 62 128 68C146 75 108 81 138 88C152 92 114 96 124 100H0Z'/%3E%3Ccircle fill='%23000' cx='148' cy='14' r='3.6'/%3E%3Ccircle fill='%23000' cx='155' cy='36' r='2.8'/%3E%3Ccircle fill='%23000' cx='152' cy='54' r='4.2'/%3E%3Ccircle fill='%23000' cx='144' cy='77' r='3'/%3E%3Ccircle fill='%23000' cx='157' cy='87' r='2.2'/%3E%3Cellipse fill='%23000' cx='145' cy='27' rx='5.8' ry='2'/%3E%3Cellipse fill='%23000' cx='149' cy='65' rx='6.2' ry='2.2'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 100' preserveAspectRatio='none'%3E%3Cpath fill='%23000' d='M0 0H120C132 6 108 11 136 17C152 21 112 27 130 34C148 41 106 46 142 52C156 55 110 62 128 68C146 75 108 81 138 88C152 92 114 96 124 100H0Z'/%3E%3Ccircle fill='%23000' cx='148' cy='14' r='3.6'/%3E%3Ccircle fill='%23000' cx='155' cy='36' r='2.8'/%3E%3Ccircle fill='%23000' cx='152' cy='54' r='4.2'/%3E%3Ccircle fill='%23000' cx='144' cy='77' r='3'/%3E%3Ccircle fill='%23000' cx='157' cy='87' r='2.2'/%3E%3Cellipse fill='%23000' cx='145' cy='27' rx='5.8' ry='2'/%3E%3Cellipse fill='%23000' cx='149' cy='65' rx='6.2' ry='2.2'/%3E%3C/svg%3E");
+    -webkit-mask-size: 260% 100%;
+    mask-size: 260% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    animation: fx-ink-wipe-new 820ms cubic-bezier(0.37, 0, 0.63, 1) both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(ink-wipe)::view-transition-new(fx-vt-ik) {
+    animation: fx-ink-crest 820ms cubic-bezier(0.37, 0, 0.63, 1) both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(ink-wipe):active-view-transition-type(backward)::view-transition-old(root) {
+    animation-name: fx-ink-wipe-old-back;
+  }
+
+  html:active-view-transition-type(ink-wipe):active-view-transition-type(backward)::view-transition-new(root) {
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 100' preserveAspectRatio='none'%3E%3Cg transform='translate(260,0) scale(-1,1)'%3E%3Cpath fill='%23000' d='M0 0H120C132 6 108 11 136 17C152 21 112 27 130 34C148 41 106 46 142 52C156 55 110 62 128 68C146 75 108 81 138 88C152 92 114 96 124 100H0Z'/%3E%3Ccircle fill='%23000' cx='148' cy='14' r='3.6'/%3E%3Ccircle fill='%23000' cx='155' cy='36' r='2.8'/%3E%3Ccircle fill='%23000' cx='152' cy='54' r='4.2'/%3E%3Ccircle fill='%23000' cx='144' cy='77' r='3'/%3E%3Ccircle fill='%23000' cx='157' cy='87' r='2.2'/%3E%3Cellipse fill='%23000' cx='145' cy='27' rx='5.8' ry='2'/%3E%3Cellipse fill='%23000' cx='149' cy='65' rx='6.2' ry='2.2'/%3E%3C/g%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 260 100' preserveAspectRatio='none'%3E%3Cg transform='translate(260,0) scale(-1,1)'%3E%3Cpath fill='%23000' d='M0 0H120C132 6 108 11 136 17C152 21 112 27 130 34C148 41 106 46 142 52C156 55 110 62 128 68C146 75 108 81 138 88C152 92 114 96 124 100H0Z'/%3E%3Ccircle fill='%23000' cx='148' cy='14' r='3.6'/%3E%3Ccircle fill='%23000' cx='155' cy='36' r='2.8'/%3E%3Ccircle fill='%23000' cx='152' cy='54' r='4.2'/%3E%3Ccircle fill='%23000' cx='144' cy='77' r='3'/%3E%3Ccircle fill='%23000' cx='157' cy='87' r='2.2'/%3E%3Cellipse fill='%23000' cx='145' cy='27' rx='5.8' ry='2'/%3E%3Cellipse fill='%23000' cx='149' cy='65' rx='6.2' ry='2.2'/%3E%3C/g%3E%3C/svg%3E");
+    animation-name: fx-ink-wipe-new-back;
+  }
+
+  html:active-view-transition-type(ink-wipe):active-view-transition-type(backward)::view-transition-new(fx-vt-ik) {
+    animation-name: fx-ink-crest-back;
+  }
+
+  /* ------------------------------------------------------------------------
+     1c. Route 'fold' (to the home page): paper fold along the center spine
+     ------------------------------------------------------------------------ */
+  html:active-view-transition-type(fold)::view-transition-old(root) {
+    animation: fx-fold-old 420ms var(--ease-in-out-quint) both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(fold)::view-transition-new(root) {
+    animation: fx-fold-new 480ms var(--ease-out-expo) 320ms both;
+    transform-origin: 50% 50%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(fold):active-view-transition-type(backward)::view-transition-old(root) {
+    animation-name: fx-fold-old-back;
+  }
+
+  html:active-view-transition-type(fold):active-view-transition-type(backward)::view-transition-new(root) {
+    animation-name: fx-fold-new-back;
+  }
+
+  html:active-view-transition-type(fold)::view-transition-new(fx-vt-cr) {
+    animation: fx-fold-crease 800ms var(--ease-in-out-quint) both;
+    mix-blend-mode: normal;
+  }
+
+  /* ------------------------------------------------------------------------
+     1d. Route 'dusk' (to the last page): iris closes to warm gilt point, opens
+     ------------------------------------------------------------------------ */
+  html:active-view-transition-type(dusk)::view-transition {
+    background: radial-gradient(
+      circle at 50% 52%,
+      rgba(232, 195, 106, 0.32) 0%,
+      rgba(232, 195, 106, 0.08) 12%,
+      #050507 38%,
+      #020203 100%
+    );
+  }
+
+  html:active-view-transition-type(dusk)::view-transition-old(root) {
+    animation: fx-dusk-old 410ms var(--ease-in-out-quint) both;
+    transform-origin: 50% 52%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(dusk)::view-transition-new(root) {
+    animation: fx-dusk-new 440ms var(--ease-out-expo) 400ms both;
+    transform-origin: 50% 52%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(dusk):active-view-transition-type(backward)::view-transition-old(root) {
+    animation-name: fx-dusk-old-back;
+    transform-origin: 50% 38%;
+  }
+
+  html:active-view-transition-type(dusk):active-view-transition-type(backward)::view-transition-new(root) {
+    animation-name: fx-dusk-new-back;
+    transform-origin: 50% 38%;
+  }
+
+  html:active-view-transition-type(dusk)::view-transition-new(fx-vt-ir) {
+    animation: fx-dusk-point 840ms var(--ease-out-expo) both;
+    mix-blend-mode: normal;
+  }
+
+  /* ------------------------------------------------------------------------
+     5. Max rizz: neon scanline sweep across any cross-document page turn
+     ------------------------------------------------------------------------ */
+  html[data-rizz='max']::view-transition-new(fx-vt-sc) {
+    animation: fx-scanline-sweep 800ms cubic-bezier(0.32, 0, 0.24, 1) both;
+    mix-blend-mode: screen;
+  }
+
+  html[data-rizz='max']:active-view-transition-type(press)::view-transition-new(fx-vt-sc) {
+    animation: fx-scanline-sweep 600ms linear 240ms both;
+  }
+
+  html[data-rizz='max']:active-view-transition-type(backward)::view-transition-new(fx-vt-sc) {
+    animation-name: fx-scanline-sweep-back;
+  }
+
+  /* ------------------------------------------------------------------------
+     3. Richer shared-element morphs (soft spring + kinetic motion-blur feel)
+        Never applies filters to root or large plates; lite drops all blur.
+     ------------------------------------------------------------------------ */
+  ::view-transition-group(*.mo-headline),
+  ::view-transition-group(*.mo-plate),
+  ::view-transition-group(*.mo-issue),
+  ::view-transition-group(*.mo-brand),
+  ::view-transition-group(*.mo-chip),
+  ::view-transition-group(*.mo-stamp) {
+    animation-duration: var(--spring-soft-dur);
+    animation-timing-function: var(--spring-soft);
+  }
+
+  ::view-transition-old(*.mo-headline),
+  ::view-transition-old(*.mo-chip),
+  ::view-transition-old(*.mo-brand),
+  ::view-transition-old(*.mo-stamp) {
+    animation: fx-morph-out 340ms var(--ease-in-out-quint) both;
+    height: 100%;
+  }
+
+  ::view-transition-new(*.mo-headline),
+  ::view-transition-new(*.mo-chip),
+  ::view-transition-new(*.mo-brand),
+  ::view-transition-new(*.mo-stamp) {
+    animation: fx-morph-in 480ms var(--ease-out-expo) 60ms both;
+    height: 100%;
+  }
+
+  /* Plates & issue covers: scale overshoot + opacity only (no filter on large art) */
+  ::view-transition-old(*.mo-plate),
+  ::view-transition-old(*.mo-issue) {
+    animation: fx-morph-plate-out 380ms var(--ease-in-out-quint) both;
+  }
+
+  ::view-transition-new(*.mo-plate),
+  ::view-transition-new(*.mo-issue) {
+    animation: fx-morph-plate-in 520ms var(--ease-out-expo) 50ms both;
+  }
+
+  /* Lite tier: strip all blur from small morphs too, keep scale overshoot + opacity */
+  html[data-fx='lite']::view-transition-old(*.mo-headline),
+  html[data-fx='lite']::view-transition-old(*.mo-chip),
+  html[data-fx='lite']::view-transition-old(*.mo-brand),
+  html[data-fx='lite']::view-transition-old(*.mo-stamp),
+  html.is-vt-lite::view-transition-old(*.mo-headline),
+  html.is-vt-lite::view-transition-old(*.mo-chip),
+  html.is-vt-lite::view-transition-old(*.mo-brand),
+  html.is-vt-lite::view-transition-old(*.mo-stamp) {
+    animation-name: fx-morph-plate-out;
+  }
+
+  html[data-fx='lite']::view-transition-new(*.mo-headline),
+  html[data-fx='lite']::view-transition-new(*.mo-chip),
+  html[data-fx='lite']::view-transition-new(*.mo-brand),
+  html[data-fx='lite']::view-transition-new(*.mo-stamp),
+  html.is-vt-lite::view-transition-new(*.mo-headline),
+  html.is-vt-lite::view-transition-new(*.mo-chip),
+  html.is-vt-lite::view-transition-new(*.mo-brand),
+  html.is-vt-lite::view-transition-new(*.mo-stamp) {
+    animation-name: fx-morph-plate-in;
+  }
+
+  /* ------------------------------------------------------------------------
+     4. Same-document transitions: dialog paper-unfold & interactive study slide
+     ------------------------------------------------------------------------ */
+  html.is-vt-dialog :not(:root) {
+    view-transition-name: none !important;
+  }
+
+  html.is-vt-dialog .carbon-modal-backdrop {
+    view-transition-name: fx-dialog-backdrop !important;
+  }
+
+  html.is-vt-dialog .carbon-modal {
+    view-transition-name: fx-dialog-panel !important;
+  }
+
+  html:active-view-transition-type(dialog-unfold)::view-transition-old(root),
+  html:active-view-transition-type(dialog-unfold)::view-transition-new(root) {
+    animation: none;
+  }
+
+  ::view-transition-group(fx-dialog-backdrop) {
+    z-index: 70;
+    animation: none;
+  }
+
+  ::view-transition-group(fx-dialog-panel) {
+    z-index: 75;
+    animation-duration: 360ms;
+    animation-timing-function: var(--spring-snappy);
+  }
+
+  html:active-view-transition-type(dialog-open)::view-transition-new(fx-dialog-backdrop) {
+    animation: fx-fade-in 220ms var(--ease-out-expo) both;
+  }
+
+  html:active-view-transition-type(dialog-open)::view-transition-new(fx-dialog-panel) {
+    animation: fx-paper-unfold 380ms var(--spring-snappy) both;
+    transform-origin: 50% 0%;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(dialog-close)::view-transition-old(fx-dialog-backdrop) {
+    animation: fx-fade-out 220ms var(--ease-in-out-quint) both;
+  }
+
+  html:active-view-transition-type(dialog-close)::view-transition-old(fx-dialog-panel) {
+    animation: fx-paper-fold 240ms var(--ease-in-out-quint) both;
+    transform-origin: 50% 0%;
+    mix-blend-mode: normal;
+  }
+
+  /* Interactive study step slide */
+  html.is-vt-study :not(:root) {
+    view-transition-name: none !important;
+  }
+
+  html.is-vt-study .is-vt-study-target {
+    view-transition-name: fx-study-stage !important;
+  }
+
+  html:active-view-transition-type(study-slide)::view-transition-old(root),
+  html:active-view-transition-type(study-slide)::view-transition-new(root) {
+    animation: none;
+  }
+
+  ::view-transition-group(fx-study-stage) {
+    z-index: 30;
+    overflow: clip;
+  }
+
+  html:active-view-transition-type(study-next)::view-transition-old(fx-study-stage) {
+    animation: fx-study-out-next 260ms var(--ease-in-out-quint) both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(study-next)::view-transition-new(fx-study-stage) {
+    animation: fx-study-in-next 280ms var(--ease-out-expo) both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(study-prev)::view-transition-old(fx-study-stage) {
+    animation: fx-study-out-prev 260ms var(--ease-in-out-quint) both;
+    mix-blend-mode: normal;
+  }
+
+  html:active-view-transition-type(study-prev)::view-transition-new(fx-study-stage) {
+    animation: fx-study-in-prev 280ms var(--ease-out-expo) both;
+    mix-blend-mode: normal;
+  }
+}
+
+/* ==========================================================================
+   KEYFRAMES (compositor-only: transform, opacity, clip-path, mask-position,
+   small-element filter only — never full-viewport filter)
+   ========================================================================== */
+
+@keyframes fx-reg-flash {
+  0% { opacity: 0; transform: scale(1.03); }
+  14% { opacity: 1; transform: scale(1); }
+  72% { opacity: 0.92; transform: scale(1); }
+  84% { opacity: 0.25; transform: scale(1); }
+  90% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.015); }
+}
+
+@keyframes fx-reg-flash-max {
+  0% { opacity: 0; transform: scale(1.045); }
+  12% { opacity: 1; transform: scale(1); }
+  70% { opacity: 1; transform: scale(1); }
+  82% { opacity: 0.18; transform: scale(1.006); }
+  88% { opacity: 0.95; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.02); }
+}
+
+/* Route 'press': platen slam & part */
+@keyframes fx-press-old {
+  0% { opacity: 1; transform: scale(1); clip-path: inset(0% 0% 0% 0%); }
+  38% { opacity: 0.88; transform: scale(0.955); clip-path: inset(48% 0% 48% 0%); }
+  48% { opacity: 0; transform: scale(0.94); clip-path: inset(50% 0% 50% 0%); }
+  100% { opacity: 0; transform: scale(0.94); clip-path: inset(50% 0% 50% 0%); }
+}
+
+@keyframes fx-press-new {
+  0%, 46% { opacity: 0; transform: scale(1.035); clip-path: inset(50% 0% 50% 0%); }
+  54% { opacity: 1; transform: scale(1.02); clip-path: inset(46% 0% 46% 0%); }
+  100% { opacity: 1; transform: scale(1); clip-path: inset(0% 0% 0% 0%); }
+}
+
+@keyframes fx-press-old-back {
+  0% { opacity: 1; transform: scale(1); clip-path: inset(0% 0% 0% 0%); }
+  38% { opacity: 0.88; transform: scale(1.035); clip-path: inset(48% 0% 48% 0%); }
+  48% { opacity: 0; transform: scale(1.05); clip-path: inset(50% 0% 50% 0%); }
+  100% { opacity: 0; transform: scale(1.05); clip-path: inset(50% 0% 50% 0%); }
+}
+
+@keyframes fx-press-new-back {
+  0%, 46% { opacity: 0; transform: scale(0.955); clip-path: inset(50% 0% 50% 0%); }
+  54% { opacity: 1; transform: scale(0.975); clip-path: inset(46% 0% 46% 0%); }
+  100% { opacity: 1; transform: scale(1); clip-path: inset(0% 0% 0% 0%); }
+}
+
+@keyframes fx-platen-top {
+  0% { transform: translateY(-102%); animation-timing-function: var(--ease-press); }
+  36% { transform: translateY(0%); animation-timing-function: ease-out; }
+  42% { transform: translateY(-1.4%); animation-timing-function: ease-in; }
+  50% { transform: translateY(0%); animation-timing-function: var(--ease-in-out-quint); }
+  100% { transform: translateY(-102%); }
+}
+
+@keyframes fx-platen-bottom {
+  0% { transform: translateY(102%); animation-timing-function: var(--ease-press); }
+  36% { transform: translateY(0%); animation-timing-function: ease-out; }
+  42% { transform: translateY(1.4%); animation-timing-function: ease-in; }
+  50% { transform: translateY(0%); animation-timing-function: var(--ease-in-out-quint); }
+  100% { transform: translateY(102%); }
+}
+
+@keyframes fx-platen-top-max {
+  0% { transform: translateY(-102%); animation-timing-function: var(--ease-press); }
+  31% { transform: translateY(0.8%); animation-timing-function: ease-out; }
+  38% { transform: translateY(-2.8%); animation-timing-function: ease-in; }
+  47% { transform: translateY(0%); animation-timing-function: var(--ease-in-out-quint); }
+  100% { transform: translateY(-102%); }
+}
+
+@keyframes fx-platen-bottom-max {
+  0% { transform: translateY(102%); animation-timing-function: var(--ease-press); }
+  31% { transform: translateY(-0.8%); animation-timing-function: ease-out; }
+  38% { transform: translateY(2.8%); animation-timing-function: ease-in; }
+  47% { transform: translateY(0%); animation-timing-function: var(--ease-in-out-quint); }
+  100% { transform: translateY(102%); }
+}
+
+@keyframes fx-platen-seam {
+  0%, 31% { opacity: 0; transform: scaleX(0.15) scaleY(0.4); }
+  40% { opacity: 1; transform: scaleX(1) scaleY(1.15); }
+  56% { opacity: 0.72; transform: scaleX(1) scaleY(0.7); }
+  74%, 100% { opacity: 0; transform: scaleX(1.02) scaleY(0.2); }
+}
+
+@keyframes fx-press-shake {
+  0%, 29% { transform: translate3d(0, 0, 0); }
+  33% { transform: translate3d(-8px, 7px, 0) rotate(-0.55deg); }
+  38% { transform: translate3d(7px, -6px, 0) rotate(0.48deg); }
+  43% { transform: translate3d(-5px, 4px, 0) rotate(-0.3deg); }
+  49% { transform: translate3d(4px, -3px, 0) rotate(0.2deg); }
+  56% { transform: translate3d(-2px, 1px, 0) rotate(-0.08deg); }
+  64%, 100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Route 'ink-wipe': turbulent ink roller sweep */
+@keyframes fx-ink-wipe-old {
+  0% { opacity: 1; transform: translateX(0) scale(1); }
+  85% { opacity: 0.52; transform: translateX(-2.6%) scale(0.986); }
+  100% { opacity: 0; transform: translateX(-3.2%) scale(0.982); }
+}
+
+@keyframes fx-ink-wipe-new {
+  0% { -webkit-mask-position: 100% 0%; mask-position: 100% 0%; transform: scale(1.015); }
+  100% { -webkit-mask-position: 0% 0%; mask-position: 0% 0%; transform: scale(1); }
+}
+
+@keyframes fx-ink-wipe-old-back {
+  0% { opacity: 1; transform: translateX(0) scale(1); }
+  85% { opacity: 0.52; transform: translateX(2.6%) scale(0.986); }
+  100% { opacity: 0; transform: translateX(3.2%) scale(0.982); }
+}
+
+@keyframes fx-ink-wipe-new-back {
+  0% { -webkit-mask-position: 0% 0%; mask-position: 0% 0%; transform: scale(1.015); }
+  100% { -webkit-mask-position: 100% 0%; mask-position: 100% 0%; transform: scale(1); }
+}
+
+@keyframes fx-ink-crest {
+  0% { opacity: 0.9; transform: translateX(-34vw); }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(106vw); }
+}
+
+@keyframes fx-ink-crest-back {
+  0% { opacity: 0.9; transform: translateX(106vw) scaleX(-1); }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(-34vw) scaleX(-1); }
+}
+
+/* Route 'fold': paper crease along center spine */
+@keyframes fx-fold-old {
+  0% { opacity: 1; transform: perspective(1800px) rotateY(0deg) scaleX(1); }
+  100% { opacity: 0; transform: perspective(1800px) rotateY(-88deg) scaleX(0.92); }
+}
+
+@keyframes fx-fold-new {
+  0% { opacity: 0; transform: perspective(1800px) rotateY(88deg) scaleX(0.92); }
+  100% { opacity: 1; transform: perspective(1800px) rotateY(0deg) scaleX(1); }
+}
+
+@keyframes fx-fold-old-back {
+  0% { opacity: 1; transform: perspective(1800px) rotateY(0deg) scaleX(1); }
+  100% { opacity: 0; transform: perspective(1800px) rotateY(88deg) scaleX(0.92); }
+}
+
+@keyframes fx-fold-new-back {
+  0% { opacity: 0; transform: perspective(1800px) rotateY(-88deg) scaleX(0.92); }
+  100% { opacity: 1; transform: perspective(1800px) rotateY(0deg) scaleX(1); }
+}
+
+@keyframes fx-fold-crease {
+  0% { opacity: 0; transform: scaleX(0.35); }
+  45% { opacity: 1; transform: scaleX(1.1); }
+  100% { opacity: 0; transform: scaleX(0.25); }
+}
+
+/* Route 'dusk': iris closes to warm gilt point, then opens */
+@keyframes fx-dusk-old {
+  0% { opacity: 1; clip-path: circle(85% at 50% 52%); transform: scale(1); }
+  100% { opacity: 0.2; clip-path: circle(0% at 50% 52%); transform: scale(0.96); }
+}
+
+@keyframes fx-dusk-new {
+  0% { opacity: 0.35; clip-path: circle(0% at 50% 52%); transform: scale(1.03); }
+  100% { opacity: 1; clip-path: circle(85% at 50% 52%); transform: scale(1); }
+}
+
+@keyframes fx-dusk-old-back {
+  0% { opacity: 1; clip-path: circle(85% at 50% 38%); transform: scale(1); }
+  100% { opacity: 0.2; clip-path: circle(0% at 50% 38%); transform: scale(1.03); }
+}
+
+@keyframes fx-dusk-new-back {
+  0% { opacity: 0.35; clip-path: circle(0% at 50% 38%); transform: scale(0.97); }
+  100% { opacity: 1; clip-path: circle(85% at 50% 38%); transform: scale(1); }
+}
+
+@keyframes fx-dusk-point {
+  0%, 24% { opacity: 0; transform: scale(0.25); }
+  48% { opacity: 1; transform: scale(1.05); }
+  66% { opacity: 0.72; transform: scale(1.75); }
+  100% { opacity: 0; transform: scale(2.8); }
+}
+
+/* Max rizz: neon scanline sweep */
+@keyframes fx-scanline-sweep {
+  0% { opacity: 0; transform: translateY(-24vh); }
+  10% { opacity: 0.95; }
+  88% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(104vh); }
+}
+
+@keyframes fx-scanline-sweep-back {
+  0% { opacity: 0; transform: translateY(104vh) scaleY(-1); }
+  10% { opacity: 0.95; }
+  88% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-24vh) scaleY(-1); }
+}
+
+/* Shared-element morphs: scale overshoot + opacity (+ subtle blur on small elements only) */
+@keyframes fx-morph-out {
+  0% { opacity: 1; transform: scale(1); filter: blur(0px); }
+  55% { opacity: 0.45; transform: scale(1.04, 0.97); filter: blur(1px); }
+  100% { opacity: 0; transform: scale(1.05, 0.96); filter: blur(1.4px); }
+}
+
+@keyframes fx-morph-in {
+  0% { opacity: 0; transform: scale(0.96, 1.03); filter: blur(1.4px); }
+  45% { opacity: 0.92; transform: scale(1.02, 0.99); filter: blur(0.5px); }
+  100% { opacity: 1; transform: scale(1); filter: blur(0px); }
+}
+
+@keyframes fx-morph-plate-out {
+  0% { opacity: 1; transform: scale(1); }
+  55% { opacity: 0.45; transform: scale(1.03, 0.98); }
+  100% { opacity: 0; transform: scale(1.04, 0.975); }
+}
+
+@keyframes fx-morph-plate-in {
+  0% { opacity: 0; transform: scale(0.965, 1.025); }
+  50% { opacity: 0.92; transform: scale(1.015, 0.992); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Same-document dialog paper-unfold & interactive study slide */
+@keyframes fx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fx-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fx-paper-unfold {
+  0% {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(-28deg) scaleY(0.76) translateY(-16px);
+    clip-path: inset(0 0 42% 0);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1200px) rotateX(0deg) scaleY(1) translateY(0);
+    clip-path: inset(0 0 0% 0);
+  }
+}
+
+@keyframes fx-paper-fold {
+  0% {
+    opacity: 1;
+    transform: perspective(1200px) rotateX(0deg) scaleY(1) translateY(0);
+    clip-path: inset(0 0 0% 0);
+  }
+  100% {
+    opacity: 0;
+    transform: perspective(1200px) rotateX(-24deg) scaleY(0.78) translateY(-12px);
+    clip-path: inset(0 0 40% 0);
+  }
+}
+
+@keyframes fx-study-out-next {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(-12%); }
+}
+
+@keyframes fx-study-in-next {
+  from { opacity: 0; transform: translateX(12%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fx-study-out-prev {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(12%); }
+}
+
+@keyframes fx-study-in-prev {
+  from { opacity: 0; transform: translateX(-12%); }
+  to { opacity: 1; transform: translateX(0); }
+}
