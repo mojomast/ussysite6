@@ -117,18 +117,38 @@ test('POST /api/source-room/dispatch sanitizes margin notes, enforces same-origi
     const askRes = await fetch(`${baseUrl}/api/editor/ask`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question: 'Tell me about involute gears in photo-to-part' })
+      body: JSON.stringify({
+        question: 'Why did photo-to-part build gear_steer.py?',
+        history: [{ role: 'user', text: 'Tell me about Issue 02 CAD tools' }]
+      })
     });
     assert.equal(askRes.status, 200);
     const askJson = await askRes.json();
     assert.equal(askJson.ok, true);
     assert.equal(askJson.stub, true);
+    assert.equal(askJson.model, 'gemini-3.5-flash-lite');
     assert.ok(askJson.citations.some((c) => c.href.includes('hermes-photo-to-part')));
+
+    const editorStatus = await fetch(`${baseUrl}/api/editor/status`);
+    assert.equal(editorStatus.status, 200);
+    const editorStatusJson = await editorStatus.json();
+    assert.equal(editorStatusJson.model, 'gemini-3.5-flash-lite');
+    assert.equal(editorStatusJson.supportsMultiTurn, true);
 
     const illusStub = await fetch(`${baseUrl}/api/illustrations/status`);
     assert.equal(illusStub.status, 200);
     const audioStub = await fetch(`${baseUrl}/api/audio/status`);
     assert.equal(audioStub.status, 200);
+    const audioJson = await audioStub.json();
+    assert.equal(audioJson.model, 'gemini-3.8-flash-lite-tts');
+    assert.equal(audioJson.cachedTracks, 0);
+
+    const audioPost = await fetch(`${baseUrl}/api/audio/edition`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issueNumber: '02', articleSlug: 'rizzstack' })
+    });
+    assert.equal(audioPost.status, 501);
   });
 });
 
@@ -158,6 +178,14 @@ test('Static Astro routes enforce strict CSP without unsafe-inline and block ser
 
     const sitemapRes = await fetch(`${baseUrl}/sitemap-index.xml`);
     assert.equal(sitemapRes.status, 200);
+
+    const rssRes = await fetch(`${baseUrl}/rss.xml`);
+    assert.equal(rssRes.status, 200);
+    assert.ok((rssRes.headers.get('content-type') || '').includes('rss+xml'));
+    const rssXml = await rssRes.text();
+    assert.ok(rssXml.includes('<rss version="2.0"'));
+    assert.ok(rssXml.includes('Rizzstack'));
+    assert.ok(rssXml.includes('OrbitDesktop'));
 
     const deniedServer = await fetch(`${baseUrl}/server.mjs`);
     assert.equal(deniedServer.status, 404);

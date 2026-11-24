@@ -60,6 +60,17 @@ export function openPressDatabase(dbPath = process.env.DATABASE_PATH || './data/
       payload_json TEXT NOT NULL,
       created_at INTEGER NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS audio_editions (
+      cache_key TEXT PRIMARY KEY NOT NULL,
+      issue_number TEXT NOT NULL,
+      article_slug TEXT NOT NULL,
+      voice TEXT NOT NULL,
+      model TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      script_hash TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
   `);
 
   const db = drizzle(sqlite, { schema });

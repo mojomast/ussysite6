@@ -36,3 +36,14 @@ export const editorialEvents = sqliteTable('editorial_events', {
   payloadJson: text('payload_json').notNull(),
   createdAt: integer('created_at').notNull()
 });
+
+export const audioEditions = sqliteTable('audio_editions', {
+  cacheKey: text('cache_key').primaryKey(),
+  issueNumber: text('issue_number').notNull(),
+  articleSlug: text('article_slug').notNull(),
+  voice: text('voice').notNull(),
+  model: text('model').notNull(),
+  mimeType: text('mime_type').notNull(),
+  scriptHash: text('script_hash').notNull(),
+  createdAt: integer('created_at').notNull()
+});

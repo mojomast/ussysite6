@@ -100,6 +100,9 @@ if (existsSync(DIST_DIR)) {
   if (!existsSync(join(DIST_DIR, 'sitemap-index.xml'))) {
     fail('Missing dist/sitemap-index.xml');
   }
+  if (!existsSync(join(DIST_DIR, 'rss.xml'))) {
+    fail('Missing dist/rss.xml');
+  }
 }
 
 if (failures > 0) {

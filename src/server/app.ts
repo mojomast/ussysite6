@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { Hono, type Context } from 'hono';
 import { eq, desc, sql } from 'drizzle-orm';
 import { openPressDatabase, type PressDbHandle } from './db/client.ts';
-import { readerStates, savedProjects, marginDispatches, editorialEvents } from './db/schema.ts';
+import { readerStates, savedProjects, marginDispatches, editorialEvents, audioEditions } from './db/schema.ts';
 import { loadServerCatalog } from '../lib/server-catalog.ts';
 import { buildIssueFolios } from '../lib/folio.ts';
 
@@ -230,7 +230,7 @@ export function createLivingApp(options: LivingAppOptions = {}) {
       service: 'slop-illustrated-living-edition',
       version: '7.0.0',
       publication: 'SLOP ILLUSTRATED',
-      editionSkin: 'gemini-4-carbon',
+      editionSkin: 'gemini-4-carbon-x-neon',
       currentIssue: cur?.issueNumber || '02',
       issueNumber: cur?.issueNumber || '02',
       issueDate: cur?.coverDate || 'November 2026',
@@ -496,18 +496,23 @@ export function createLivingApp(options: LivingAppOptions = {}) {
     });
   });
 
-  // 5. Optional Runtime Feature: Ask the Editor (Gemini Flash-Lite behind FEATURE_ASK_EDITOR)
+  // 5. Optional Runtime Feature: Ask the Editor (Gemini 3.5 Flash-Lite behind FEATURE_ASK_EDITOR)
+  const DEFAULT_EDITOR_MODEL = 'gemini-3.5-flash-lite';
+  const DEFAULT_AUDIO_TTS_MODEL = 'gemini-3.8-flash-lite-tts';
+  const DEFAULT_ILLUSTRATION_MODEL = 'gemini-nano-banana-2.1';
+
   app.get('/api/editor/status', (c) => {
     const enabled = env.FEATURE_ASK_EDITOR === 'true';
     const configured = Boolean(env.GEMINI_API_KEY);
-    const model = env.GEMINI_EDITOR_MODEL || 'gemini-2.5-flash-lite';
+    const model = env.GEMINI_EDITOR_MODEL || DEFAULT_EDITOR_MODEL;
     return c.json({
       ok: true,
       feature: 'ask-the-editor',
       enabled,
       configured,
       stub: !(enabled && configured),
-      model
+      model,
+      supportsMultiTurn: true
     });
   });
 
@@ -532,23 +537,65 @@ export function createLivingApp(options: LivingAppOptions = {}) {
       return c.json({ ok: false, error: 'Question is required' }, 400);
     }
 
-    // Rank matching monographs locally first (always grounded, zero hallucinated repos)
-    const tokens = question
-      .toLowerCase()
-      .split(/[^a-z0-9-]+/)
-      .filter((t) => t.length >= 2);
+    const rawHistory = Array.isArray(body.history) ? body.history.slice(-6) : [];
+    const history = rawHistory
+      .filter((m): m is Record<string, unknown> => Boolean(m && typeof m === 'object'))
+      .map((m) => ({
+        role: m.role === 'editor' ? 'model' : 'user',
+        text: sanitizeText(m.text, 280)
+      }))
+      .filter((m) => m.text.length > 0);
 
-    const scored = catalog.articles
-      .map((art) => {
-        const hay = `${art.title} ${art.articleSlug} ${art.headline} ${art.deck} ${art.category} ${art.techStack.join(' ')} ${art.body}`.toLowerCase();
-        let score = 0;
-        for (const tok of tokens) {
-          if (art.articleSlug.includes(tok) || art.title.toLowerCase().includes(tok)) score += 5;
-          else if (hay.includes(tok)) score += 1;
+    // BM25-style weighted retrieval across title, stack, architecture, fieldNotes, codeExcerpt, and prose
+    const STOP_WORDS = new Set([
+      'the', 'and', 'for', 'with', 'about', 'what', 'which', 'how', 'why', 'does', 'did', 'are', 'from', 'this', 'that', 'tell', 'have'
+    ]);
+    const recentUserContext = history
+      .filter((h) => h.role === 'user')
+      .slice(-1)
+      .map((h) => h.text)
+      .join(' ');
+    const queryTokens = `${question} ${recentUserContext}`
+      .toLowerCase()
+      .split(/[^a-z0-9_-]+/)
+      .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
+
+    const docCorpus = catalog.articles.map((art) => {
+      const titleText = `${art.title} ${art.articleSlug} ${art.kicker}`.toLowerCase();
+      const specText = `${art.headline} ${art.deck} ${art.category} ${art.techStack.join(' ')} ${art.metrics.map((m) => `${m.label} ${m.value}`).join(' ')}`.toLowerCase();
+      const deepText = `${art.glanceNote} ${art.architecture.join(' ')} ${art.fieldNotes.join(' ')} ${art.verifiedCapabilities.join(' ')} ${art.codeExcerpt.title} ${art.codeExcerpt.code} ${art.body}`.toLowerCase();
+      return { art, titleText, specText, deepText };
+    });
+
+    const N = Math.max(1, docCorpus.length);
+    const df = new Map<string, number>();
+    for (const tok of new Set(queryTokens)) {
+      let count = 0;
+      for (const doc of docCorpus) {
+        if (doc.titleText.includes(tok) || doc.specText.includes(tok) || doc.deepText.includes(tok)) {
+          count++;
         }
-        return { art, score };
+      }
+      df.set(tok, count);
+    }
+
+    const scored = docCorpus
+      .map((doc) => {
+        let score = 0;
+        for (const tok of queryTokens) {
+          const docFreq = df.get(tok) || 0;
+          if (docFreq === 0) continue;
+          const idf = Math.log((N - docFreq + 0.5) / (docFreq + 0.5) + 1);
+          if (doc.titleText.includes(tok)) score += 6.0 * idf;
+          if (doc.specText.includes(tok)) score += 3.0 * idf;
+          if (doc.deepText.includes(tok)) score += 1.5 * idf;
+        }
+        if (question.toLowerCase().includes('nov') && doc.art.issueNumber === '02') {
+          score += 1.2;
+        }
+        return { art: doc.art, score };
       })
-      .filter((s) => s.score > 0)
+      .filter((s) => s.score > 0.2)
       .sort((a, b) => b.score - a.score)
       .slice(0, 3);
 
@@ -560,14 +607,14 @@ export function createLivingApp(options: LivingAppOptions = {}) {
 
     const enabled = env.FEATURE_ASK_EDITOR === 'true';
     const apiKey = env.GEMINI_API_KEY;
-    const model = env.GEMINI_EDITOR_MODEL || 'gemini-2.5-flash-lite';
+    const model = env.GEMINI_EDITOR_MODEL || DEFAULT_EDITOR_MODEL;
 
     if (enabled && apiKey) {
       try {
         const contextBlock = topMatches
           .map(
             (m) =>
-              `[${m.title} | Issue ${m.issueNumber} | ${m.repoUrl}@${m.sourceRevision.slice(0, 7)}]: ${m.headline}. ${m.glanceNote} Caveats: ${m.fieldNotes.join(' ')}`
+              `[${m.title} | Issue ${m.issueNumber} | ${m.repoUrl}@${m.sourceRevision.slice(0, 7)}]: ${m.headline}. ${m.glanceNote} Architecture: ${m.architecture.slice(0, 2).join(' ')} Caveats: ${m.fieldNotes.join(' ')}`
           )
           .join('\n');
 
@@ -583,18 +630,22 @@ export function createLivingApp(options: LivingAppOptions = {}) {
               systemInstruction: {
                 parts: [
                   {
-                    text: 'You are SLOPTIMUS PRIME, Editor-in-Chief of Slop Illustrated. Answer briefly, wittily, and strictly from the provided repository facts. Never invent projects, benchmarks, or commit hashes.'
+                    text: 'You are SLOPTIMUS PRIME, Editor-in-Chief of Slop Illustrated. Answer concisely, wittily, and strictly from the provided commit-pinned monograph context. Never invent repositories, benchmarks, or commit hashes.'
                   }
                 ]
               },
               contents: [
+                ...history.map((h) => ({
+                  role: h.role,
+                  parts: [{ text: h.text }]
+                })),
                 {
                   role: 'user',
-                  parts: [{ text: `Context:\n${contextBlock}\n\nReader Question: ${question}` }]
+                  parts: [{ text: `Grounded Catalog Context:\n${contextBlock}\n\nReader Question: ${question}` }]
                 }
               ],
               generationConfig: {
-                maxOutputTokens: 280,
+                maxOutputTokens: 320,
                 temperature: 0.4
               }
             })
@@ -621,11 +672,13 @@ export function createLivingApp(options: LivingAppOptions = {}) {
       }
     }
 
-    const lead = topMatches[0];
+    const summaryLines = topMatches.map(
+      (m) => `${m.title} (Iss.${m.issueNumber}, @${m.sourceRevision.slice(0, 7)}): ${m.glanceNote}`
+    );
     const stubReply =
       scored.length > 0
-        ? `[Press-Desk Stub · FEATURE_ASK_EDITOR=${enabled}] Check ${lead.title} in Issue ${lead.issueNumber} (#${lead.readerServiceNo}, pinned @${lead.sourceRevision.slice(0, 7)}): ${lead.glanceNote}`
-        : `[Press-Desk Stub · FEATURE_ASK_EDITOR=${enabled}] Live Gemini Flash-Lite synthesis is gated behind FEATURE_ASK_EDITOR=true. Start with Issue ${lead.issueNumber}'s cover story (${lead.title}) or press / to search all 22 monographs.`;
+        ? `[Press-Desk BM25 Stub · ${model} off] ${summaryLines.join(' — ')}`
+        : `[Press-Desk BM25 Stub · ${model} off] Live synthesis is gated behind FEATURE_ASK_EDITOR=true. Start with ${topMatches[0].title} (${topMatches[0].headline}) or press / to search all 22 monographs.`;
 
     return c.json({
       ok: true,
@@ -639,16 +692,18 @@ export function createLivingApp(options: LivingAppOptions = {}) {
   // 6. Optional Runtime Feature Stubs: Per-Issue AI Illustration & Audio Edition
   app.get('/api/illustrations/status', (c) => {
     const enabled = env.FEATURE_AI_ILLUSTRATION === 'true';
+    const model = env.GEMINI_ILLUSTRATION_MODEL || DEFAULT_ILLUSTRATION_MODEL;
     return c.json({
       ok: true,
       feature: 'per-issue-ai-illustration',
       enabled,
       configured: Boolean(env.GEMINI_API_KEY),
       stub: !enabled,
+      model,
       contract: {
         endpoint: 'POST /api/illustrations/generate',
         body: ['issueNumber', 'articleSlug', 'promptBrief'],
-        note: 'Stub interface ready for Gemini 4 Neon image-plate pipeline.'
+        note: 'Gated behind FEATURE_AI_ILLUSTRATION; offline Carbon SVG lithographs and Issue 01 Blender plates remain default.'
       }
     });
   });
@@ -659,8 +714,9 @@ export function createLivingApp(options: LivingAppOptions = {}) {
         ok: false,
         stub: true,
         code: 'feature_flagged_off',
+        model: env.GEMINI_ILLUSTRATION_MODEL || DEFAULT_ILLUSTRATION_MODEL,
         message:
-          'Per-issue runtime AI illustration is behind FEATURE_AI_ILLUSTRATION. Issue 01 uses Cycles Blender WebP plates; Issue 02 ships deterministic Carbon Architectural SVG lithographs.'
+          'Per-issue runtime AI illustration is behind FEATURE_AI_ILLUSTRATION. Issue 01 uses Cycles Blender WebP plates; Issue 02 ships deterministic Carbon × Neon SVG lithographs.'
       },
       501
     );
@@ -668,12 +724,21 @@ export function createLivingApp(options: LivingAppOptions = {}) {
 
   app.get('/api/audio/status', (c) => {
     const enabled = env.FEATURE_AUDIO_EDITION === 'true';
+    const model = env.GEMINI_AUDIO_TTS_MODEL || DEFAULT_AUDIO_TTS_MODEL;
+    const cachedCountRow = db
+      .select({ count: sql<number>`count(*)` })
+      .from(audioEditions)
+      .get();
+
     return c.json({
       ok: true,
       feature: 'audio-edition',
       enabled,
+      configured: Boolean(env.GEMINI_API_KEY),
       stub: !enabled,
-      clientSynth: 'WebAudio Carbon Tonewheel (33.3 RPM + Ussyverse Era Chords)',
+      model,
+      cachedTracks: Number(cachedCountRow?.count || 0),
+      clientSynth: 'WebAudio Carbon × Neon Tonewheel (33.3 RPM + 22 Monograph Chords)',
       contract: {
         endpoint: 'POST /api/audio/edition',
         body: ['issueNumber', 'articleSlug', 'voice']
@@ -681,14 +746,29 @@ export function createLivingApp(options: LivingAppOptions = {}) {
     });
   });
 
-  app.post('/api/audio/edition', (c) => {
+  app.post('/api/audio/edition', async (c) => {
+    const enabled = env.FEATURE_AUDIO_EDITION === 'true';
+    const model = env.GEMINI_AUDIO_TTS_MODEL || DEFAULT_AUDIO_TTS_MODEL;
+    if (!enabled || !env.GEMINI_API_KEY) {
+      return c.json(
+        {
+          ok: false,
+          stub: true,
+          code: 'feature_flagged_off',
+          model,
+          message: `Narrated Audio Edition (${model}) is gated behind FEATURE_AUDIO_EDITION=true. The docked 33⅓ RPM WebAudio Tonewheel transport is active locally.`
+        },
+        501
+      );
+    }
+
     return c.json(
       {
         ok: false,
         stub: true,
-        code: 'feature_flagged_off',
-        message:
-          'Narrated Audio Edition streaming is behind FEATURE_AUDIO_EDITION. Use the client-side Carbon Tonewheel button in the header or on any article spread today.'
+        code: 'tts_provider_not_wired',
+        model,
+        message: `SQLite audio_editions cache ready; wire live ${model} streaming credentials on the host to synthesize narration.`
       },
       501
     );
@@ -750,9 +830,11 @@ export function createLivingApp(options: LivingAppOptions = {}) {
         if (!contentType) continue;
 
         const buf = await readFile(resolved);
+        const resolvedContentType =
+          resolved.endsWith(`${sep}rss.xml`) ? 'application/rss+xml; charset=utf-8' : contentType;
         const headers: Record<string, string> = {
           ...COMMON_SECURITY_HEADERS,
-          'Content-Type': contentType,
+          'Content-Type': resolvedContentType,
           'Content-Length': String(buf.byteLength),
           'Cache-Control':
             resolved.includes(`${sep}_astro${sep}`) || resolved.includes(`${sep}assets${sep}`)

@@ -97,3 +97,12 @@ test('Archived Issue 01 preserves all 13 Cycles Blender WebP assets and Python r
     assert.ok(fs.existsSync(path.join(srcDir, 'render-scene.py')), `Missing render-scene.py for ${id}`);
   }
 });
+
+test('Interactive step-through studies are configured for both Issue 01 classics and Issue 02 monographs', () => {
+  const catalog = loadServerCatalog();
+  const studyArticles = catalog.articles.filter((a) => a.secondaryMedia?.kind === 'svg-study');
+  const issue01Studies = studyArticles.filter((a) => a.issueNumber === '01');
+  const issue02Studies = studyArticles.filter((a) => a.issueNumber === '02');
+  assert.equal(issue01Studies.length, 5);
+  assert.equal(issue02Studies.length, 5);
+});

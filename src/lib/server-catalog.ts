@@ -49,6 +49,12 @@ export interface CatalogArticle {
   fieldNotes: string[];
   readingGuide: string[];
   flexiFreqs: number[];
+  secondaryMedia?: {
+    kind: 'screenshot' | 'svg-study';
+    src?: string;
+    studyId?: string;
+    caption: string;
+  } | null;
   codeExcerpt: {
     title: string;
     lang: string;
