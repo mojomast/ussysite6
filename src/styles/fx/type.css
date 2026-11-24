@@ -641,3 +641,9 @@ html[data-rizz='max'] .mo-scrolly::before {
     transform: none;
   }
 }
+
+/* While a headline is under pressure its glyph widths change every frame. Containing layout to
+   the headline keeps that reflow from walking the whole document (measured: ~6.6 ms → see §9). */
+.is-fx-press {
+  contain: layout style;
+}
