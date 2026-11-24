@@ -2,8 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createAppServer } from '../server.mjs';
 
-async function withServer(fn) {
-  const server = createAppServer();
+async function withServer(envOverrides, fn) {
+  if (typeof envOverrides === 'function') {
+    fn = envOverrides;
+    envOverrides = {};
+  }
+  const server = createAppServer({
+    dbPath: ':memory:',
+    env: { ...process.env, FEATURE_ASK_EDITOR: 'false', GEMINI_API_KEY: '', ...envOverrides }
+  });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   const { port } = server.address();
   const baseUrl = `http://127.0.0.1:${port}`;
@@ -14,50 +21,143 @@ async function withServer(fn) {
   }
 }
 
-test('GET /api/health returns SLOP ILLUSTRATED metadata and all 11 article IDs & Reader Service numbers', async () => {
+test('GET /api/health returns Living Edition metadata, Issue 02 + Issue 01 summary, and SQLite WAL status', async () => {
   await withServer(async (baseUrl) => {
     const res = await fetch(`${baseUrl}/api/health`);
     assert.equal(res.status, 200);
     const data = await res.json();
     assert.equal(data.status, 'ok');
-    assert.equal(data.version, '6.0.0');
-    assert.equal(data.publication, 'SLOP ILLUSTRATED');
-    assert.equal(data.issueNumber, '01');
+    assert.equal(data.service, 'slop-illustrated-living-edition');
+    assert.equal(data.version, '7.0.0');
+    assert.equal(data.currentIssue, '02');
     assert.equal(data.digitalFolios, 14);
     assert.equal(data.articles, 11);
-    assert.equal(data.articleIds.length, 11);
-    assert.deepEqual(data.readerServiceNos, [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]);
+    assert.equal(data.totalArticles, 22);
+    assert.equal(data.database.engine, 'sqlite-drizzle-wal');
+    assert.equal(data.database.connected, true);
+    assert.deepEqual(data.readerServiceNos, [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211]);
   });
 });
 
-test('GET and POST /api/press/state persist Reader Service Bingo Card numbers and print mode', async () => {
+test('SQLite /api/press/state isolates per-reader bookmarks while aggregating community counts', async () => {
   await withServer(async (baseUrl) => {
-    const postRes = await fetch(`${baseUrl}/api/press/state`, {
+    const alicePost = await fetch(`${baseUrl}/api/press/state`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Reader-Id': 'rdr_alice_test01'
+      },
       body: JSON.stringify({
         state: {
-          printMode: 'blueprint',
-          circledServiceNos: [101, 103, 106, 111],
-          readerNotes: [{ id: 'n1', text: 'Love the RouteTok relay schematic' }]
+          printMode: 'rag',
+          circledServiceNos: [201, 207, 101]
         }
       })
     });
-    assert.equal(postRes.status, 200);
-    const postData = await postRes.json();
-    assert.equal(postData.ok, true);
-    assert.equal(postData.state.printMode, 'blueprint');
-    assert.deepEqual(postData.state.circledServiceNos, [101, 103, 106, 111]);
-    assert.equal(postData.state.readerNotes.length, 1);
+    assert.equal(alicePost.status, 200);
+
+    const bobPost = await fetch(`${baseUrl}/api/press/state`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Reader-Id': 'rdr_bob_test02'
+      },
+      body: JSON.stringify({
+        state: {
+          printMode: 'oxide',
+          circledServiceNos: [201, 210]
+        }
+      })
+    });
+    assert.equal(bobPost.status, 200);
+
+    // Verify Alice's list was NOT overwritten by Bob
+    const aliceGet = await fetch(`${baseUrl}/api/press/state`, {
+      headers: { 'X-Reader-Id': 'rdr_alice_test01' }
+    });
+    const aliceData = await aliceGet.json();
+    assert.equal(aliceData.state.printMode, 'rag');
+    assert.deepEqual(aliceData.state.circledServiceNos, [101, 201, 207]);
+    assert.equal(aliceData.community.totalReaders, 2);
+    assert.equal(aliceData.community.saveCountsByServiceNo['201'], 2);
+    assert.equal(aliceData.community.saveCountsByServiceNo['207'], 1);
   });
 });
 
-test('Static file allowlist serves index.html and denies server.mjs and dotfiles', async () => {
+test('POST /api/source-room/dispatch sanitizes margin notes, enforces same-origin, and Ask-the-Editor stub cites real repos', async () => {
   await withServer(async (baseUrl) => {
-    const indexRes = await fetch(`${baseUrl}/`);
-    assert.equal(indexRes.status, 200);
-    const html = await indexRes.text();
-    assert.ok(html.includes('SLOP ILLUSTRATED'));
+    const crossOrigin = await fetch(`${baseUrl}/api/source-room/dispatch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Origin: 'https://evil.example'
+      },
+      body: JSON.stringify({ text: 'spoof' })
+    });
+    assert.equal(crossOrigin.status, 403);
+
+    const validDispatch = await fetch(`${baseUrl}/api/source-room/dispatch`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Reader-Id': 'rdr_alice_test01'
+      },
+      body: JSON.stringify({
+        issueNumber: '02',
+        articleSlug: 'hermes-photo-to-part',
+        text: 'gear_steer.py <script>blocking</script> 40 turns of trochoids is hilarious'
+      })
+    });
+    assert.equal(validDispatch.status, 200);
+    const dJson = await validDispatch.json();
+    assert.equal(dJson.ok, true);
+    assert.ok(!dJson.dispatch.text.includes('<'));
+    assert.equal(dJson.community.recentDispatches.length, 1);
+
+    const askRes = await fetch(`${baseUrl}/api/editor/ask`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: 'Tell me about involute gears in photo-to-part' })
+    });
+    assert.equal(askRes.status, 200);
+    const askJson = await askRes.json();
+    assert.equal(askJson.ok, true);
+    assert.equal(askJson.stub, true);
+    assert.ok(askJson.citations.some((c) => c.href.includes('hermes-photo-to-part')));
+
+    const illusStub = await fetch(`${baseUrl}/api/illustrations/status`);
+    assert.equal(illusStub.status, 200);
+    const audioStub = await fetch(`${baseUrl}/api/audio/status`);
+    assert.equal(audioStub.status, 200);
+  });
+});
+
+test('Static Astro routes enforce strict CSP without unsafe-inline and block server source / dotfiles', async () => {
+  await withServer(async (baseUrl) => {
+    const homeRes = await fetch(`${baseUrl}/`);
+    assert.equal(homeRes.status, 200);
+    const csp = homeRes.headers.get('content-security-policy') || '';
+    assert.ok(csp.includes("script-src 'self'"), 'Expected strict script-src self');
+    assert.ok(!csp.includes('unsafe-inline'), 'CSP must not include unsafe-inline');
+    assert.ok(!csp.includes('unsafe-eval'), 'CSP must not include unsafe-eval');
+
+    const homeHtml = await homeRes.text();
+    assert.ok(homeHtml.includes('Slop Illustrated'));
+
+    const issue02Res = await fetch(`${baseUrl}/issues/02`);
+    assert.equal(issue02Res.status, 200);
+
+    const issue01Res = await fetch(`${baseUrl}/issues/01`);
+    assert.equal(issue01Res.status, 200);
+
+    const articleRes = await fetch(`${baseUrl}/issues/02/rizzstack`);
+    assert.equal(articleRes.status, 200);
+
+    const robotsRes = await fetch(`${baseUrl}/robots.txt`);
+    assert.equal(robotsRes.status, 200);
+
+    const sitemapRes = await fetch(`${baseUrl}/sitemap-index.xml`);
+    assert.equal(sitemapRes.status, 200);
 
     const deniedServer = await fetch(`${baseUrl}/server.mjs`);
     assert.equal(deniedServer.status, 404);

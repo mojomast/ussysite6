@@ -3,12 +3,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { MAGAZINE_ISSUE_META, USSY_PROJECTS, getProjectById } from '../js/projects.js';
-import { loadPlate } from '../js/plates/index.js';
+import { loadServerCatalog } from '../src/lib/server-catalog.ts';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-const CANONICAL_IDS = [
+const ISSUE_01_SLUGS = [
   'orbitdesktop',
   'velvetrp',
   'jammate',
@@ -22,55 +21,79 @@ const CANONICAL_IDS = [
   'becomussy'
 ];
 
-test('SLOP ILLUSTRATED catalog contains all 11 canonical SLOPTIMUS PRIME repositories with editorial metadata & code listings', () => {
-  assert.equal(USSY_PROJECTS.length, 11);
+const ISSUE_02_SLUGS = [
+  'rizzstack',
+  'bundlebees',
+  'hyvv',
+  'orbit-control-plane',
+  'uirizz',
+  'open-higgsfield-skills',
+  'hermes-aircraft-doppler-geolocation',
+  'eoh',
+  'hermes-photo-to-part',
+  'hermes-templeos',
+  'jackpotsyndicate'
+];
+
+test('Living Edition catalog loads Issue 01 (archived) and Issue 02 (current) with 22 commit-pinned monographs', () => {
+  const catalog = loadServerCatalog();
+  assert.equal(catalog.issues.length, 2);
+  assert.equal(catalog.currentIssue?.issueNumber, '02');
+  assert.equal(catalog.currentIssue?.status, 'current');
+
+  const issue01 = catalog.issues.find((i) => i.issueNumber === '01');
+  assert.ok(issue01);
+  assert.equal(issue01.status, 'archived');
+
+  const arts01 = catalog.articles.filter((a) => a.issueNumber === '01').sort((a, b) => a.index - b.index);
+  const arts02 = catalog.articles.filter((a) => a.issueNumber === '02').sort((a, b) => a.index - b.index);
+
   assert.deepEqual(
-    USSY_PROJECTS.map((p) => p.id),
-    CANONICAL_IDS
+    arts01.map((a) => a.articleSlug),
+    ISSUE_01_SLUGS
+  );
+  assert.deepEqual(
+    arts02.map((a) => a.articleSlug),
+    ISSUE_02_SLUGS
+  );
+  assert.deepEqual(
+    arts01.map((a) => a.readerServiceNo),
+    [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]
+  );
+  assert.deepEqual(
+    arts02.map((a) => a.readerServiceNo),
+    [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211]
   );
 
-  for (const proj of USSY_PROJECTS) {
-    assert.ok(proj.headline && proj.deck, `Missing headline/deck for ${proj.id}`);
-    assert.ok(proj.editorialLead && proj.editorialLead.length > 60, `Missing editorialLead for ${proj.id}`);
-    assert.ok(proj.codeListing && proj.codeListing.length > 30, `Missing codeListing for ${proj.id}`);
-    assert.ok(proj.readerServiceNo >= 101 && proj.readerServiceNo <= 111, `Invalid readerServiceNo for ${proj.id}`);
-    assert.ok(proj.repoUrl.startsWith('https://github.com/mojomast/'), `Invalid repoUrl for ${proj.id}`);
-    assert.match(proj.sourceRevision, /^[0-9a-f]{40}$/, `Missing pinned revision for ${proj.id}`);
-    assert.match(proj.researchedAt, /^\d{4}-\d{2}-\d{2}$/);
-    assert.ok(proj.sources.length >= 3, `Missing supporting references for ${proj.id}`);
-    for (const source of [...proj.sources, proj.codeSource]) {
-      assert.ok(source.label, `Missing source label for ${proj.id}`);
-      assert.match(source.url, /^https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[0-9a-f]{40}\//, `Unpinned source for ${proj.id}`);
-      if (source.url.startsWith(`${proj.repoUrl}/`)) {
-        assert.ok(source.url.includes(`/blob/${proj.sourceRevision}/`), `Mismatched source revision for ${proj.id}`);
-      }
-    }
-    assert.match(proj.codeSource.url, /#L\d+(?:-L\d+)?$/);
-    assert.equal(proj.pageRange, undefined, `Physical pagination returned for ${proj.id}`);
-    assert.equal(getProjectById(proj.id)?.id, proj.id);
-  }
+  for (const art of catalog.articles) {
+    assert.ok(art.headline && art.deck, `Missing headline/deck for ${art.articleSlug}`);
+    assert.ok(art.body.length > 180, `Short editorial prose for ${art.articleSlug}`);
+    assert.ok(art.repoUrl.startsWith('https://github.com/mojomast/'), `Invalid repoUrl for ${art.articleSlug}`);
+    assert.match(art.sourceRevision, /^[0-9a-f]{40}$/, `Invalid 40-char SHA for ${art.articleSlug}`);
+    assert.match(art.researchedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(art.sources.length >= 3, `Expected >= 3 sources for ${art.articleSlug}`);
+    assert.match(art.codeExcerpt.sourceUrl, /^https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[0-9a-f]{40}\/.+#L\d+/);
 
-  assert.equal(getProjectById('cocs')?.liveUrl, 'https://arena.ussyco.de');
-  assert.equal(MAGAZINE_ISSUE_META.printModes.length, 3);
+    for (const src of art.sources) {
+      assert.ok(src.label.length > 4);
+      assert.match(src.url, /^https:\/\/github\.com\/[^/]+\/[^/]+\/blob\/[0-9a-f]{40}\//);
+    }
+  }
 });
 
-test('All 11 feature spreads and the TOC mount rendered 1600x1200 Blender WebP plates with scene scripts', async () => {
-  for (const id of ['toc', ...CANONICAL_IDS]) {
-    const proj = getProjectById(id) || { id };
-    const plate = await loadPlate(id, proj);
-    assert.ok(plate && plate.title, `Missing plate descriptor for ${id}`);
-    assert.ok(plate.medium && plate.medium.includes('BLENDER'), `Expected Blender medium for ${id}`);
-    assert.ok(plate.image && plate.image.src.endsWith('.webp'), `Expected .webp image for ${id}`);
-    assert.equal(plate.image.width, 1600, `Expected width 1600 for ${id}`);
-    assert.equal(plate.image.height, 1200, `Expected height 1200 for ${id}`);
-    assert.ok(plate.image.alt && plate.image.alt.length > 60, `Expected descriptive alt text for ${id}`);
+test('Archived Issue 01 preserves all 13 Cycles Blender WebP assets and Python rebuild scripts', () => {
+  const coverWebp = path.join(ROOT_DIR, 'public/assets/cover/machine-beneath-the-skin.webp');
+  const tocWebp = path.join(ROOT_DIR, 'public/assets/editorial/contents/after-hours-proof-desk.webp');
+  assert.ok(fs.existsSync(coverWebp) && fs.statSync(coverWebp).size > 20_000);
+  assert.ok(fs.existsSync(tocWebp) && fs.statSync(tocWebp).size > 20_000);
 
-    const webpPath = path.resolve(ROOT_DIR, plate.image.src);
-    assert.ok(fs.existsSync(webpPath), `Missing WebP file on disk for ${id}: ${webpPath}`);
-    assert.ok(fs.statSync(webpPath).size > 20_000, `Unexpectedly small WebP file for ${id}`);
+  for (const id of ISSUE_01_SLUGS) {
+    const publicDir = path.join(ROOT_DIR, 'public/assets/editorial', id);
+    const webps = fs.readdirSync(publicDir).filter((f) => f.endsWith('.webp'));
+    assert.equal(webps.length, 1, `Expected 1 WebP plate for ${id}`);
+    assert.ok(fs.statSync(path.join(publicDir, webps[0])).size > 20_000);
 
-    const assetDir = path.dirname(webpPath);
-    assert.ok(fs.existsSync(path.join(assetDir, 'render-scene.py')), `Missing render-scene.py in ${assetDir}`);
-    assert.ok(fs.existsSync(path.join(assetDir, 'README.md')), `Missing README.md in ${assetDir}`);
+    const srcDir = path.join(ROOT_DIR, 'assets/editorial', id);
+    assert.ok(fs.existsSync(path.join(srcDir, 'render-scene.py')), `Missing render-scene.py for ${id}`);
   }
 });
