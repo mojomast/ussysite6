@@ -4,7 +4,9 @@
  *   off  — prefers-reduced-motion: reduce. Nothing moves; effects render their calm, static form.
  *   lite — touch-first, low memory, few cores or Save-Data. CSS effects only, no per-frame JS,
  *          no full-screen shaders.
- *   full — everything, still paused offscreen and in hidden tabs.
+ *   full — everything, still paused offscreen and in hidden tabs. A software GPU (SwiftShader,
+ *          llvmpipe: VMs, remote desktops, blocklisted drivers) is detected once at startup and
+ *          drops full to lite, because full-viewport shaders and layers rasterize on the CPU there.
  *
  * The tier is published on <html data-fx="…">, with <html data-pointer="fine|coarse">, so CSS can
  * gate on it without JavaScript.
@@ -18,6 +20,7 @@ type NavigatorHints = Navigator & {
 
 const listeners = new Set<(tier: FxTier) => void>();
 let current: FxTier = 'off';
+let softwareGpu = false;
 
 function compute(): FxTier {
   if (typeof window === 'undefined') return 'off';
@@ -27,7 +30,34 @@ function compute(): FxTier {
   const lowMemory = typeof nav.deviceMemory === 'number' && nav.deviceMemory < 4;
   const fewCores = typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency < 4;
   const saveData = Boolean(nav.connection?.saveData);
-  return coarse || lowMemory || fewCores || saveData ? 'lite' : 'full';
+  return coarse || lowMemory || fewCores || saveData || softwareGpu ? 'lite' : 'full';
+}
+
+/** True when the renderer string names a CPU rasterizer rather than real graphics hardware. */
+export function isSoftwareRenderer(renderer: string): boolean {
+  return /swiftshader|llvmpipe|softpipe|software|basic render driver|mesa offscreen/i.test(renderer);
+}
+
+function probeGpu(): void {
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+    if (!gl) {
+      softwareGpu = true;
+      return;
+    }
+    const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = String(gl.getParameter(ext ? ext.UNMASKED_RENDERER_WEBGL : gl.RENDERER) || '');
+    softwareGpu = isSoftwareRenderer(renderer);
+    gl.getExtension('WEBGL_lose_context')?.loseContext();
+  } catch {
+    softwareGpu = false;
+  }
+  document.documentElement.dataset.gpu = softwareGpu ? 'software' : 'hardware';
+  // motion-boot.js reads this before first paint on the next page, to skip the heavy page turns.
+  try {
+    localStorage.setItem('si.gpu', softwareGpu ? 'soft' : 'hw');
+  } catch {}
 }
 
 function publish() {
@@ -45,6 +75,10 @@ export function startCapability(): FxTier {
     publish();
     window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', publish);
     window.matchMedia('(pointer: fine)').addEventListener('change', publish);
+    if (current === 'full') {
+      probeGpu();
+      if (softwareGpu) publish();
+    }
   }
   return current;
 }

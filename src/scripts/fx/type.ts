@@ -9,6 +9,7 @@ import { initScramble } from './type/scramble.ts';
 import { initCharReveals, restoreAllSplits } from './type/split.ts';
 import { initPressure } from './type/pressure.ts';
 import { initGlitch } from './type/glitch.ts';
+import { initPressIn } from './type/press-in.ts';
 
 export function init(): void | (() => void) {
   let activeTier: FxTier = 'off';
@@ -30,12 +31,17 @@ export function init(): void | (() => void) {
     const getRizz = () => maxRizz();
 
     const cleanups: Array<() => void> = [
-      initCharReveals(),
-      initGlitch(getTier, getRizz),
-      initScramble(getTier, getRizz)
+      initPressIn(),
+      initGlitch(getTier, getRizz)
     ];
 
+    // Per-glyph reveals promote dozens of layers per heading; phones composite them in time
+    // they don't have, so lite keeps the one-shot press-in instead.
+    // Decoding labels rewrite text every frame while they resolve, and on a wide page scrolling
+    // keeps one decoding almost all the time; lite devices keep the plain labels.
     if (tier === 'full') {
+      cleanups.push(initScramble(getTier, getRizz));
+      cleanups.push(initCharReveals());
       cleanups.push(initPressure(getTier, getRizz));
     }
 

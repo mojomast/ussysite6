@@ -698,9 +698,9 @@ html[data-rizz='max'] {
       animation-name: fx-plate-parallax-max;
     }
 
-    /* Lite tier: keep CSS timelines on primary layers, drop extra paint layers */
-    html[data-fx='lite'] .fx-dl-crosshairs,
-    html[data-fx='lite'] .fx-dl-rule {
+    /* Lite tier (phones, low-memory devices): no depth layers. Each one is a section-tall
+       composited texture, and together they tripled the layer area on a 390px feature page. */
+    html[data-fx='lite'] .fx-dl {
       display: none;
     }
   }

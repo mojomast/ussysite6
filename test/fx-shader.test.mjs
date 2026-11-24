@@ -116,7 +116,11 @@ test('shader.css uses compositor-only keyframes, gates motion, and only override
   assert.match(css, /html\.fx-backdrop-live\s+body\s*\{[^}]*background-color:\s*transparent/);
   assert.match(css, /z-index:\s*var\(--fx-z-backdrop\)/);
   assert.match(css, /z-index:\s*var\(--fx-z-overlay\)/);
-  assert.match(css, /opacity:\s*var\(--fx-grain-opacity/);
+  assert.match(css, /opacity:\s*(calc\()?var\(--fx-grain-opacity/);
+  // Blend modes on a fixed full-viewport layer re-blend the whole page every frame.
+  assert.doesNotMatch(css, /mix-blend-mode:\s*(?!normal)/);
+  // The ink wash is sized to the first spread, never the whole body.
+  assert.match(css, /background-repeat:\s*repeat,\s*no-repeat,\s*no-repeat,\s*no-repeat/);
   assert.match(css, /data:image\/svg\+xml/);
   assert.match(css, /feTurbulence/);
   assert.match(css, /html\[data-fx='full'\]\s+\.fx-film-grain/);

@@ -142,21 +142,8 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    /* One-shot wght ink-press on scroll-in for lite/coarse or non-hovered headlines.
-       Keep animation-timeline in its own rule so LightningCSS cannot collapse it into
-       the animation shorthand (which Chromium rejects for scroll()/view()). */
-    html[data-fx='lite'] :is(.section-heading, .article-headline, .under-hood-section h2),
-    html[data-fx='full'][data-pointer='coarse'] :is(.section-heading, .article-headline, .under-hood-section h2),
-    html[data-fx='full'] .article-headline:not(.is-fx-press) {
-      animation: fx-ink-press linear both;
-    }
-
-    :root[data-fx='lite'] :is(.section-heading, .article-headline, .under-hood-section h2),
-    :root[data-fx='full'][data-pointer='coarse'] :is(.section-heading, .article-headline, .under-hood-section h2),
-    :root[data-fx='full'] .article-headline:not(.is-fx-press) {
-      animation-timeline: view();
-      animation-range: entry 0% cover 34%;
-    }
+    /* Split-text reveals stay on the compositor: transform and opacity only. Blur and wght here
+       repainted and re-laid out every glyph on every scroll frame (DESIGN.md §9.4). */
 
     /* Split-text per-character reveal for h2 section heads on view() timeline */
     html[data-fx]:not([data-fx='off']) .fx-chars-reveal:not(.is-fx-press) .fx-ch {
@@ -188,19 +175,20 @@
   0% {
     opacity: 0;
     transform: translateY(0.55em);
-    filter: blur(5px);
-    font-variation-settings: 'wght' 400;
   }
   55% {
     opacity: 1;
-    filter: blur(0px);
-    font-variation-settings: 'wght' 780;
   }
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0px);
-    font-variation-settings: 'wght' 500;
+  }
+}
+
+/* One-shot wght ink-press, started by press-in.ts when the headline first enters view. */
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx]:not([data-fx='off']) :is(.section-heading, .article-headline, .under-hood-section h2).is-fx-pressed-in:not(.is-fx-press) {
+    animation: fx-ink-press 900ms var(--ease-out-expo) both;
   }
 }
 

@@ -166,7 +166,9 @@ test('motion-boot.js handles backward navigation, lite tier overlay removal, max
   hBack.emit('win', 'pagereveal', { viewTransition: { types: backTypes, finished: Promise.resolve() } });
   assert.deepEqual([...backTypes], ['backward', 'ink-wipe']);
 
-  // Lite tier (touch / coarse pointer): keeps route type, drops registration overlay & scanline
+  // Lite tier (touch / coarse pointer, or a cached software GPU): the plain page turn only. The
+  // platen, ink and iris styles composite full-page clip-paths and fixed layers that phones and
+  // software GPUs can't hold at 60fps (DESIGN.md §9.4).
   const liteTypes = new Set();
   const hLite = runBootHarness({
     url: 'https://mojomast.github.io/ussysite6/issues/02/rizzstack/',
@@ -175,10 +177,8 @@ test('motion-boot.js handles backward navigation, lite tier overlay removal, max
     activation: { from: { index: 0 }, entry: { index: 1, url: 'https://mojomast.github.io/ussysite6/issues/02/rizzstack/' } }
   });
   hLite.emit('win', 'pagereveal', { viewTransition: { types: liteTypes, finished: Promise.resolve() } });
-  assert.deepEqual([...liteTypes], ['forward', 'press']);
-  assert.equal(hLite.appended.some((el) => el.className === 'fx-vt-reg'), false, 'lite tier drops reg overlay');
-  assert.equal(hLite.appended.some((el) => el.className === 'fx-vt-sc'), false, 'lite tier drops scanline');
-  assert.ok(hLite.appended.some((el) => el.className === 'fx-vt-pt'), 'lite tier keeps press platen');
+  assert.deepEqual([...liteTypes], ['forward']);
+  assert.equal(hLite.appended.length, 0, 'lite tier mounts no transition layers');
 
   // Max rizz bridges across pageswap -> pagereveal and mounts neon scanline on full tier
   const hMaxOut = runBootHarness({ dataset: { rizz: 'max' } });
