@@ -1,0 +1,1 @@
+var e={ASSETS_PREFIX:void 0,BASE_URL:`/ussysite6`,DEV:!1,MODE:`production`,PROD:!0,PUBLIC_SI_STATIC:`true`,SITE:`https://mojomast.github.io`,SSR:!1},t=(e.BASE_URL||`/`).replace(/\/+$/,``);function n(e){return typeof e!=`string`||!e.startsWith(`/`)||e.startsWith(`//`)||t&&(e===t||e.startsWith(`${t}/`))?e:`${t}${e}`}var r=e.PUBLIC_SI_STATIC!==`true`;export{n,r as t};
