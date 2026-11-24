@@ -19,7 +19,7 @@ export interface KeyEventLike {
   metaKey?: boolean;
   altKey?: boolean;
   repeat?: boolean;
-  target?: EditableTargetLike | null;
+  target?: unknown;
 }
 
 export const KONAMI_SEQUENCE: readonly string[] = [
@@ -43,16 +43,17 @@ const EDITABLE_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT']);
 const EDITABLE_SELECTOR =
   'input, textarea, select, [contenteditable=""], [contenteditable="true"], [contenteditable="plaintext-only"]';
 
-export function isEditableTarget(target: EditableTargetLike | null | undefined): boolean {
-  if (!target) return false;
-  const tag = typeof target.tagName === 'string' ? target.tagName.toUpperCase() : '';
+export function isEditableTarget(target: unknown): boolean {
+  if (!target || typeof target !== 'object') return false;
+  const el = target as EditableTargetLike;
+  const tag = typeof el.tagName === 'string' ? el.tagName.toUpperCase() : '';
   if (EDITABLE_TAGS.has(tag)) return true;
-  if (target.isContentEditable === true) return true;
-  if (typeof target.getAttribute === 'function') {
-    const ce = target.getAttribute('contenteditable');
+  if (el.isContentEditable === true) return true;
+  if (typeof el.getAttribute === 'function') {
+    const ce = el.getAttribute('contenteditable');
     if (ce === '' || ce === 'true' || ce === 'plaintext-only') return true;
   }
-  if (typeof target.closest === 'function' && target.closest(EDITABLE_SELECTOR)) return true;
+  if (typeof el.closest === 'function' && el.closest(EDITABLE_SELECTOR)) return true;
   return false;
 }
 
