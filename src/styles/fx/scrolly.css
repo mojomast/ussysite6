@@ -732,8 +732,11 @@ html[data-rizz='max'] {
 }
 
 /* --------------------------------------------------------------------------
-   3. SCROLL-DRIVEN COUNTERS (@property <integer> + CSS counter())
-   Real number stays in DOM text; animated counter overlays as aria-hidden.
+   3. TABULAR STAT FIGURES (Taste Pass §10)
+   Always show the real figure immediately in tabular-nums. Scroll-linked
+   counting on view() froze hero and sidebar stats at false intermediate values
+   (e.g. "5 features" instead of 11, "#90 to #95" instead of #201 to #211) at
+   scrollY = 0, so the animated counter overlay is intentionally disabled.
    -------------------------------------------------------------------------- */
 
 .fx-counter {
@@ -741,118 +744,25 @@ html[data-rizz='max'] {
   font-variant-numeric: tabular-nums;
 }
 
+.fx-counter-real {
+  color: inherit;
+}
+
 .fx-counter-anim {
   display: none;
 }
 
-/* Pure-CSS target bindings for all clean integers in the current catalog.
-   Any future integer is also bound dynamically via setVars() in scrolly.ts. */
-[data-fx-count='1'] { --fx-count-to: 1; }
-[data-fx-count='2'] { --fx-count-to: 2; }
-[data-fx-count='3'] { --fx-count-to: 3; }
-[data-fx-count='4'] { --fx-count-to: 4; }
-[data-fx-count='5'] { --fx-count-to: 5; }
-[data-fx-count='6'] { --fx-count-to: 6; }
-[data-fx-count='7'] { --fx-count-to: 7; }
-[data-fx-count='8'] { --fx-count-to: 8; }
-[data-fx-count='9'] { --fx-count-to: 9; }
-[data-fx-count='10'] { --fx-count-to: 10; }
-[data-fx-count='11'] { --fx-count-to: 11; }
-[data-fx-count='12'] { --fx-count-to: 12; }
-[data-fx-count='13'] { --fx-count-to: 13; }
-[data-fx-count='14'] { --fx-count-to: 14; }
-[data-fx-count='16'] { --fx-count-to: 16; }
-[data-fx-count='18'] { --fx-count-to: 18; }
-[data-fx-count='22'] { --fx-count-to: 22; }
-[data-fx-count='26'] { --fx-count-to: 26; }
-[data-fx-count='30'] { --fx-count-to: 30; }
-[data-fx-count='33'] { --fx-count-to: 33; }
-[data-fx-count='37'] { --fx-count-to: 37; }
-[data-fx-count='40'] { --fx-count-to: 40; }
-[data-fx-count='60'] { --fx-count-to: 60; }
-[data-fx-count='61'] { --fx-count-to: 61; }
-[data-fx-count='67'] { --fx-count-to: 67; }
-[data-fx-count='70'] { --fx-count-to: 70; }
-[data-fx-count='71'] { --fx-count-to: 71; }
-[data-fx-count='80'] { --fx-count-to: 80; }
-[data-fx-count='93'] { --fx-count-to: 93; }
-[data-fx-count='95'] { --fx-count-to: 95; }
-[data-fx-count='99'] { --fx-count-to: 99; }
-[data-fx-count='101'] { --fx-count-to: 101; }
-[data-fx-count='102'] { --fx-count-to: 102; }
-[data-fx-count='103'] { --fx-count-to: 103; }
-[data-fx-count='104'] { --fx-count-to: 104; }
-[data-fx-count='105'] { --fx-count-to: 105; }
-[data-fx-count='106'] { --fx-count-to: 106; }
-[data-fx-count='107'] { --fx-count-to: 107; }
-[data-fx-count='108'] { --fx-count-to: 108; }
-[data-fx-count='109'] { --fx-count-to: 109; }
-[data-fx-count='110'] { --fx-count-to: 110; }
-[data-fx-count='111'] { --fx-count-to: 111; }
-[data-fx-count='171'] { --fx-count-to: 171; }
-[data-fx-count='177'] { --fx-count-to: 177; }
-[data-fx-count='193'] { --fx-count-to: 193; }
-[data-fx-count='201'] { --fx-count-to: 201; }
-[data-fx-count='202'] { --fx-count-to: 202; }
-[data-fx-count='203'] { --fx-count-to: 203; }
-[data-fx-count='204'] { --fx-count-to: 204; }
-[data-fx-count='205'] { --fx-count-to: 205; }
-[data-fx-count='206'] { --fx-count-to: 206; }
-[data-fx-count='207'] { --fx-count-to: 207; }
-[data-fx-count='208'] { --fx-count-to: 208; }
-[data-fx-count='209'] { --fx-count-to: 209; }
-[data-fx-count='210'] { --fx-count-to: 210; }
-[data-fx-count='211'] { --fx-count-to: 211; }
-[data-fx-count='226'] { --fx-count-to: 226; }
-[data-fx-count='414'] { --fx-count-to: 414; }
-[data-fx-count='585'] { --fx-count-to: 585; }
-[data-fx-count='900'] { --fx-count-to: 900; }
-
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    html:not([data-fx='off']) .fx-counter {
-      display: inline-grid;
-      vertical-align: baseline;
-    }
-
-    html:not([data-fx='off']) .fx-counter-real {
-      grid-area: 1 / 1;
-      color: transparent;
-    }
-
-    html:not([data-fx='off']) .fx-counter-anim {
-      grid-area: 1 / 1;
-      display: inline;
-      pointer-events: none;
-      user-select: none;
-      counter-reset: fx-num var(--fx-count);
-      animation-name: fx-count-up;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 24%;
-    }
-
-    html:not([data-fx='off']) .fx-counter-anim::after {
-      content: counter(fx-num);
-    }
-  }
-}
-
-@keyframes fx-count-up {
-  from { --fx-count: 0; }
-  to   { --fx-count: var(--fx-count-to); }
-}
-
 /* --------------------------------------------------------------------------
    4. READING-PROGRESS INK — vertical margin ink line + h2 chapter ticks
+   Only shown when real outer margin exists outside the 1300px sheet (>= 1520px),
+   so chapter ticks never collide with article actions at 1440px.
    -------------------------------------------------------------------------- */
 
 .fx-ink-rail {
   display: none;
 }
 
-@media (min-width: 1180px) {
+@media (min-width: 1520px) {
   .fx-ink-rail {
     position: fixed;
     right: clamp(0.65rem, 1.3vw, 1.4rem);
@@ -960,24 +870,31 @@ html[data-rizz='max'] {
   }
 
   .fx-ink-tick-label {
-    position: absolute;
-    right: 22px;
-    padding: 0.14rem 0.4rem;
-    border: 1px solid var(--rule-hairline);
-    background: color-mix(in srgb, var(--bg-canvas) 92%, transparent);
-    font-family: var(--font-mono);
-    font-size: 0.58rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: var(--ink-muted);
-    opacity: 0.62;
-    transform: translate3d(4px, 0, 0);
-    transition:
-      color var(--dur-short) var(--ease-carbon),
-      border-color var(--dur-short) var(--ease-carbon),
-      opacity var(--dur-short) var(--ease-carbon),
-      transform var(--spring-snappy-dur) var(--spring-snappy);
+    display: none;
+  }
+
+  @media (min-width: 1680px) {
+    .fx-ink-tick-label {
+      display: block;
+      position: absolute;
+      right: 22px;
+      padding: 0.14rem 0.4rem;
+      border: 1px solid var(--rule-hairline);
+      background: color-mix(in srgb, var(--bg-canvas) 92%, transparent);
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--ink-muted);
+      opacity: 0.62;
+      transform: translate3d(4px, 0, 0);
+      transition:
+        color var(--dur-short) var(--ease-carbon),
+        border-color var(--dur-short) var(--ease-carbon),
+        opacity var(--dur-short) var(--ease-carbon),
+        transform var(--spring-snappy-dur) var(--spring-snappy);
+    }
   }
 
   .fx-ink-tick.is-passed .fx-ink-tick-nib {

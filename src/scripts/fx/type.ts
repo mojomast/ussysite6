@@ -9,7 +9,6 @@ import { initScramble } from './type/scramble.ts';
 import { initCharReveals, restoreAllSplits } from './type/split.ts';
 import { initPressure } from './type/pressure.ts';
 import { initGlitch } from './type/glitch.ts';
-import { initPressIn } from './type/press-in.ts';
 
 export function init(): void | (() => void) {
   let activeTier: FxTier = 'off';
@@ -30,8 +29,9 @@ export function init(): void | (() => void) {
     const getTier = () => fxTier();
     const getRizz = () => maxRizz();
 
+    // Scroll-triggered wght ink-press (press-in.ts) was cut in Taste Pass §10 because
+    // animating font weight on headings as you scroll caused 1.508 CLS.
     const cleanups: Array<() => void> = [
-      initPressIn(),
       initGlitch(getTier, getRizz)
     ];
 

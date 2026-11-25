@@ -81,7 +81,7 @@ test('scrolly.css only animates compositor-friendly properties and @property int
     '--fx-sheet-num'
   ]);
   const frames = keyframeBlocks(scrollyCss);
-  assert.ok(frames.length >= 12, `expected comprehensive scrolly keyframes, found ${frames.length}`);
+  assert.ok(frames.length >= 11, `expected comprehensive scrolly keyframes, found ${frames.length}`);
   for (const { name, body } of frames) {
     for (const [, prop] of body.matchAll(/(--[a-z0-9-]+|[a-z-]+)\s*:/g)) {
       assert.ok(allowed.has(prop), `@keyframes ${name} animates disallowed property "${prop}"`);
@@ -89,10 +89,9 @@ test('scrolly.css only animates compositor-friendly properties and @property int
   }
 });
 
-test('scrolly.css registers @property <integer> counters and gates scroll-timelines + max-rizz + lite tier', () => {
-  assert.match(scrollyCss, /@property\s+--fx-count\s*\{[^}]*syntax:\s*'<integer>'/);
+test('scrolly.css registers sheet counter, keeps true stat numbers visible, and gates scroll-timelines + max-rizz + lite tier', () => {
   assert.match(scrollyCss, /@property\s+--fx-sheet-num\s*\{[^}]*syntax:\s*'<integer>'/);
-  assert.match(scrollyCss, /counter\(fx-num\)/);
+  assert.doesNotMatch(scrollyCss, /\.fx-counter-real\s*\{[^}]*color:\s*transparent/, 'true stat figures must never be hidden behind halfway-scrolled counters');
   assert.match(scrollyCss, /@supports\s*\(animation-timeline:\s*view\(\)\)/);
   assert.match(scrollyCss, /prefers-reduced-motion:\s*no-preference/);
   assert.match(scrollyCss, /html\[data-rizz='max'\][^}]*--fx-parallax-mult:\s*2/);

@@ -115,13 +115,14 @@ test('Kinetic.astro preserves sr-only text, existing .kt structure, and has no i
   assert.doesNotMatch(kineticAstro, /\sstyle=/i);
 });
 
-test('type.css registers @property tokens, gates background-clip:text and view/scroll timelines, and respects forced-colors', () => {
+test('type.css registers @property tokens, gates background-clip:text and view() timelines, avoids scroll-linked CLS, and respects forced-colors', () => {
   assert.match(typeCss, /@property\s+--fx-ink-pos\b/);
   assert.match(typeCss, /@property\s+--fx-ink-angle\b/);
   assert.match(typeCss, /@supports\s*\([^)]*background-clip:\s*text/);
   assert.match(typeCss, /@media\s*\(forced-colors:\s*active\)/);
   assert.match(typeCss, /animation-timeline:\s*view\(\)/);
-  assert.match(typeCss, /animation-timeline:\s*scroll\(root block\)/);
+  assert.doesNotMatch(typeCss, /@keyframes\s+fx-ink-press\b/, 'scroll-triggered wght reflow was cut to eliminate 1.508 CLS');
+  assert.doesNotMatch(typeCss, /\.mo-scrolly::before\s*\{[^}]*content:/, 'giant background marquee watermark was cut in taste pass');
   assert.doesNotMatch(typeCss, /prefers-reduced-motion:\s*reduce[^{]*\{[^}]*opacity:\s*0/);
 
   const allowed = new Set([
@@ -135,7 +136,7 @@ test('type.css registers @property tokens, gates background-clip:text and view/s
     '--fx-ink-angle'
   ]);
   const frames = keyframeBlocks(typeCss);
-  assert.ok(frames.length >= 8, `expected typography keyframes, found ${frames.length}`);
+  assert.ok(frames.length >= 6, `expected typography keyframes, found ${frames.length}`);
   for (const { name, body } of frames) {
     for (const [, prop] of body.matchAll(/(?:^|[\s{;])(--[a-z][a-z0-9-]*|[a-z][a-z0-9-]*)\s*:/g)) {
       assert.ok(allowed.has(prop), `@keyframes ${name} animates disallowed property "${prop}"`);

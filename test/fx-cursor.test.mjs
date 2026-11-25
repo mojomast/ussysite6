@@ -140,6 +140,8 @@ test('cursor.css uses compositor-only keyframes, proper gating, and preserves .n
   assert.match(cssNoComments, /html\[data-fx='full'\]\[data-pointer='fine'\]/);
   assert.match(cssNoComments, /html\[data-fx='lite'\]/);
   assert.match(cssNoComments, /\[data-rizz='max'\]/);
+  assert.doesNotMatch(cssNoComments, /perspective\(/, '3D card tilt was cut in taste pass (§10)');
+  assert.doesNotMatch(cssNoComments, /data-magnet-id/, 'magnetic button drift was cut in taste pass (§10)');
   assert.doesNotMatch(cssNoComments, /\.nav-link::after/, 'must not clobber motion.css .nav-link::after underline');
 });
 

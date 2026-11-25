@@ -159,18 +159,6 @@
   }
 }
 
-@keyframes fx-ink-press {
-  0% {
-    font-variation-settings: 'wght' 400;
-  }
-  58% {
-    font-variation-settings: 'wght' 800;
-  }
-  100% {
-    font-variation-settings: 'wght' 500;
-  }
-}
-
 @keyframes fx-char-reveal {
   0% {
     opacity: 0;
@@ -182,13 +170,6 @@
   100% {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* One-shot wght ink-press, started by press-in.ts when the headline first enters view. */
-@media (prefers-reduced-motion: no-preference) {
-  html[data-fx]:not([data-fx='off']) :is(.section-heading, .article-headline, .under-hood-section h2).is-fx-pressed-in:not(.is-fx-press) {
-    animation: fx-ink-press 900ms var(--ease-out-expo) both;
   }
 }
 
@@ -528,56 +509,12 @@
 }
 
 /* --------------------------------------------------------------------------
-   6. Stretch: Outlined giant "SLOP ILLUSTRATED" scroll()-driven marquee band
-      Mounted via ::before on front-page .mo-scrolly (no page edits)
+   6. Marquee band removed in Taste Pass §10 (editorial restraint: the pinned
+      question reads stronger without hollow watermark text sliding behind it).
    -------------------------------------------------------------------------- */
 
 .mo-scrolly {
   overflow-x: clip;
-}
-
-.mo-scrolly::before {
-  content: 'SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED';
-  content: 'SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED  ·  SLOP ILLUSTRATED' / '';
-  display: block;
-  padding-block: var(--space-5) var(--space-2);
-  font-family: var(--font-structural);
-  font-weight: 800;
-  font-size: clamp(3.2rem, 8.2vw, 7.6rem);
-  line-height: 0.94;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--ink-muted);
-  opacity: 0.58;
-  pointer-events: none;
-  user-select: none;
-}
-
-html[data-rizz='max'] .mo-scrolly::before {
-  -webkit-text-stroke: 1.5px var(--fx-ink);
-  opacity: 0.72;
-}
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    html[data-fx]:not([data-fx='off']) .mo-scrolly::before {
-      animation: fx-marquee-scroll linear both;
-    }
-
-    :root[data-fx]:not([data-fx='off']) .mo-scrolly::before {
-      animation-timeline: scroll(root block);
-    }
-  }
-}
-
-@keyframes fx-marquee-scroll {
-  from {
-    transform: translateX(4%);
-  }
-  to {
-    transform: translateX(-42%);
-  }
 }
 
 /* --------------------------------------------------------------------------
