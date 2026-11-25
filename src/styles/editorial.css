@@ -142,10 +142,14 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.press-masthead .press-controls-bar {
   flex-wrap: nowrap;
 }
 
-.press-mobile-only {
+.press-masthead .press-mobile-only {
   display: none;
 }
 
@@ -233,13 +237,13 @@
 }
 
 @media (max-width: 1023px) {
-  .primary-nav,
-  .press-desktop-only,
+  .press-masthead .primary-nav,
+  .press-masthead .press-desktop-only,
   .press-desk-tray {
     display: none;
   }
 
-  .press-mobile-only {
+  .press-masthead .press-mobile-only {
     display: inline-flex;
   }
 
@@ -254,9 +258,9 @@
     padding-block: 0.3rem;
   }
 
-  .press-controls-bar .ctrl-btn {
+  .press-masthead .press-controls-bar .ctrl-btn {
     min-height: 44px;
-    padding: 0.45rem 0.7rem;
+    padding: 0.45rem 0.65rem;
   }
 }
 
