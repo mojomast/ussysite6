@@ -1,0 +1,359 @@
+---
+import { withBase } from '../lib/paths';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CarbonCoverStage from '../components/islands/CarbonCoverStage.svelte';
+import CarbonPlateSvg from '../components/CarbonPlateSvg.astro';
+import Kinetic from '../components/Kinetic.astro';
+import StatNumber from '../components/fx/scrolly/StatNumber.astro';
+import StatText from '../components/fx/scrolly/StatText.astro';
+import { buildIssueFolios } from '../lib/folio';
+
+const allIssues = (await getCollection('issues')).sort((a, b) =>
+  b.data.issueNumber.localeCompare(a.data.issueNumber)
+);
+const currentIssue = allIssues.find((i) => i.data.status === 'current') || allIssues[0];
+const allArticles = await getCollection('articles');
+
+const currentArticles = allArticles
+  .filter((a) => a.data.issueNumber === currentIssue.data.issueNumber)
+  .sort((a, b) => a.data.index - b.data.index);
+
+const currentFolios = buildIssueFolios(
+  currentIssue.data.issueNumber,
+  currentArticles.map((a) => a.data)
+);
+const folioBySlug = new Map(
+  currentFolios.filter((f) => f.articleSlug).map((f) => [f.articleSlug!, f.folioCode])
+);
+
+const coverCells = currentArticles.map((a) => ({
+  articleSlug: a.data.articleSlug,
+  issueNumber: a.data.issueNumber,
+  folioCode: folioBySlug.get(a.data.articleSlug) || '00',
+  readerServiceNo: a.data.readerServiceNo,
+  title: a.data.title,
+  kicker: a.data.kicker,
+  spotInkHex: a.data.spotInkHex
+}));
+
+const leadArticle = currentArticles[0];
+const num = currentIssue.data.issueNumber;
+---
+
+<BaseLayout
+  title={`Slop Illustrated · Issue ${num}: ${currentIssue.data.title}`}
+  description={`Issue ${num} of Slop Illustrated: ${currentIssue.data.subtitle} Eleven features, every claim linked to its commit.`}
+>
+  <section class="newsstand-hero">
+    <div class="carbon-sheet">
+      <div class="masthead-datum-strip">
+        <span class="live-issue-pill">
+          <span class="live-dot" aria-hidden="true"></span>
+          On the stands · Issue {num} · {currentIssue.data.coverDate}
+        </span>
+        <span class="datum-tag">
+          <StatNumber value={allArticles.length} /> features so far · Every claim pinned to a commit · Written with AI, checked by hand
+        </span>
+      </div>
+
+      <div class="hero-asymmetric-grid">
+        <div>
+          <h1 class="masthead-monument">
+            <span class="word-slop"><span class="sr-only">SLOP </span><span class="mo-masthead-letters" aria-hidden="true"><span>S</span><span>L</span><span>O</span><span>P</span></span></span>
+            <span class="word-illustrated">Illustrated<span class="period-mark">.</span></span>
+          </h1>
+
+          <p class="opus-tagline">
+            A magazine about software made by one person and a crew of machines. We know what most machine writing is.
+            That’s why we check.
+          </p>
+
+          <span class="hero-issue-kicker">{currentIssue.data.themeTag}</span>
+          <h2 class="hero-issue-headline vt-issue-title"><Kinetic text={currentIssue.data.title} /></h2>
+          <p class="hero-issue-deck">{currentIssue.data.subtitle}</p>
+
+          <div class="cta-row">
+            <a class="btn-primary" href={withBase(`/issues/${num}`)}>
+              Open Issue {num} ↗
+            </a>
+            <a class="btn-secondary" href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
+              Read cover story
+            </a>
+          </div>
+          <p class="hero-replay-row">
+            <a class="hero-replay-link" href={withBase(`/issues/${num}#opening`)}>
+              ▶ Watch the 6-second press opening
+            </a>
+          </p>
+
+          <dl class="hero-highlights-dl">
+            {currentIssue.data.highlights.map((h) => (
+              <div>
+                <dt>{h.label}</dt>
+                <dd><StatText text={h.value} /></dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div
+          class={`vt-issue-art-${num}`}
+          data-folio-next={withBase(`/issues/${num}`)}
+          data-folio-next-label={`the Issue ${num} cover`}
+        >
+          <CarbonCoverStage client:load items={coverCells} issueNumber={num} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block scroll-reveal">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">In this issue</span>
+          <h2 class="section-heading">Eleven Features, <em>One Question</em></h2>
+        </div>
+        <a class="btn-secondary" href={withBase(`/issues/${num}#contents`)}>
+          Read the editor’s letter ↗
+        </a>
+      </div>
+
+      <article class="cover-story-banner">
+        <div>
+          <div class="article-kicker-row">
+            <span class="service-stamp">Cover story · #<StatNumber value={leadArticle.data.readerServiceNo} /></span>
+            <a
+              class="sha-pill"
+              href={withBase(`${leadArticle.data.repoUrl}/tree/${leadArticle.data.sourceRevision}`)}
+              target="_blank"
+              rel="noopener"
+              aria-label={`Source pinned at commit ${leadArticle.data.sourceRevision.slice(0, 7)}`}
+            >
+              @{leadArticle.data.sourceRevision.slice(0, 7)} ↗
+            </a>
+          </div>
+          <h3 class="hero-issue-headline">
+            <a href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
+              {leadArticle.data.headline}
+            </a>
+          </h3>
+          <p class="hero-issue-deck">{leadArticle.data.deck}</p>
+          <blockquote class="editorial-pullquote">“{leadArticle.data.pullQuote}”</blockquote>
+          <div class="cta-row">
+            <a class="btn-primary" href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
+              Read the cover story ↗
+            </a>
+            <a class="btn-secondary" href={withBase(leadArticle.data.repoUrl)} target="_blank" rel="noopener">
+              Open the repo ↗
+            </a>
+          </div>
+        </div>
+        <div class={`plate-figure vt-plate-${num}-${leadArticle.data.articleSlug}`}>
+          <div class="plate-art-box">
+            <CarbonPlateSvg
+              svgId={leadArticle.data.plate.svgId || 'plate-rizzstack'}
+              title={leadArticle.data.plate.title}
+              accent={leadArticle.data.spotInkHex}
+              secondary={leadArticle.data.secondaryInkHex}
+            />
+          </div>
+        </div>
+      </article>
+
+      <p class="opus-read-counter" data-read-counter={num} data-read-total={currentArticles.length}>
+        {currentArticles.length} features in this issue.
+      </p>
+
+      <ol class="article-ledger">
+        {currentArticles.map((art) => (
+          <li class="article-ledger-row" data-read-id={`${num}/${art.data.articleSlug}`}>
+            <div class="ledger-folio-col">{folioBySlug.get(art.data.articleSlug)}</div>
+            <div class="ledger-title-col">
+              <span class="datum-tag">{art.data.kicker}</span>
+              <h3>
+                <a href={withBase(`/issues/${num}/${art.data.articleSlug}`)}>{art.data.title}</a>
+              </h3>
+              <span class="opus-read-mark" aria-live="off"></span>
+            </div>
+            <div class="ledger-deck-col">
+              <strong class={`vt-hl-${num}-${art.data.articleSlug}`}>{art.data.headline}</strong>
+              <p>{art.data.deck}</p>
+            </div>
+            <div class="ledger-meta-col">
+              <span class="service-stamp">#{art.data.readerServiceNo}</span>
+              <a
+                class="sha-pill"
+                href={withBase(`${art.data.repoUrl}/tree/${art.data.sourceRevision}`)}
+                target="_blank"
+                rel="noopener"
+                aria-label={`${art.data.title} source, commit ${art.data.sourceRevision.slice(0, 7)}`}
+              >
+                @{art.data.sourceRevision.slice(0, 7)} ↗
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {num === '02' && (
+    <section class="mo-scrolly" aria-labelledby="scrolly-heading">
+      <div class="carbon-sheet mo-scrolly-grid">
+        <div class="mo-scrolly-pin">
+          <span class="datum-tag">From the editor’s letter</span>
+          <h2 id="scrolly-heading" class="mo-scrolly-question">
+            If you let machines write the code, how do you know when they are cutting corners?
+          </h2>
+          <div class="mo-scrolly-meter" aria-hidden="true"><span></span></div>
+        </div>
+        <ol class="mo-scrolly-steps">
+          {[
+            ['A contract frozen before the work begins.', 'rizzstack'],
+            ['A button that is not allowed to mean yes.', 'uirizz'],
+            ['A hook that steers a model away from forty turns of gear math by hand.', 'hermes-photo-to-part'],
+            ['A README that opens with its own failure rate.', 'hermes-aircraft-doppler-geolocation'],
+            ['A globe that will find any ship on Earth and refuses, in nineteen lines, to look for a person.', 'eoh']
+          ].map(([line, slug]) => {
+            const art = currentArticles.find((a) => a.data.articleSlug === slug);
+            return (
+              <li class="mo-step">
+                <a href={withBase(`/issues/${num}/${slug}`)}>{line}</a>
+                {art && <span class="datum-tag">{art.data.title} · No. {art.data.readerServiceNo}</span>}
+              </li>
+            );
+          })}
+          <li class="mo-step mo-step--coda">
+            <p>None of it is about what the machines can do. All of it is about what it takes to trust them.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {currentIssue.data.corrections.length > 0 && (
+    <section class="section-block scroll-reveal" aria-labelledby="corrections-heading">
+      <div class="carbon-sheet opus-corrections-grid">
+        <div>
+          <span class="datum-tag">Corrections &amp; clarifications</span>
+          <h2 id="corrections-heading" class="section-heading">We Got <em>These</em> Wrong</h2>
+          <p class="hero-issue-deck">
+            A magazine written with machines should be the first to admit what the machines, and the people, got wrong. Here
+            is our list. It will grow.
+          </p>
+        </div>
+        <ol class="opus-corrections fx-corrections">
+          {currentIssue.data.corrections.map((c) => (
+            <li class="fx-corr-item">
+              <svg class="fx-corr-caret" viewBox="0 0 18 14" width="18" height="14" aria-hidden="true" focusable="false">
+                <path d="M2 12 L9 3 L16 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" pathLength="1" />
+              </svg>
+              <span class="fx-corr-strike" aria-hidden="true"></span>
+              <span class="fx-corr-text">{c}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {currentIssue.data.dispatches.length > 0 && (
+    <section class="section-block scroll-reveal">
+      <div class="carbon-sheet">
+        <div class="section-header-row">
+          <div>
+            <span class="datum-tag">Dispatches</span>
+            <h2 class="section-heading">Also on <em>the Bench</em></h2>
+          </div>
+          <span class="datum-tag">Four more that didn’t get a full feature. No reflection on their character.</span>
+        </div>
+
+        <div class="dispatches-grid">
+          {currentIssue.data.dispatches.map((d) => (
+            <article class="dispatch-cell">
+              <div>
+                <a
+                  class="sha-pill"
+                  href={withBase(`${d.repoUrl}/tree/${d.commitSha}`)}
+                  target="_blank"
+                  rel="noopener"
+                  aria-label={`${d.title}, commit ${d.commitSha.slice(0, 7)}`}
+                >
+                  @{d.commitSha.slice(0, 7)} ↗
+                </a>
+                <h3>
+                  <a href={withBase(d.repoUrl)} target="_blank" rel="noopener">{d.title} ↗</a>
+                </h3>
+                <p>{d.note}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section-block scroll-reveal">
+    <div class="carbon-sheet">
+      <div class="section-header-row">
+        <div>
+          <span class="datum-tag">Back issues</span>
+          <h2 class="section-heading">Every Issue Stays <em>in Print</em></h2>
+        </div>
+        <span class="datum-tag">The next one arrives as a pull request. A person reads it before it prints.</span>
+      </div>
+
+      <div class="issues-rack">
+        {allIssues.map((iss) => {
+          const count = allArticles.filter((a) => a.data.issueNumber === iss.data.issueNumber).length;
+          return (
+            <article class="issue-folio-card">
+              <div>
+                <div class="issue-card-top">
+                  <span class="service-stamp">
+                    Issue {iss.data.issueNumber} · {iss.data.status === 'current' ? 'On the stands' : 'In the archive'}
+                  </span>
+                  <span class="datum-tag">{iss.data.coverDate}</span>
+                </div>
+                <div class={`issue-card-art ${iss.data.issueNumber !== num ? `vt-issue-art-${iss.data.issueNumber}` : ''}`}>
+                  {iss.data.coverArt.src ? (
+                    <img
+                      src={withBase(iss.data.coverArt.src)}
+                      width={iss.data.coverArt.width || 1600}
+                      height={iss.data.coverArt.height || 1200}
+                      alt={iss.data.coverArt.alt}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ) : (
+                    <CarbonPlateSvg svgId={iss.data.coverArt.svgId || 'cover-carbon-hive'} title={iss.data.coverArt.title} />
+                  )}
+                </div>
+                <div class="issue-card-body">
+                  <span class="datum-tag">{iss.data.themeTag}</span>
+                  <h3>
+                    <a href={withBase(`/issues/${iss.data.issueNumber}`)}>{iss.data.title}</a>
+                  </h3>
+                  <p>{iss.data.subtitle}</p>
+                  <p class="opus-read-counter" data-read-counter={iss.data.issueNumber} data-read-total={count}>
+                    {count} features.
+                  </p>
+                  <div class="cta-row">
+                    <a class="btn-primary" href={withBase(`/issues/${iss.data.issueNumber}`)}>
+                      Open Issue {iss.data.issueNumber} ↗
+                    </a>
+                    <a class="btn-secondary" href={withBase(`/source-room?issue=${iss.data.issueNumber}`)}>
+                      Its sources
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

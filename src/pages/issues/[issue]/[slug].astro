@@ -1,0 +1,330 @@
+---
+import { withBase } from '../../../lib/paths';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CarbonPlateSvg from '../../../components/CarbonPlateSvg.astro';
+import ArticleActions from '../../../components/islands/ArticleActions.svelte';
+import InteractiveStudy from '../../../components/islands/InteractiveStudy.svelte';
+import Kinetic from '../../../components/Kinetic.astro';
+import DepthLayers from '../../../components/fx/scrolly/DepthLayers.astro';
+import ReadingInkRail from '../../../components/fx/scrolly/ReadingInkRail.astro';
+import StatNumber from '../../../components/fx/scrolly/StatNumber.astro';
+import StatText from '../../../components/fx/scrolly/StatText.astro';
+import { buildIssueFolios } from '../../../lib/folio';
+
+export async function getStaticPaths() {
+  const allArticles = await getCollection('articles');
+  const byIssue = new Map<string, typeof allArticles>();
+  for (const entry of allArticles) {
+    const list = byIssue.get(entry.data.issueNumber) || [];
+    list.push(entry);
+    byIssue.set(entry.data.issueNumber, list);
+  }
+
+  const paths = [];
+  for (const [issueNumber, entries] of byIssue.entries()) {
+    const sorted = entries.sort((a, b) => a.data.index - b.data.index);
+    const folios = buildIssueFolios(
+      issueNumber,
+      sorted.map((s) => s.data)
+    );
+
+    for (let i = 0; i < sorted.length; i++) {
+      const entry = sorted[i];
+      const prev = i > 0 ? sorted[i - 1] : null;
+      const next = i < sorted.length - 1 ? sorted[i + 1] : null;
+      const folioEntry = folios.find((f) => f.articleSlug === entry.data.articleSlug);
+      paths.push({
+        params: {
+          issue: issueNumber,
+          slug: entry.data.articleSlug
+        },
+        props: {
+          entry,
+          folioCode: folioEntry?.folioCode || '03',
+          totalFolios: folios.length,
+          prevArticle: prev ? { slug: prev.data.articleSlug, title: prev.data.title } : null,
+          nextArticle: next ? { slug: next.data.articleSlug, title: next.data.title } : null,
+          issueArticleCount: sorted.length
+        }
+      });
+    }
+  }
+  return paths;
+}
+
+const { entry, folioCode, totalFolios, prevArticle, nextArticle, issueArticleCount } = Astro.props;
+const { Content } = await render(entry);
+const d = entry.data;
+const cleanGuide = (line: string) => line.replace(/^(READING GUIDE\s*(\/\/|:)\s*|\[[a-z ]+\]\s*|NOTE\s*\/\/\s*)/i, '');
+const endHref = `/issues/${d.issueNumber}/last-page`;
+---
+
+<BaseLayout
+  title={`${d.headline} · ${d.title} · Slop Illustrated ${d.issueNumber}`}
+  description={d.deck}
+>
+  <article
+    class="article-monograph carbon-sheet"
+    data-variant={d.layoutVariant}
+    data-article={d.articleSlug}
+    data-read-article={`${d.issueNumber}/${d.articleSlug}`}
+    data-read-total={issueArticleCount}
+  >
+    <ReadingInkRail folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
+
+    <!-- TOP FOLIO BREADCRUMB -->
+    <div class="article-breadcrumb-bar">
+      <div class="press-controls-bar">
+        <a class="datum-tag" data-dir="backward" href={withBase(`/issues/${d.issueNumber}`)}>
+          ← Issue {d.issueNumber} contents
+        </a>
+        <span class="datum-tag">
+          · Folio {folioCode} of {String(totalFolios).padStart(2, '0')}
+        </span>
+      </div>
+      <div class="press-controls-bar">
+        <span class="datum-tag">Checked {d.researchedAt}</span>
+        <a
+          class="sha-pill"
+          href={withBase(`${d.repoUrl}/tree/${d.sourceRevision}`)}
+          target="_blank"
+          rel="noopener"
+          aria-label={`Everything here is pinned to commit ${d.sourceRevision.slice(0, 10)}`}
+        >
+          pinned @{d.sourceRevision.slice(0, 10)} ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- MONOGRAPH OPENER HEADER -->
+    <header class="article-opener-header">
+      <div class="article-kicker-row">
+        <span class="service-stamp">No. <StatNumber value={d.readerServiceNo} /></span>
+        <span class="datum-tag">{d.kicker}</span>
+      </div>
+
+      <h1 class={`article-headline vt-hl-${d.issueNumber}-${d.articleSlug}`}><Kinetic text={d.headline} /></h1>
+      <p class="article-deck">{d.deck}</p>
+
+      <div class="article-byline-bar">
+        <div>
+          <strong>{d.title}</strong>
+          <span class="datum-tag"> · {d.byline}</span>
+          {d.liveUrl && (
+            <span>
+              {' '}· <a class="sha-pill" href={withBase(d.liveUrl)} target="_blank" rel="noopener">Play it live ↗</a>
+            </span>
+          )}
+        </div>
+
+        <ArticleActions
+          client:load
+          readerServiceNo={d.readerServiceNo}
+          title={d.title}
+          issueNumber={d.issueNumber}
+          articleSlug={d.articleSlug}
+          repoUrl={d.repoUrl}
+          sourceRevision={d.sourceRevision}
+          flexiFreqs={d.flexiFreqs}
+        />
+      </div>
+    </header>
+
+    <!-- HERO VISUAL PLATE + AT-A-GLANCE SPEC LEDGER -->
+    <section class="article-hero-media" aria-label="Plate and the short version">
+      <figure class={`plate-figure fx-depth-plate vt-plate-${d.issueNumber}-${d.articleSlug}`}>
+        <DepthLayers zone="plate" folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
+        <div class="plate-art-box">
+          {d.plate.kind === 'blender-webp' && d.plate.src ? (
+            <img
+              src={withBase(d.plate.src)}
+              width={d.plate.width}
+              height={d.plate.height}
+              alt={d.plate.alt}
+            />
+          ) : (
+            <CarbonPlateSvg
+              svgId={d.plate.svgId || `plate-${d.articleSlug}`}
+              title={d.plate.title}
+              accent={d.spotInkHex}
+              secondary={d.secondaryInkHex}
+            />
+          )}
+        </div>
+        <figcaption class="plate-figcaption">
+          <span><strong>{d.plate.title}.</strong> {d.plate.kind === 'blender-webp' ? 'A Blender still life. Art, not evidence.' : 'A drawing of the idea. Not live data.'}</span>
+          <span class="datum-tag">{d.plate.medium}</span>
+        </figcaption>
+      </figure>
+
+      <aside class="glance-ledger-box">
+        <h2 id="short-version-heading">The short version</h2>
+        <dl class="metrics-dl">
+          {d.metrics.map((m) => (
+            <div>
+              <dt>{m.label}</dt>
+              <dd><StatText text={m.value} /></dd>
+            </div>
+          ))}
+        </dl>
+        <p class="datum-tag">{d.glanceNote}</p>
+        <ul class="stack-pills" aria-label="Built with">
+          {d.techStack.map((tech) => (
+            <li>{tech}</li>
+          ))}
+        </ul>
+      </aside>
+    </section>
+
+    <!-- TWO-COLUMN MONOGRAPH BODY: PROSE + CODE ON LEFT, PROVENANCE ON RIGHT -->
+    <div class="article-body-columns">
+      <div>
+        <div class="article-prose-body">
+          <Content />
+        </div>
+
+        <blockquote class="editorial-pullquote">
+          “{d.pullQuote}”
+        </blockquote>
+
+        {d.secondaryMedia && d.secondaryMedia.kind === 'screenshot' && d.secondaryMedia.src && (
+          <figure class="plate-figure">
+            <div class="plate-art-box">
+              <img
+                src={withBase(d.secondaryMedia.src)}
+                width={d.secondaryMedia.width || 1280}
+                height={d.secondaryMedia.height || 800}
+                alt={d.secondaryMedia.alt || d.secondaryMedia.caption}
+                loading="lazy"
+              />
+            </div>
+            <figcaption class="plate-figcaption">
+              <span>{d.secondaryMedia.caption}</span>
+              <span class="datum-tag">Screenshot from the repo</span>
+            </figcaption>
+          </figure>
+        )}
+
+        {d.secondaryMedia && d.secondaryMedia.kind === 'svg-study' && d.secondaryMedia.studyId && (
+          <InteractiveStudy
+            client:load
+            studyId={d.secondaryMedia.studyId}
+            caption={d.secondaryMedia.caption}
+            title={d.title}
+          />
+        )}
+
+        <section class="under-hood-section fx-depth-hood" aria-labelledby="under-hood-heading">
+          <DepthLayers
+            zone="hood"
+            folioCode={folioCode}
+            readerServiceNo={d.readerServiceNo}
+            shortSha={d.sourceRevision.slice(0, 7)}
+          />
+          <h2 id="under-hood-heading">Under the hood</h2>
+          <ul class="arch-list">
+            {d.architecture.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+
+          <div class="code-specimen">
+            <div class="code-specimen-header">
+              <span>{d.codeExcerpt.title}</span>
+              <a href={withBase(d.codeExcerpt.sourceUrl)} target="_blank" rel="noopener">
+                {d.codeExcerpt.sourceLabel} ↗
+              </a>
+            </div>
+            <pre><code>{d.codeExcerpt.code}</code></pre>
+          </div>
+        </section>
+      </div>
+
+      <aside class="fx-depth-rail" aria-label="What it does, what it doesn’t, and the receipts">
+        <DepthLayers zone="rail" folioCode={folioCode} readerServiceNo={d.readerServiceNo} />
+        <div class="sidebar-panel">
+          <h3>What it actually does</h3>
+          <ul class="sidebar-list">
+            {d.verifiedCapabilities.map((cap) => (
+              <li>{cap}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="sidebar-panel caveat-panel">
+          <h3>What it doesn’t do (yet)</h3>
+          <ul class="sidebar-list">
+            {d.fieldNotes.map((note) => (
+              <li>{note}</li>
+            ))}
+          </ul>
+        </div>
+
+        {d.readingGuide.length > 0 && (
+          <div class="sidebar-panel">
+            <h3>If you open the repo, start here</h3>
+            <ul class="sidebar-list">
+              {d.readingGuide.map((line) => (
+                <li class="datum-tag">{cleanGuide(line)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="sidebar-panel">
+          <h3>Receipts (<StatNumber value={d.sources.length} />)</h3>
+          <ul class="sources-list">
+            {d.sources.map((src) => (
+              <li>
+                <a href={withBase(src.url)} target="_blank" rel="noopener">
+                  {src.label} ↗
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <!-- FOLIO PAGER -->
+    <div class="opus-end-mark" data-read-end aria-hidden="true">■</div>
+
+    <nav
+      class="folio-pager"
+      aria-label="Turn the page"
+      data-folio-prev={withBase(prevArticle ? `/issues/${d.issueNumber}/${prevArticle.slug}` : `/issues/${d.issueNumber}`)}
+      data-folio-next={withBase(nextArticle ? `/issues/${d.issueNumber}/${nextArticle.slug}` : endHref)}
+      data-folio-prev-label={prevArticle ? prevArticle.title : `the Issue ${d.issueNumber} cover`}
+      data-folio-next-label={nextArticle ? nextArticle.title : 'the last page'}
+    >
+      <div>
+        {prevArticle ? (
+          <a class="btn-secondary" data-dir="backward" href={withBase(`/issues/${d.issueNumber}/${prevArticle.slug}`)}>
+            ← {prevArticle.title}
+          </a>
+        ) : (
+          <a class="btn-secondary" data-dir="backward" href={withBase(`/issues/${d.issueNumber}`)}>
+            ← Back to the cover
+          </a>
+        )}
+      </div>
+      <div class="press-controls-bar">
+        <span class="folio-shortcut-hint" aria-label="Keyboard: k for the previous page, j for the next">
+          <kbd class="ctrl-kbd">k</kbd> back · <kbd class="ctrl-kbd">j</kbd> next · <kbd class="ctrl-kbd">?</kbd> all keys
+        </span>
+      </div>
+      <div class="pager-next">
+        {nextArticle ? (
+          <a class="btn-primary" href={withBase(`/issues/${d.issueNumber}/${nextArticle.slug}`)}>
+            {nextArticle.title} →
+          </a>
+        ) : (
+          <a class="btn-primary" href={withBase(endHref)}>
+            Turn to the last page →
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</BaseLayout>

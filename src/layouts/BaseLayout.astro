@@ -1,0 +1,85 @@
+---
+import { API_ENABLED, withBase } from '../lib/paths';
+import { STRICT_CSP_META } from '../lib/csp';
+import '../styles/tokens.css';
+import '../styles/global.css';
+import '../styles/editorial.css';
+import '../styles/opus.css';
+import '../styles/motion.css';
+import '../styles/fx/index.css';
+import Masthead from '../components/Masthead.astro';
+import FooterColophon from '../components/FooterColophon.astro';
+import ShaderBackdrop from '../components/fx/ShaderBackdrop.astro';
+import CursorLayer from '../components/fx/CursorLayer.astro';
+import DelightLayer from '../components/fx/DelightLayer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalPath?: string;
+}
+
+const {
+  title,
+  description = 'Slop Illustrated is a magazine about software made by one person and a crew of agents. Every claim links to the commit it came from. It knows it is written with AI, and it checks.',
+  canonicalPath = Astro.url.pathname
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').toString();
+---
+
+<!doctype html>
+<html lang="en" data-stock="graphite" data-grid="off">
+  <head>
+    <meta charset="utf-8" />
+    {!API_ENABLED && <meta http-equiv="Content-Security-Policy" content={STRICT_CSP_META} />}
+    {!API_ENABLED && <meta name="robots" content="noindex" />}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b0c0e" />
+    <link rel="canonical" href={withBase(canonicalUrl)} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="alternate" type="application/rss+xml" title="Slop Illustrated" href={withBase('/rss.xml')} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={new URL(withBase('/assets/cover/machine-beneath-the-skin.webp'), Astro.site || 'https://ussy.host').toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="stylesheet" href={withBase('/vt-names.css')} />
+    <link rel="expect" href="#page-end" blocking="render" />
+    <script is:inline src={withBase('/motion-boot.js')}></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Syne:wght@400..800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to the reading</a>
+    <ShaderBackdrop />
+    <div class="scroll-progress-track" aria-hidden="true">
+      <div class="scroll-progress-bar"></div>
+    </div>
+
+    <Masthead currentPath={Astro.url.pathname} />
+
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <div id="page-end" hidden></div>
+
+    <FooterColophon />
+    <CursorLayer />
+    <DelightLayer />
+    <script>
+      import '../scripts/reading-tracker.ts';
+      import '../scripts/fx/index.ts';
+    </script>
+  </body>
+</html>

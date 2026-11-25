@@ -1,0 +1,19 @@
+---
+interface Props {
+  folioCode: string;
+  readerServiceNo: number;
+}
+
+const { folioCode, readerServiceNo } = Astro.props;
+---
+
+<div class="fx-ink-rail" aria-hidden="true" data-fx-ink-rail>
+  <span class="fx-ink-cap fx-ink-cap--top">{folioCode}</span>
+  <div class="fx-ink-shaft">
+    <div class="fx-ink-groove"></div>
+    <div class="fx-ink-fill"></div>
+    <div class="fx-ink-ruler"></div>
+    <ol class="fx-ink-ticks" data-fx-ink-ticks></ol>
+  </div>
+  <span class="fx-ink-cap fx-ink-cap--end" data-fx-ink-end title={`No. ${readerServiceNo}`}>■</span>
+</div>

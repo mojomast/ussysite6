@@ -1,0 +1,574 @@
+/* ==========================================================================
+   WAVE 9 · TYPOGRAPHY TRACK (src/styles/fx/type.css)
+   1. Monospace decode/scramble highlight
+   2. Variable-font Syne (wght 400..800) cursor pressure & view() ink-press
+   3. Split-text h2 char reveals on view() timeline
+   4. @property ink-sweep gradient text (proof-ink -> gilt -> primary ink)
+   5. Sparing RGB-split + slice-displacement glitch (<= 2.6 Hz)
+   6. Stretch: scroll()-driven outlined SLOP ILLUSTRATED marquee band
+   ========================================================================== */
+
+@property --fx-ink-pos {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 140%;
+}
+
+@property --fx-ink-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 106deg;
+}
+
+/* --------------------------------------------------------------------------
+   1. Syne variable-axis headlines (400..800) + split character primitives
+   -------------------------------------------------------------------------- */
+
+.section-heading,
+.article-headline {
+  font-family: var(--font-structural);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variation-settings: 'wght' var(--fx-wght, 500);
+}
+
+.article-headline {
+  line-height: 1.02;
+}
+
+/* Preserve Instrument Serif italic vermilion accents inside section headings */
+.section-heading em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.under-hood-section h2 {
+  font-variation-settings: 'wght' var(--fx-wght, 680);
+}
+
+.fx-scr-vis {
+  font-variant-numeric: tabular-nums;
+}
+
+.fx-w {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.fx-ch {
+  display: inline-block;
+  transform-origin: 50% 85%;
+}
+
+/* Stagger indices for split-text char reveals (CSP-safe, no inline styles) */
+.fx-ch[data-fx-ci='0'] { --fx-ci: 0; }
+.fx-ch[data-fx-ci='1'] { --fx-ci: 1; }
+.fx-ch[data-fx-ci='2'] { --fx-ci: 2; }
+.fx-ch[data-fx-ci='3'] { --fx-ci: 3; }
+.fx-ch[data-fx-ci='4'] { --fx-ci: 4; }
+.fx-ch[data-fx-ci='5'] { --fx-ci: 5; }
+.fx-ch[data-fx-ci='6'] { --fx-ci: 6; }
+.fx-ch[data-fx-ci='7'] { --fx-ci: 7; }
+.fx-ch[data-fx-ci='8'] { --fx-ci: 8; }
+.fx-ch[data-fx-ci='9'] { --fx-ci: 9; }
+.fx-ch[data-fx-ci='10'] { --fx-ci: 10; }
+.fx-ch[data-fx-ci='11'] { --fx-ci: 11; }
+.fx-ch[data-fx-ci='12'] { --fx-ci: 12; }
+.fx-ch[data-fx-ci='13'] { --fx-ci: 13; }
+.fx-ch[data-fx-ci='14'] { --fx-ci: 14; }
+.fx-ch[data-fx-ci='15'] { --fx-ci: 15; }
+.fx-ch[data-fx-ci='16'] { --fx-ci: 16; }
+.fx-ch[data-fx-ci='17'] { --fx-ci: 17; }
+.fx-ch[data-fx-ci='18'] { --fx-ci: 18; }
+.fx-ch[data-fx-ci='19'] { --fx-ci: 19; }
+.fx-ch[data-fx-ci='20'] { --fx-ci: 20; }
+.fx-ch[data-fx-ci='21'] { --fx-ci: 21; }
+.fx-ch[data-fx-ci='22'] { --fx-ci: 22; }
+.fx-ch[data-fx-ci='23'] { --fx-ci: 23; }
+.fx-ch[data-fx-ci='24'] { --fx-ci: 24; }
+
+/* --------------------------------------------------------------------------
+   2. Scramble active tint
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx]:not([data-fx='off']) .is-scrambling .fx-scr-vis {
+    color: color-mix(in srgb, var(--fx-signal) 65%, currentColor);
+  }
+
+  html[data-fx]:not([data-fx='off'])[data-rizz='max'] .is-scrambling .fx-scr-vis {
+    color: var(--fx-signal);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--fx-signal) 40%, transparent);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Variable-font cursor pressure wave (full + fine pointer)
+      and view()-driven one-shot wght ink-press fallback
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-fx='full'][data-pointer='fine'] .is-fx-press .fx-ch {
+    animation: none;
+    opacity: 1;
+    filter: none;
+    font-variation-settings: 'wght' var(--fx-wght, 470);
+    transform:
+      translateY(calc(var(--fx-p, 0) * -2.5px))
+      scale(calc(1 + var(--fx-p, 0) * 0.055));
+    will-change: transform;
+  }
+
+  html[data-fx='full'][data-pointer='fine'] .newsstand-hero .masthead-monument:hover .word-slop.is-fx-press .mo-masthead-letters > span {
+    animation: none;
+  }
+
+  html[data-fx='full'][data-pointer='fine'] .word-slop.is-fx-press .fx-ch {
+    font-variation-settings: 'wght' var(--fx-wght, 470);
+    transform:
+      translateY(calc(var(--fx-p, 0) * -3px))
+      scale(calc(1 + var(--fx-p, 0) * 0.065));
+  }
+
+  html[data-fx='full'][data-pointer='fine'][data-rizz='max'] .is-fx-press .fx-ch {
+    transform:
+      translateY(calc(var(--fx-p, 0) * -4.5px))
+      scale(calc(1 + var(--fx-p, 0) * 0.095));
+    text-shadow: 0 0 calc(var(--fx-p, 0) * 14px) color-mix(in srgb, var(--fx-ink) 55%, transparent);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* Split-text reveals stay on the compositor: transform and opacity only. Blur and wght here
+       repainted and re-laid out every glyph on every scroll frame (DESIGN.md §9.4). */
+
+    /* Split-text per-character reveal for h2 section heads on view() timeline */
+    html[data-fx]:not([data-fx='off']) .fx-chars-reveal:not(.is-fx-press) .fx-ch {
+      animation: fx-char-reveal linear both;
+    }
+
+    :root[data-fx]:not([data-fx='off']) .fx-chars-reveal:not(.is-fx-press) .fx-ch {
+      animation-timeline: view();
+      animation-range:
+        entry calc(var(--fx-ci, 0) * 0.7%)
+        cover calc(14% + var(--fx-ci, 0) * 0.7%);
+    }
+  }
+}
+
+@keyframes fx-char-reveal {
+  0% {
+    opacity: 0;
+    transform: translateY(0.55em);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. Ink-sweep gradient text (@property animated background-clip: text)
+   -------------------------------------------------------------------------- */
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  @media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+    html[data-fx]:not([data-fx='off']) .newsstand-hero .masthead-monument .word-illustrated,
+    html[data-fx]:not([data-fx='off']) .issue-cover-spread .masthead-monument .word-illustrated .kt-wi,
+    html[data-fx]:not([data-fx='off']) .hero-issue-headline.vt-issue-title .kt-wi,
+    html[data-fx]:not([data-fx='off']) .opus-last-headline .kt-wi {
+      --fx-ink-pos: 140%;
+      --fx-ink-angle: 106deg;
+      background-image: linear-gradient(
+        var(--fx-ink-angle),
+        var(--ink-primary) 0%,
+        var(--ink-primary) calc(var(--fx-ink-pos) - 26%),
+        var(--fx-ink) calc(var(--fx-ink-pos) - 11%),
+        var(--fx-gold) var(--fx-ink-pos),
+        var(--fx-ink) calc(var(--fx-ink-pos) + 11%),
+        var(--ink-primary) calc(var(--fx-ink-pos) + 26%),
+        var(--ink-primary) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    html[data-fx]:not([data-fx='off']) .masthead-monument .period-mark {
+      -webkit-text-fill-color: var(--signal-vermilion);
+    }
+
+    /* Arrival sweep composed with motion.css arrival animations */
+    html[data-fx]:not([data-fx='off']) .newsstand-hero .masthead-monument .word-illustrated {
+      animation:
+        mo-ink-bleed 1200ms var(--ease-out-expo) 380ms both,
+        fx-ink-sweep 1900ms var(--ease-ink) 640ms 1 both;
+    }
+
+    html[data-fx]:not([data-fx='off']) .issue-cover-spread .masthead-monument .word-illustrated .kt-wi,
+    html[data-fx]:not([data-fx='off']) .hero-issue-headline.vt-issue-title .kt-wi,
+    html[data-fx]:not([data-fx='off']) .opus-last-headline .kt-wi {
+      animation:
+        mo-word-rise 900ms var(--ease-out-expo) calc(var(--kt-base, 120ms) + var(--kt-i, 0) * var(--stagger)) both,
+        fx-ink-sweep 1800ms var(--ease-ink) 560ms 1 both;
+    }
+
+    html.is-vt-arrival[data-fx]:not([data-fx='off']) .vt-issue-title .kt-wi {
+      animation: fx-ink-sweep 1600ms var(--ease-ink) 260ms 1 both;
+    }
+
+    /* Re-sweep on hover */
+    html[data-fx]:not([data-fx='off']) .newsstand-hero .masthead-monument:hover .word-illustrated {
+      animation: fx-ink-sweep-hover 1250ms var(--ease-ink) both;
+    }
+
+    html[data-fx]:not([data-fx='off']) .issue-cover-spread .masthead-monument:hover .word-illustrated .kt-wi,
+    html[data-fx]:not([data-fx='off']) .hero-issue-headline.vt-issue-title:hover .kt-wi,
+    html[data-fx]:not([data-fx='off']) .opus-last-headline:hover .kt-wi {
+      animation: fx-ink-sweep-hover 1200ms var(--ease-ink) both;
+    }
+
+    /* Amplified sweep under max rizz */
+    html[data-fx]:not([data-fx='off'])[data-rizz='max'] .newsstand-hero .masthead-monument .word-illustrated,
+    html[data-fx]:not([data-fx='off'])[data-rizz='max'] .issue-cover-spread .masthead-monument .word-illustrated .kt-wi,
+    html[data-fx]:not([data-fx='off'])[data-rizz='max'] .hero-issue-headline.vt-issue-title .kt-wi {
+      background-image: linear-gradient(
+        var(--fx-ink-angle),
+        var(--ink-primary) 0%,
+        var(--ink-primary) calc(var(--fx-ink-pos) - 34%),
+        var(--fx-ink) calc(var(--fx-ink-pos) - 16%),
+        var(--fx-gold) var(--fx-ink-pos),
+        var(--fx-signal) calc(var(--fx-ink-pos) + 14%),
+        var(--ink-primary) calc(var(--fx-ink-pos) + 34%),
+        var(--ink-primary) 100%
+      );
+    }
+  }
+}
+
+@keyframes fx-ink-sweep {
+  0% {
+    --fx-ink-pos: -35%;
+    --fx-ink-angle: 94deg;
+  }
+  100% {
+    --fx-ink-pos: 140%;
+    --fx-ink-angle: 118deg;
+  }
+}
+
+@keyframes fx-ink-sweep-hover {
+  0% {
+    --fx-ink-pos: -35%;
+    --fx-ink-angle: 92deg;
+  }
+  100% {
+    --fx-ink-pos: 140%;
+    --fx-ink-angle: 120deg;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. RGB-split + slice-displacement glitch (<= 2.6 Hz, WCAG-safe)
+   -------------------------------------------------------------------------- */
+
+.fx-glitch-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.fx-glitch-vis {
+  position: relative;
+  display: inline-block;
+}
+
+.fx-glitch-vis::before,
+.fx-glitch-vis::after {
+  content: none;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  html[data-fx]:not([data-fx='off']) .fx-glitch-vis::before,
+  html[data-fx]:not([data-fx='off']) .fx-glitch-vis::after {
+    content: attr(data-text);
+    content: attr(data-text) / '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
+  }
+
+  html[data-fx]:not([data-fx='off']) .fx-glitch-vis::before {
+    color: var(--fx-ink);
+  }
+
+  html[data-fx]:not([data-fx='off']) .fx-glitch-vis::after {
+    color: var(--fx-signal);
+  }
+
+  /* 404 headline: calm 5.4s cycle with 2 brief displacement beats (~0.75s window) */
+  html[data-fx]:not([data-fx='off']) .fx-glitch-404 {
+    animation: fx-glitch-host-cycle 5.4s steps(1, end) infinite;
+  }
+
+  html[data-fx]:not([data-fx='off']) .fx-glitch-404::before {
+    animation: fx-glitch-slice-a-cycle 5.4s linear infinite;
+  }
+
+  html[data-fx]:not([data-fx='off']) .fx-glitch-404::after {
+    animation: fx-glitch-slice-b-cycle 5.4s linear infinite;
+  }
+
+  /* Standalone "slop" in headlines: slow idle slip on full, hover burst on full & lite */
+  html[data-fx='full'] .fx-glitch-slop {
+    animation: fx-glitch-host-cycle 7.2s steps(1, end) infinite;
+  }
+
+  html[data-fx='full'] .fx-glitch-slop::before {
+    animation: fx-glitch-slice-a-cycle 7.2s linear infinite;
+  }
+
+  html[data-fx='full'] .fx-glitch-slop::after {
+    animation: fx-glitch-slice-b-cycle 7.2s linear infinite;
+  }
+
+  html[data-fx]:not([data-fx='off']) :is(.fx-glitch-wrap:hover, .fx-glitch-wrap:focus-within, .word-slop:hover, .kt-w:hover) .fx-glitch-slop,
+  html[data-fx]:not([data-fx='off']) .fx-glitch-slop:hover {
+    animation: fx-glitch-host-burst 760ms steps(1, end) 1;
+  }
+
+  html[data-fx]:not([data-fx='off']) :is(.fx-glitch-wrap:hover, .fx-glitch-wrap:focus-within, .word-slop:hover, .kt-w:hover) .fx-glitch-slop::before,
+  html[data-fx]:not([data-fx='off']) .fx-glitch-slop:hover::before {
+    animation: fx-glitch-slice-a-burst 760ms linear 1;
+  }
+
+  html[data-fx]:not([data-fx='off']) :is(.fx-glitch-wrap:hover, .fx-glitch-wrap:focus-within, .word-slop:hover, .kt-w:hover) .fx-glitch-slop::after,
+  html[data-fx]:not([data-fx='off']) .fx-glitch-slop:hover::after {
+    animation: fx-glitch-slice-b-burst 760ms linear 1;
+  }
+
+  /* Arrival burst under html[data-rizz="max"] */
+  html[data-fx]:not([data-fx='off'])[data-rizz='max'] .is-fx-arrival-glitch {
+    animation: fx-glitch-host-burst 780ms steps(1, end) 1;
+  }
+
+  html[data-fx]:not([data-fx='off'])[data-rizz='max'] .is-fx-arrival-glitch::before {
+    animation: fx-glitch-slice-a-burst 780ms linear 1;
+  }
+
+  html[data-fx]:not([data-fx='off'])[data-rizz='max'] .is-fx-arrival-glitch::after {
+    animation: fx-glitch-slice-b-burst 780ms linear 1;
+  }
+}
+
+@keyframes fx-glitch-host-cycle {
+  0%, 82%, 100% {
+    text-shadow: none;
+  }
+  84% {
+    text-shadow: -2px 0 var(--fx-ink), 2px 0 var(--fx-signal);
+  }
+  89% {
+    text-shadow: none;
+  }
+  92% {
+    text-shadow: 2px 0 var(--fx-ink), -2px 0 var(--fx-signal);
+  }
+  97% {
+    text-shadow: none;
+  }
+}
+
+@keyframes fx-glitch-slice-a-cycle {
+  0%, 81%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  83%, 88% {
+    opacity: 0.78;
+    transform: translateX(-4px);
+    clip-path: inset(12% 0 58% 0);
+  }
+  89%, 91% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  92%, 96% {
+    opacity: 0.72;
+    transform: translateX(3px);
+    clip-path: inset(48% 0 22% 0);
+  }
+  97% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(0 0 100% 0);
+  }
+}
+
+@keyframes fx-glitch-slice-b-cycle {
+  0%, 81%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(100% 0 0 0);
+  }
+  83%, 88% {
+    opacity: 0.74;
+    transform: translateX(4px);
+    clip-path: inset(56% 0 12% 0);
+  }
+  89%, 91% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(100% 0 0 0);
+  }
+  92%, 96% {
+    opacity: 0.68;
+    transform: translateX(-3px);
+    clip-path: inset(20% 0 54% 0);
+  }
+  97% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@keyframes fx-glitch-host-burst {
+  0%, 100% {
+    text-shadow: none;
+  }
+  12% {
+    text-shadow: -3px 0 var(--fx-ink), 3px 0 var(--fx-signal);
+  }
+  46% {
+    text-shadow: none;
+  }
+  62% {
+    text-shadow: 2px 0 var(--fx-ink), -2px 0 var(--fx-signal);
+  }
+  88% {
+    text-shadow: none;
+  }
+}
+
+@keyframes fx-glitch-slice-a-burst {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  12%, 44% {
+    opacity: 0.82;
+    transform: translateX(-5px);
+    clip-path: inset(10% 0 56% 0);
+  }
+  46%, 58% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(0 0 100% 0);
+  }
+  62%, 86% {
+    opacity: 0.76;
+    transform: translateX(4px);
+    clip-path: inset(46% 0 20% 0);
+  }
+}
+
+@keyframes fx-glitch-slice-b-burst {
+  0%, 100% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(100% 0 0 0);
+  }
+  12%, 44% {
+    opacity: 0.78;
+    transform: translateX(5px);
+    clip-path: inset(54% 0 10% 0);
+  }
+  46%, 58% {
+    opacity: 0;
+    transform: translateX(0);
+    clip-path: inset(100% 0 0 0);
+  }
+  62%, 86% {
+    opacity: 0.72;
+    transform: translateX(-4px);
+    clip-path: inset(18% 0 52% 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Marquee band removed in Taste Pass §10 (editorial restraint: the pinned
+      question reads stronger without hollow watermark text sliding behind it).
+   -------------------------------------------------------------------------- */
+
+.mo-scrolly {
+  overflow-x: clip;
+}
+
+/* --------------------------------------------------------------------------
+   7. Forced-colors & reduced-motion guardrails
+   -------------------------------------------------------------------------- */
+
+@media (forced-colors: active) {
+  .newsstand-hero .masthead-monument .word-illustrated,
+  .issue-cover-spread .masthead-monument .word-illustrated .kt-wi,
+  .hero-issue-headline.vt-issue-title .kt-wi,
+  .opus-last-headline .kt-wi {
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    -webkit-text-fill-color: currentColor;
+    color: CanvasText;
+    animation: none;
+  }
+
+  .fx-glitch-vis::before,
+  .fx-glitch-vis::after {
+    content: none;
+    display: none;
+  }
+
+  .fx-glitch-vis {
+    text-shadow: none;
+    animation: none;
+  }
+
+  .mo-scrolly::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-glitch-vis::before,
+  .fx-glitch-vis::after {
+    content: none;
+    display: none;
+  }
+
+  .fx-chars-reveal .fx-ch,
+  .is-fx-press .fx-ch,
+  .mo-scrolly::before {
+    animation: none;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+
+/* While a headline is under pressure its glyph widths change every frame. Containing layout to
+   the headline keeps that reflow from walking the whole document (measured: ~6.6 ms → see §9). */
+.is-fx-press {
+  contain: layout style;
+}

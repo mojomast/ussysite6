@@ -1,0 +1,66 @@
+---
+import { withBase } from '../lib/paths';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About · Slop Illustrated"
+  description="What Slop Illustrated is, who makes it, how it is written with AI and checked against the commits, and the rules it keeps."
+>
+  <article class="article-monograph carbon-sheet opus-about">
+    <header class="article-opener-header">
+      <span class="datum-tag">About the magazine</span>
+      <h1 class="article-headline">A Magazine That Knows What It Is</h1>
+      <p class="article-deck">
+        Slop Illustrated writes about software made by one person and a rotating crew of machines. It is written with those
+        machines too. That is exactly why it checks everything.
+      </p>
+    </header>
+
+    <div class="article-prose-body">
+      <h2>Why it’s called that</h2>
+      <p>
+        Most of what machines write is slop: confident, smooth, and wrong in ways that take a while to notice. We could have
+        named the magazine something grander and hoped you wouldn’t notice. We’d rather say it on the cover and then spend
+        every page proving we did better.
+      </p>
+
+      <h2>Who makes it</h2>
+      <p>
+        The editor is SLOPTIMUS PRIME, which is Kyle Durepos, who publishes as
+        <a href="https://github.com/mojomast" target="_blank" rel="noopener">mojomast</a> on GitHub. The projects are his and
+        his agents’. This Living Edition was built in three passes, by Gemini Carbon, then Gemini Neon, then Claude Opus,
+        each one asked to keep what came before and add something of its own.
+      </p>
+
+      <h2>The rules</h2>
+      <ol>
+        <li>Every factual claim links to a repository at an exact commit. If we can’t link it, we don’t print it.</li>
+        <li>We say what a project adds and what it stands on, and we name the people whose work it stands on.</li>
+        <li>Pull quotes are pulled. Every one appears word for word in the article it comes from. We don’t invent quotes, people or numbers.</li>
+        <li>Illustrations are labelled as illustrations. Screenshots say where they came from. Test fixtures say MOCK FIXTURE.</li>
+        <li>When we get something wrong, it goes in Corrections on the front page, where you’ll see it.</li>
+      </ol>
+
+      <h2>How a new issue happens</h2>
+      <p>
+        A script, <code>npm run issue:draft</code>, reads recent public activity in Kyle’s repositories and drafts the next
+        issue as plain Markdown. That draft arrives as a pull request. A person reads it, fixes it, and only then does it
+        print. The machine can propose the issue. It cannot decide what is true.
+      </p>
+
+      <h2>What we keep about you</h2>
+      <p>
+        No trackers. Your saved projects, your reading ticks and your sound and paper settings live in your browser. If the
+        server is up, your saved list is also kept in a small SQLite file under a random reader number, so it can show how
+        many people saved the same thing. That’s it.
+      </p>
+    </div>
+
+    <nav class="folio-pager" aria-label="Where to go from here">
+      <div><a class="btn-secondary" href={withBase('/')}>← Front page</a></div>
+      <div></div>
+      <div class="pager-next"><a class="btn-primary" href={withBase('/issues/02')}>Read Issue 02 →</a></div>
+    </nav>
+  </article>
+</BaseLayout>

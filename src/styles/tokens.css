@@ -1,0 +1,155 @@
+/* ==========================================================================
+   GEMINI 4 CARBON DESIGN DNA — TOKENS (C·06 // PYROLYTIC GRAPHITE & COTTON RAG)
+   ========================================================================== */
+
+:root,
+[data-stock="graphite"] {
+  --bg-canvas: #0b0c0e;
+  --bg-surface: #121418;
+  --bg-panel: #181b21;
+  --bg-code: #08090b;
+
+  --ink-primary: #f3efe6;
+  --ink-secondary: #c2bdb0;
+  --ink-muted: #8b867a;
+  --ink-inverse: #0b0c0e;
+
+  --rule-hairline: #262a34;
+  --rule-strong: #414756;
+
+  --signal-vermilion: #ff4422;
+  --signal-vermilion-soft: rgba(255, 68, 34, 0.14);
+  --ink-on-signal: #0b0c0e;
+  --phosphor-mint: #3ddc97;
+  --phosphor-mint-soft: rgba(61, 220, 151, 0.13);
+  --amber-oxide: #f5a623;
+  --amber-oxide-soft: rgba(245, 166, 35, 0.14);
+  --cobalt-trace: #38bdf8;
+
+  /* Gemini 4 Neon (Ne·10) Gas-Discharge Interactive Layer */
+  --neon-cyan: #22f3e6;
+  --neon-cyan-soft: rgba(34, 243, 230, 0.12);
+  --neon-lime: #b8ff3c;
+  --neon-lime-soft: rgba(184, 255, 60, 0.12);
+  --neon-halo: 0 0 0 1px rgba(34, 243, 230, 0.42), 0 0 22px rgba(34, 243, 230, 0.14);
+  --neon-halo-hot: 0 0 0 1px rgba(255, 68, 34, 0.55), 0 0 22px rgba(255, 68, 34, 0.18);
+
+  --shadow-elevated: 0 22px 48px rgba(0, 0, 0, 0.55);
+  --grid-overlay-color: rgba(255, 68, 34, 0.09);
+  color-scheme: dark;
+}
+
+[data-stock="rag"] {
+  --bg-canvas: #f4f0e6;
+  --bg-surface: #eae4d5;
+  --bg-panel: #fcfaf5;
+  --bg-code: #15171c;
+
+  --ink-primary: #121316;
+  --ink-secondary: #343740;
+  --ink-muted: #585c67;
+  --ink-inverse: #fcfaf5;
+
+  --rule-hairline: #cfc8b6;
+  --rule-strong: #8e8673;
+
+  --signal-vermilion: #c4280c;
+  --signal-vermilion-soft: rgba(196, 40, 12, 0.1);
+  --ink-on-signal: #ffffff;
+  --phosphor-mint: #0b6e46;
+  --phosphor-mint-soft: rgba(11, 110, 70, 0.1);
+  --amber-oxide: #945200;
+  --amber-oxide-soft: rgba(148, 82, 0, 0.1);
+  --cobalt-trace: #0369a1;
+
+  /* Gemini 4 Neon (Ne·10) Daylight Ink Calibration (WCAG AA+) */
+  --neon-cyan: #006b76;
+  --neon-cyan-soft: rgba(0, 107, 118, 0.1);
+  --neon-lime: #356600;
+  --neon-lime-soft: rgba(53, 102, 0, 0.1);
+  --neon-halo: 0 0 0 1px rgba(0, 107, 118, 0.45), 0 4px 16px rgba(0, 107, 118, 0.12);
+  --neon-halo-hot: 0 0 0 1px rgba(196, 40, 12, 0.5), 0 4px 16px rgba(196, 40, 12, 0.12);
+
+  --shadow-elevated: 0 18px 40px rgba(18, 19, 22, 0.12);
+  --grid-overlay-color: rgba(196, 40, 12, 0.08);
+  color-scheme: light;
+}
+
+[data-stock="oxide"] {
+  --bg-canvas: #071522;
+  --bg-surface: #0c1f33;
+  --bg-panel: #112942;
+  --bg-code: #040d16;
+
+  --ink-primary: #edf5fc;
+  --ink-secondary: #b9d0e7;
+  --ink-muted: #82a4c6;
+  --ink-inverse: #071522;
+
+  --rule-hairline: #1d3a59;
+  --rule-strong: #325d8a;
+
+  --signal-vermilion: #ff7847;
+  --signal-vermilion-soft: rgba(255, 120, 71, 0.15);
+  --ink-on-signal: #071522;
+  --phosphor-mint: #4ade80;
+  --phosphor-mint-soft: rgba(74, 222, 128, 0.14);
+  --amber-oxide: #fbbf24;
+  --amber-oxide-soft: rgba(251, 191, 36, 0.15);
+  --cobalt-trace: #7dd3fc;
+
+  /* Gemini 4 Neon (Ne·10) Ferric Cyanotype Calibration */
+  --neon-cyan: #5efce8;
+  --neon-cyan-soft: rgba(94, 252, 232, 0.14);
+  --neon-lime: #c7ff5e;
+  --neon-lime-soft: rgba(199, 255, 94, 0.13);
+  --neon-halo: 0 0 0 1px rgba(94, 252, 232, 0.45), 0 0 22px rgba(94, 252, 232, 0.16);
+  --neon-halo-hot: 0 0 0 1px rgba(255, 120, 71, 0.55), 0 0 22px rgba(255, 120, 71, 0.18);
+
+  --shadow-elevated: 0 22px 48px rgba(2, 8, 15, 0.62);
+  --grid-overlay-color: rgba(125, 211, 252, 0.09);
+  color-scheme: dark;
+}
+
+:root {
+  /* Typography Families (4 voices: Display, Structural, Prose, Mono) */
+  --font-display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-structural: 'Syne', system-ui, -apple-system, sans-serif;
+  --font-ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-prose: 'Newsreader', Georgia, Cambria, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Type Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-prose: 1.135rem;
+  --text-lg: 1.275rem;
+  --text-xl: 1.6rem;
+  --text-2xl: clamp(1.9rem, 3.2vw, 2.75rem);
+  --text-3xl: clamp(2.5rem, 5vw, 4.35rem);
+  --text-masthead: clamp(3.4rem, 8.4vw, 7.6rem);
+
+  /* Structural Rhythm */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+
+  --max-sheet: 1380px;
+  --measure-prose: 62ch;
+  --header-h: 3.5rem;
+
+  /* Motion Language — Carbon Detents + Neon Optical Shutter */
+  --ease-carbon: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-snap: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-neon: cubic-bezier(0.12, 0.92, 0.24, 1);
+  --dur-fast: 140ms;
+  --dur-med: 260ms;
+  --dur-slow: 460ms;
+}

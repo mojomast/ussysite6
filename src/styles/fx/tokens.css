@@ -1,0 +1,26 @@
+/*
+ * Wave 9 shared tokens. Tracks use these instead of inventing their own, so the layer keeps the
+ * Night Hive palette: proof-ink red, gilt, neon cyan, paper and ink from the current stock.
+ */
+:root {
+  /* Layer order. Nothing in wave 9 may sit above the skip link or open dialogs. */
+  --fx-z-backdrop: -1;
+  --fx-z-overlay: 70;
+  --fx-z-cursor: 90;
+  --fx-z-toast: 95;
+
+  /* Palette aliases (resolve per paper stock) */
+  --fx-ink: var(--proof-ink);
+  --fx-gold: var(--gilt);
+  --fx-signal: var(--neon-cyan);
+  --fx-paper: var(--bg-canvas);
+
+  /* Effect budgets */
+  --fx-grain-opacity: 0.07;
+  --fx-glitch-dur: 420ms;
+  --fx-scramble-dur: 900ms;
+}
+
+html[data-rizz='max'] {
+  --fx-grain-opacity: 0.12;
+}

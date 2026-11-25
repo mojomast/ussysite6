@@ -1,0 +1,69 @@
+import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
+import { withBase } from '../lib/paths';
+
+function escapeXml(value: string): string {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+export const GET: APIRoute = async ({ site }) => {
+  const origin = (site || new URL('https://ussy.host')).origin;
+  const baseUrl = `${origin}${withBase('/')}`.replace(/\/$/, '');
+  const issues = (await getCollection('issues')).sort((a, b) =>
+    b.data.issueNumber.localeCompare(a.data.issueNumber)
+  );
+  const articles = (await getCollection('articles')).sort(
+    (a, b) => b.data.issueNumber.localeCompare(a.data.issueNumber) || a.data.index - b.data.index
+  );
+
+  const issueDates = new Map(issues.map((i) => [i.data.issueNumber, i.data.publishedAt]));
+  const latestPubDate = issues[0]?.data.publishedAt
+    ? new Date(`${issues[0].data.publishedAt}T12:00:00Z`).toUTCString()
+    : new Date().toUTCString();
+
+  const itemsXml = articles
+    .map((art) => {
+      const d = art.data;
+      const link = `${baseUrl}/issues/${d.issueNumber}/${d.articleSlug}`;
+      const pubDate = new Date(`${d.researchedAt || issueDates.get(d.issueNumber) || '2026-11-23'}T12:00:00Z`).toUTCString();
+      const description = `${d.deck} ${d.glanceNote} Pinned to ${d.repoUrl}/tree/${d.sourceRevision.slice(0, 7)}.`;
+      return [
+        '    <item>',
+        `      <title>${escapeXml(`${d.headline} (${d.title}, Issue ${d.issueNumber})`)}</title>`,
+        `      <link>${escapeXml(link)}</link>`,
+        `      <guid isPermaLink="true">${escapeXml(link)}</guid>`,
+        `      <pubDate>${pubDate}</pubDate>`,
+        `      <category>${escapeXml(d.category)}</category>`,
+        `      <description>${escapeXml(description)}</description>`,
+        '    </item>'
+      ].join('\n');
+    })
+    .join('\n');
+
+  const xml = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
+    '  <channel>',
+    '    <title>Slop Illustrated</title>',
+    `    <link>${escapeXml(baseUrl)}</link>`,
+    `    <atom:link href="${escapeXml(`${baseUrl}/rss.xml`)}" rel="self" type="application/rss+xml" />`,
+    '    <description>A magazine about software made by one person and a crew of machines. Every claim links to its commit. New issues arrive as pull requests.</description>',
+    '    <language>en-us</language>',
+    `    <lastBuildDate>${latestPubDate}</lastBuildDate>`,
+    itemsXml,
+    '  </channel>',
+    '</rss>',
+    ''
+  ].join('\n');
+
+  return new Response(xml, {
+    headers: {
+      'Content-Type': 'application/rss+xml; charset=utf-8'
+    }
+  });
+};

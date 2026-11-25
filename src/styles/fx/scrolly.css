@@ -1,0 +1,1234 @@
+/* ==========================================================================
+   WAVE 9 · SCROLLYTELLING LAYER (src/styles/fx/scrolly.css)
+   Pure CSS scroll-driven animations first, built on DESIGN.md §8 + motion.css.
+   Rules:
+   - Animate compositor properties (transform, opacity, clip-path, stroke-dashoffset)
+     and @property <integer> counters only.
+   - Every hidden or animated starting state lives inside
+     @supports (animation-timeline: ...) and @media (prefers-reduced-motion: no-preference).
+   - Never scroll-jack; native scroll and keyboard navigation always work.
+   - Strict CSP: zero inline styles; dynamic values come from setVars() or data attrs.
+   - Use longhand animation-* declarations so CSS minifiers never merge
+     animation-timeline into the animation shorthand.
+   ========================================================================== */
+
+@property --fx-count {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 0;
+}
+
+@property --fx-count-to {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --fx-sheet-num {
+  syntax: '<integer>';
+  inherits: false;
+  initial-value: 1;
+}
+
+@property --fx-sheet-total {
+  syntax: '<integer>';
+  inherits: true;
+  initial-value: 11;
+}
+
+:root {
+  --fx-parallax-mult: 1;
+}
+
+html[data-rizz='max'] {
+  --fx-parallax-mult: 2;
+}
+
+/* --------------------------------------------------------------------------
+   1. THE PRESS RUN — pinned horizontal sheet sequence on issue covers
+   Fallback (narrow screens, reduced motion, no scroll-timeline): normal vertical list.
+   -------------------------------------------------------------------------- */
+
+.fx-press-run {
+  position: relative;
+  border-bottom: 1px solid var(--rule-strong);
+  padding-block: var(--space-7);
+}
+
+.fx-press-stage {
+  position: relative;
+}
+
+.fx-press-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 2px solid var(--ink-primary);
+  flex-wrap: wrap;
+}
+
+.fx-press-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fx-press-telemetry {
+  display: none;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+}
+
+.fx-press-counter-readout {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.22rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.fx-press-sheet-live {
+  color: var(--fx-ink);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.fx-press-sheet-sep {
+  opacity: 0.5;
+}
+
+.fx-press-meter {
+  position: relative;
+  width: 140px;
+  height: 3px;
+  background: var(--rule-hairline);
+  overflow: hidden;
+}
+
+.fx-press-meter span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--fx-ink), var(--fx-gold), var(--fx-signal));
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.fx-press-rail {
+  display: none;
+}
+
+.fx-press-viewport {
+  width: 100%;
+  overflow: clip;
+}
+
+.fx-press-track {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  max-width: var(--max-sheet);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.fx-press-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg-panel);
+  overflow: clip;
+  transition:
+    border-color var(--dur-short) var(--ease-carbon),
+    transform var(--spring-snappy-dur) var(--spring-snappy);
+}
+
+.fx-press-sheet:hover,
+.fx-press-sheet:focus-within {
+  border-color: var(--fx-ink);
+}
+
+.fx-sheet-crops {
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+}
+
+.fx-crop {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: color-mix(in srgb, var(--rule-strong) 75%, transparent);
+  border-style: solid;
+  border-width: 0;
+}
+
+.fx-crop--tl { top: 0; left: 0; border-top-width: 1px; border-left-width: 1px; }
+.fx-crop--tr { top: 0; right: 0; border-top-width: 1px; border-right-width: 1px; }
+.fx-crop--bl { bottom: 0; left: 0; border-bottom-width: 1px; border-left-width: 1px; }
+.fx-crop--br { bottom: 0; right: 0; border-bottom-width: 1px; border-right-width: 1px; }
+
+.fx-sheet-watermark {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 1.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(4.2rem, 7vw, 6.2rem);
+  line-height: 0.82;
+  color: color-mix(in srgb, var(--ink-primary) 7%, transparent);
+  pointer-events: none;
+  user-select: none;
+}
+
+.fx-sheet-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--rule-hairline);
+}
+
+.fx-sheet-folio {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.fx-sheet-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1 1 auto;
+}
+
+.fx-sheet-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 2.5vw, 2.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+
+.fx-sheet-title a {
+  text-decoration: none;
+}
+
+.fx-sheet-title a:hover,
+.fx-sheet-title a:focus-visible {
+  color: var(--fx-ink);
+}
+
+.fx-sheet-headline {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.32;
+  color: var(--ink-primary);
+}
+
+.fx-sheet-deck {
+  margin: 0;
+  font-family: var(--font-prose);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: var(--ink-secondary);
+}
+
+.fx-sheet-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--rule-hairline);
+}
+
+.fx-sheet-read {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--fx-ink);
+}
+
+.fx-sheet-read:hover {
+  color: var(--fx-gold);
+}
+
+.fx-sheet-colorbar {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  height: 3px;
+}
+
+.fx-swatch--ink { background: var(--fx-ink); }
+.fx-swatch--gold { background: var(--fx-gold); }
+.fx-swatch--signal { background: var(--fx-signal); }
+.fx-swatch--rule { background: var(--rule-strong); }
+
+/* Pinned horizontal press run on wide screens with scroll-timeline support */
+@supports (animation-timeline: view()) {
+  @media (min-width: 960px) and (prefers-reduced-motion: no-preference) {
+    html:not([data-fx='off']) .fx-press-run {
+      view-timeline-name: --fx-press-run;
+      view-timeline-axis: block;
+      view-timeline-inset: var(--header-h) 0px;
+      height: 440vh;
+      padding-block: 0;
+    }
+
+    html:not([data-fx='off']) .fx-press-stage {
+      position: sticky;
+      top: var(--header-h);
+      height: calc(100vh - var(--header-h));
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: var(--space-4);
+      padding-block: calc(var(--space-6) + 1.5rem) var(--space-5);
+      overflow: clip;
+      background:
+        radial-gradient(
+          90% 60% at 50% 50%,
+          color-mix(in srgb, var(--bg-surface) 82%, transparent),
+          transparent 75%
+        );
+    }
+
+    html:not([data-fx='off']) .fx-press-head {
+      margin-bottom: 0;
+      padding-bottom: var(--space-3);
+      flex: 0 0 auto;
+    }
+
+    html:not([data-fx='off']) .fx-press-telemetry {
+      display: flex;
+    }
+
+    html:not([data-fx='off']) .fx-press-sheet-live {
+      counter-reset: fx-sheet var(--fx-sheet-num);
+      animation-name: fx-sheet-counter;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --fx-press-run;
+      animation-range: contain 0% contain 100%;
+    }
+
+    html:not([data-fx='off']) .fx-press-sheet-live::after {
+      content: counter(fx-sheet, decimal-leading-zero);
+    }
+
+    html:not([data-fx='off']) .fx-press-meter span {
+      animation-name: fx-press-meter;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --fx-press-run;
+      animation-range: contain 0% contain 100%;
+    }
+
+    html:not([data-fx='off']) .fx-press-rail {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 10px;
+      width: 100%;
+      overflow: clip;
+      opacity: 0.65;
+    }
+
+    html:not([data-fx='off']) .fx-press-crop {
+      flex: 0 0 18px;
+      height: 1px;
+      background: var(--fx-ink);
+    }
+
+    html:not([data-fx='off']) .fx-press-ticks {
+      flex: 1 1 auto;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        90deg,
+        var(--rule-strong) 0 1px,
+        transparent 1px 22px,
+        var(--rule-hairline) 22px 23px,
+        transparent 23px 44px
+      );
+      animation-name: fx-rail-drift;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --fx-press-run;
+      animation-range: contain 0% contain 100%;
+    }
+
+    html:not([data-fx='off']) .fx-press-viewport {
+      container-type: inline-size;
+      width: 100%;
+      overflow: clip;
+      padding-block: var(--space-5);
+    }
+
+    html:not([data-fx='off']) .fx-press-track {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: var(--space-5);
+      width: max-content;
+      max-width: none;
+      margin: 0;
+      padding-inline: clamp(2.5rem, 8vw, 7rem);
+      will-change: transform;
+      animation-name: fx-press-slide;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --fx-press-run;
+      animation-range: contain 0% contain 100%;
+    }
+
+    html:not([data-fx='off']) .fx-press-sheet {
+      flex: 0 0 clamp(330px, 32vw, 430px);
+      min-height: clamp(330px, 44vh, 410px);
+      box-shadow: var(--shadow-elevated);
+      animation-name: fx-sheet-pass;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --fx-press-run;
+    }
+
+    /* Staggered pass windows across the 11-sheet press run */
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(1)  { animation-range: contain 0% contain 22%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(2)  { animation-range: contain 4% contain 30%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(3)  { animation-range: contain 12% contain 38%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(4)  { animation-range: contain 20% contain 46%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(5)  { animation-range: contain 28% contain 54%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(6)  { animation-range: contain 36% contain 62%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(7)  { animation-range: contain 44% contain 70%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(8)  { animation-range: contain 52% contain 78%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(9)  { animation-range: contain 60% contain 86%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(10) { animation-range: contain 68% contain 94%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(11) { animation-range: contain 76% contain 100%; }
+    html:not([data-fx='off']) .fx-press-sheet:nth-child(n + 12) { animation-range: contain 82% contain 100%; }
+
+    /* Max rizz: press run spins sheets noticeably as they pass through center */
+    html[data-rizz='max']:not([data-fx='off']) .fx-press-sheet {
+      animation-name: fx-sheet-pass-max;
+    }
+
+    /* Lite tier: keep the CSS horizontal timeline, drop extra paint layers */
+    html[data-fx='lite'] .fx-press-rail,
+    html[data-fx='lite'] .fx-sheet-crops,
+    html[data-fx='lite'] .fx-sheet-watermark {
+      display: none;
+    }
+
+    html[data-fx='lite'] .fx-press-sheet {
+      animation-name: none;
+      box-shadow: none;
+    }
+  }
+}
+
+@keyframes fx-press-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-100% + 100cqi), 0, 0); }
+}
+
+@keyframes fx-press-meter {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes fx-sheet-counter {
+  from { --fx-sheet-num: 1; }
+  to { --fx-sheet-num: var(--fx-sheet-total); }
+}
+
+@keyframes fx-rail-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-160px, 0, 0); }
+}
+
+@keyframes fx-sheet-pass {
+  0% { transform: translate3d(0, 12px, 0) rotate(-1.6deg) scale(0.97); }
+  50% { transform: translate3d(0, -6px, 0) rotate(0deg) scale(1.015); }
+  100% { transform: translate3d(0, 12px, 0) rotate(1.6deg) scale(0.97); }
+}
+
+@keyframes fx-sheet-pass-max {
+  0% { transform: perspective(1100px) translate3d(0, 26px, 0) rotate(-10deg) rotateY(-12deg) scale(0.93); }
+  50% { transform: perspective(1100px) translate3d(0, -14px, 0) rotate(0deg) rotateY(0deg) scale(1.05); }
+  100% { transform: perspective(1100px) translate3d(0, 26px, 0) rotate(10deg) rotateY(12deg) scale(0.93); }
+}
+
+/* --------------------------------------------------------------------------
+   2. DEPTH PARALLAX IN FEATURES (Plate, Under the Hood, Provenance Rail)
+   4 aria-hidden CSS/SVG layers moving at different rates, transform only.
+   -------------------------------------------------------------------------- */
+
+.fx-depth-plate,
+.fx-depth-hood,
+.fx-depth-rail {
+  position: relative;
+}
+
+.fx-depth-hood {
+  padding-inline: var(--space-4);
+  padding-bottom: var(--space-5);
+}
+
+.fx-depth-hood > :not(.fx-depth-layers),
+.fx-depth-rail > :not(.fx-depth-layers) {
+  position: relative;
+  z-index: 1;
+}
+
+.fx-depth-plate .plate-figcaption {
+  position: relative;
+  z-index: 3;
+  background: var(--bg-panel);
+}
+
+.fx-depth-layers {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fx-depth-layers--plate {
+  z-index: 2;
+}
+
+.fx-depth-layers--hood {
+  z-index: 0;
+  border-inline: 1px solid color-mix(in srgb, var(--rule-hairline) 65%, transparent);
+}
+
+.fx-depth-layers--rail {
+  z-index: 0;
+}
+
+.fx-dl {
+  position: absolute;
+  inset: -14% 0;
+  pointer-events: none;
+}
+
+/* Layer 1: hairline architectural grid */
+.fx-dl-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--rule-strong) 22%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--rule-strong) 22%, transparent) 1px, transparent 1px);
+  background-size: 36px 36px;
+  opacity: 0.45;
+}
+
+.fx-depth-layers--plate .fx-dl-grid {
+  opacity: 0.24;
+  background-size: 44px 44px;
+}
+
+/* Layer 2: monumental folio numeral & datum stamp */
+.fx-dl-folio {
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.8rem 1rem;
+  user-select: none;
+}
+
+.fx-dl-num {
+  font-family: var(--font-display);
+  font-size: clamp(4.2rem, 8vw, 7.2rem);
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+  color: color-mix(in srgb, var(--ink-primary) 11%, transparent);
+}
+
+.fx-depth-layers--plate .fx-dl-num {
+  color: color-mix(in srgb, var(--fx-gold) 18%, transparent);
+  font-size: clamp(3.4rem, 6vw, 5.4rem);
+}
+
+.fx-dl-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--fx-ink) 58%, transparent);
+}
+
+/* Layer 3: registration brackets & circular crosshairs */
+.fx-dl-crosshairs {
+  inset: 10px;
+  color: color-mix(in srgb, var(--fx-signal) 52%, transparent);
+}
+
+.fx-depth-layers--hood .fx-dl-crosshairs {
+  color: color-mix(in srgb, var(--fx-ink) 45%, transparent);
+}
+
+.fx-depth-layers--rail .fx-dl-crosshairs {
+  color: color-mix(in srgb, var(--fx-gold) 48%, transparent);
+}
+
+.fx-dl-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: currentColor;
+  border-style: solid;
+  border-width: 0;
+}
+
+.fx-dl-bracket--tl { top: 0; left: 0; border-top-width: 1.5px; border-left-width: 1.5px; }
+.fx-dl-bracket--tr { top: 0; right: 0; border-top-width: 1.5px; border-right-width: 1.5px; }
+.fx-dl-bracket--bl { bottom: 0; left: 0; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.fx-dl-bracket--br { bottom: 0; right: 0; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+.fx-dl-target {
+  position: absolute;
+  opacity: 0.72;
+}
+
+.fx-dl-target--tr {
+  top: 12px;
+  right: 12px;
+}
+
+.fx-dl-target--bl {
+  bottom: 44px;
+  left: 12px;
+}
+
+/* Layer 4: vertical coordinate vernier rule */
+.fx-dl-rule {
+  inset: -20% auto -20% 6px;
+  width: 10px;
+  opacity: 0.55;
+}
+
+.fx-depth-layers--rail .fx-dl-rule {
+  inset: -20% 4px -20% auto;
+}
+
+.fx-dl-ruler-ticks {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      var(--fx-ink) 0 1px,
+      transparent 1px 40px
+    ),
+    repeating-linear-gradient(
+      180deg,
+      var(--rule-strong) 0 1px,
+      transparent 1px 8px
+    );
+  background-size: 10px 40px, 5px 8px;
+  background-repeat: repeat-y;
+}
+
+/* Subtle transparency on sidebar panels so depth layers read cleanly behind them */
+.fx-depth-rail .sidebar-panel {
+  background: color-mix(in srgb, var(--bg-surface) 91%, transparent);
+}
+
+.fx-depth-rail .caveat-panel {
+  background: color-mix(in srgb, var(--amber-oxide-soft) 92%, var(--bg-canvas));
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-fx='off']) .fx-dl {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    html:not([data-fx='off']) .fx-dl-grid {
+      animation-name: fx-parallax-slow;
+    }
+
+    html:not([data-fx='off']) .fx-dl-folio {
+      animation-name: fx-parallax-mid;
+    }
+
+    html:not([data-fx='off']) .fx-dl-crosshairs {
+      animation-name: fx-parallax-counter;
+    }
+
+    html:not([data-fx='off']) .fx-dl-rule {
+      animation-name: fx-parallax-fast;
+    }
+
+    /* Double plate art parallax under max rizz */
+    html[data-rizz='max']:not([data-fx='off']) .fx-depth-plate .plate-art-box > img,
+    html[data-rizz='max']:not([data-fx='off']) .fx-depth-plate .plate-art-box > svg {
+      animation-name: fx-plate-parallax-max;
+    }
+
+    /* Lite tier (phones, low-memory devices): no depth layers. Each one is a section-tall
+       composited texture, and together they tripled the layer area on a 390px feature page. */
+    html[data-fx='lite'] .fx-dl {
+      display: none;
+    }
+  }
+}
+
+@keyframes fx-parallax-slow {
+  from { transform: translate3d(0, calc(-20px * var(--fx-parallax-mult, 1)), 0); }
+  to   { transform: translate3d(0, calc(20px * var(--fx-parallax-mult, 1)), 0); }
+}
+
+@keyframes fx-parallax-mid {
+  from { transform: translate3d(0, calc(-46px * var(--fx-parallax-mult, 1)), 0); }
+  to   { transform: translate3d(0, calc(46px * var(--fx-parallax-mult, 1)), 0); }
+}
+
+@keyframes fx-parallax-counter {
+  from { transform: translate3d(0, calc(32px * var(--fx-parallax-mult, 1)), 0); }
+  to   { transform: translate3d(0, calc(-32px * var(--fx-parallax-mult, 1)), 0); }
+}
+
+@keyframes fx-parallax-fast {
+  from { transform: translate3d(0, calc(64px * var(--fx-parallax-mult, 1)), 0); }
+  to   { transform: translate3d(0, calc(-64px * var(--fx-parallax-mult, 1)), 0); }
+}
+
+@keyframes fx-plate-parallax-max {
+  from { transform: scale(1.16) translateY(-6%); }
+  to   { transform: scale(1.16) translateY(6%); }
+}
+
+/* --------------------------------------------------------------------------
+   3. TABULAR STAT FIGURES (Taste Pass §10)
+   Always show the real figure immediately in tabular-nums. Scroll-linked
+   counting on view() froze hero and sidebar stats at false intermediate values
+   (e.g. "5 features" instead of 11, "#90 to #95" instead of #201 to #211) at
+   scrollY = 0, so the animated counter overlay is intentionally disabled.
+   -------------------------------------------------------------------------- */
+
+.fx-counter {
+  display: inline;
+  font-variant-numeric: tabular-nums;
+}
+
+.fx-counter-real {
+  color: inherit;
+}
+
+.fx-counter-anim {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   4. READING-PROGRESS INK — vertical margin ink line + h2 chapter ticks
+   Only shown when real outer margin exists outside the 1300px sheet (>= 1520px),
+   so chapter ticks never collide with article actions at 1440px.
+   -------------------------------------------------------------------------- */
+
+.fx-ink-rail {
+  display: none;
+}
+
+@media (min-width: 1520px) {
+  .fx-ink-rail {
+    position: fixed;
+    right: clamp(0.65rem, 1.3vw, 1.4rem);
+    top: calc(var(--header-h) + 4.2rem);
+    bottom: 4.5rem;
+    width: 24px;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .fx-ink-cap {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    line-height: 1;
+    transition: color var(--dur-short) var(--ease-carbon), transform var(--spring-snappy-dur) var(--spring-snappy);
+  }
+
+  .fx-ink-cap--top {
+    color: var(--fx-ink);
+  }
+
+  .fx-ink-cap--end.is-reached {
+    color: var(--fx-gold);
+    transform: scale(1.35);
+  }
+
+  .fx-ink-shaft {
+    position: relative;
+    flex: 1 1 auto;
+    width: 24px;
+  }
+
+  .fx-ink-groove {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: var(--rule-hairline);
+  }
+
+  .fx-ink-fill {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: linear-gradient(180deg, var(--fx-ink) 0%, var(--fx-gold) 70%, var(--fx-signal) 100%);
+    transform-origin: 50% 0%;
+    transform: scaleY(1);
+    opacity: 0.35;
+  }
+
+  .fx-ink-ruler {
+    position: absolute;
+    left: calc(50% + 4px);
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-image: repeating-linear-gradient(
+      180deg,
+      var(--rule-strong) 0 1px,
+      transparent 1px 22px
+    );
+    opacity: 0.45;
+  }
+
+  .fx-ink-ticks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    inset: 0;
+  }
+
+  .fx-ink-tick {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--fx-tick-y, 0%);
+    height: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fx-ink-tick-nib {
+    position: relative;
+    width: 10px;
+    height: 2px;
+    background: var(--rule-strong);
+    transition:
+      background var(--dur-short) var(--ease-carbon),
+      transform var(--spring-snappy-dur) var(--spring-snappy),
+      box-shadow var(--dur-short) var(--ease-carbon);
+  }
+
+  .fx-ink-tick-label {
+    display: none;
+  }
+
+  @media (min-width: 1680px) {
+    .fx-ink-tick-label {
+      display: block;
+      position: absolute;
+      right: 22px;
+      padding: 0.14rem 0.4rem;
+      border: 1px solid var(--rule-hairline);
+      background: color-mix(in srgb, var(--bg-canvas) 92%, transparent);
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--ink-muted);
+      opacity: 0.62;
+      transform: translate3d(4px, 0, 0);
+      transition:
+        color var(--dur-short) var(--ease-carbon),
+        border-color var(--dur-short) var(--ease-carbon),
+        opacity var(--dur-short) var(--ease-carbon),
+        transform var(--spring-snappy-dur) var(--spring-snappy);
+    }
+  }
+
+  .fx-ink-tick.is-passed .fx-ink-tick-nib {
+    background: var(--fx-ink);
+    transform: scaleX(1.55);
+  }
+
+  .fx-ink-tick.is-passed .fx-ink-tick-label {
+    color: var(--ink-primary);
+    border-color: color-mix(in srgb, var(--fx-ink) 60%, var(--rule-hairline));
+    opacity: 0.92;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .fx-ink-tick.is-current .fx-ink-tick-nib {
+    background: var(--fx-signal);
+    transform: scaleX(1.85) scaleY(1.6);
+    box-shadow: 0 0 10px var(--fx-signal);
+  }
+
+  .fx-ink-tick.is-current .fx-ink-tick-label {
+    color: var(--fx-signal);
+    border-color: var(--fx-signal);
+    opacity: 1;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      html:not([data-fx='off']) .fx-ink-fill {
+        opacity: 1;
+        transform: scaleY(0);
+        animation-name: fx-ink-fill;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root block);
+      }
+
+      html[data-rizz='max']:not([data-fx='off']) .fx-ink-fill {
+        width: 3px;
+        margin-left: -1.5px;
+        box-shadow: 0 0 12px color-mix(in srgb, var(--fx-ink) 65%, transparent);
+      }
+    }
+  }
+
+  html[data-fx='lite'] .fx-ink-ruler {
+    display: none;
+  }
+}
+
+@keyframes fx-ink-fill {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* --------------------------------------------------------------------------
+   5. REVEAL CHOREOGRAPHY
+      5a. Corrections proofreader's strike & caret marks
+      5b. Archive (/issues) cards fanning out from a stack
+      5c. Last page 'still public' era rows sliding alternately left & right
+   -------------------------------------------------------------------------- */
+
+/* 5a. Corrections proofreader marks */
+.fx-corr-item {
+  position: relative;
+}
+
+.fx-corr-text {
+  display: inline-block;
+}
+
+.fx-corr-caret {
+  position: absolute;
+  left: 3.1rem;
+  top: calc(var(--space-4) + 0.25rem);
+  color: var(--fx-ink);
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.fx-corr-strike {
+  display: none;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-fx='off']) .opus-corrections .fx-corr-item {
+      animation-name: none;
+    }
+
+    html:not([data-fx='off']) .fx-corr-text {
+      animation-name: fx-corr-draw;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+
+    html:not([data-fx='off']) .fx-corr-caret {
+      opacity: 1;
+      animation-name: fx-caret-pop;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 30%;
+    }
+
+    html:not([data-fx='off']) .fx-corr-caret path {
+      stroke-dasharray: 1;
+      animation-name: fx-caret-stroke;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 4% cover 30%;
+    }
+
+    html:not([data-fx='off']) .fx-corr-strike {
+      display: block;
+      position: absolute;
+      left: 4.6rem;
+      right: 0;
+      top: calc(var(--space-4) + 0.72em);
+      height: 2px;
+      background: var(--fx-ink);
+      transform-origin: 0 50%;
+      pointer-events: none;
+      animation-name: fx-corr-strike;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 34%;
+    }
+
+    html[data-fx='lite'] .fx-corr-strike {
+      display: none;
+    }
+  }
+}
+
+@keyframes fx-corr-draw {
+  from {
+    opacity: 0.1;
+    clip-path: inset(0 32% 0 0);
+    transform: translate3d(-14px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fx-caret-stroke {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes fx-caret-pop {
+  0%   { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.65); }
+  75%  { opacity: 1; transform: translate3d(0, -2px, 0) scale(1.12); }
+  100% { opacity: 0.9; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes fx-corr-strike {
+  0%   { transform: scaleX(0); opacity: 0; }
+  36%  { transform: scaleX(1); opacity: 0.95; }
+  72%  { transform: scaleX(1) translate3d(0, -0.55em, 0); opacity: 0.5; }
+  100% { transform: scaleX(0.14) translate3d(0, -0.92em, 0); opacity: 0.65; }
+}
+
+/* 5b. Archive (/issues) cards fan out from a stack */
+.fx-archive-rack {
+  overflow-x: clip;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-fx='off']) .fx-archive-card {
+      transform-origin: 50% 88%;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: cover 10% cover 46%;
+    }
+
+    html:not([data-fx='off']) .fx-archive-card:nth-child(odd) {
+      animation-name: fx-fan-left;
+    }
+
+    html:not([data-fx='off']) .fx-archive-card:nth-child(even) {
+      animation-name: fx-fan-right;
+    }
+
+    html[data-rizz='max']:not([data-fx='off']) .fx-archive-card:nth-child(odd) {
+      animation-name: fx-fan-left-max;
+    }
+
+    html[data-rizz='max']:not([data-fx='off']) .fx-archive-card:nth-child(even) {
+      animation-name: fx-fan-right-max;
+    }
+
+    @media (max-width: 760px) {
+      html:not([data-fx='off']) .fx-archive-card {
+        animation-range: entry 0% cover 34%;
+      }
+
+      html:not([data-fx='off']) .fx-archive-card:nth-child(odd),
+      html[data-rizz='max']:not([data-fx='off']) .fx-archive-card:nth-child(odd) {
+        animation-name: fx-fan-mobile-odd;
+      }
+
+      html:not([data-fx='off']) .fx-archive-card:nth-child(even),
+      html[data-rizz='max']:not([data-fx='off']) .fx-archive-card:nth-child(even) {
+        animation-name: fx-fan-mobile-even;
+      }
+    }
+  }
+}
+
+@keyframes fx-fan-left {
+  from { transform: translate3d(16%, 24px, 0) rotate(-5.5deg) scale(0.95); opacity: 0.86; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes fx-fan-right {
+  from { transform: translate3d(-16%, 34px, 0) rotate(5.5deg) scale(0.94); opacity: 0.84; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes fx-fan-left-max {
+  from { transform: translate3d(22%, 34px, 0) rotate(-9deg) scale(0.92); opacity: 0.82; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes fx-fan-right-max {
+  from { transform: translate3d(-22%, 44px, 0) rotate(9deg) scale(0.91); opacity: 0.8; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes fx-fan-mobile-odd {
+  from { transform: translate3d(0, 28px, 0) rotate(-2deg) scale(0.96); opacity: 0.85; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+@keyframes fx-fan-mobile-even {
+  from { transform: translate3d(0, 28px, 0) rotate(2deg) scale(0.96); opacity: 0.85; }
+  to   { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+/* 5c. Last page 'still public' era rows slide alternately from left and right */
+.opus-strata {
+  overflow-x: clip;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-fx='off']) .opus-strata-list.fx-strata-list .fx-strata-row {
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+
+    html:not([data-fx='off']) .opus-strata-list.fx-strata-list .fx-strata-row:nth-child(odd) {
+      animation-name: fx-strata-left;
+    }
+
+    html:not([data-fx='off']) .opus-strata-list.fx-strata-list .fx-strata-row:nth-child(even) {
+      animation-name: fx-strata-right;
+    }
+  }
+}
+
+@keyframes fx-strata-left {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(-56px * var(--fx-parallax-mult, 1)), 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes fx-strata-right {
+  from {
+    opacity: 0;
+    transform: translate3d(calc(56px * var(--fx-parallax-mult, 1)), 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. Mobile safety (<= 760px, including 390px) & Reduced motion overrides
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .fx-press-track {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fx-depth-hood {
+    padding-inline: 0;
+  }
+
+  .fx-corr-caret {
+    left: 2.85rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-press-run {
+    height: auto !important;
+  }
+
+  .fx-press-stage {
+    position: static !important;
+    height: auto !important;
+  }
+
+  .fx-press-telemetry,
+  .fx-press-rail,
+  .fx-corr-strike {
+    display: none !important;
+  }
+
+  .fx-counter-real {
+    color: inherit !important;
+  }
+
+  .fx-counter-anim {
+    display: none !important;
+  }
+}

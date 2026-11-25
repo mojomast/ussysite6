@@ -1,0 +1,30 @@
+---
+import { withBase } from '../lib/paths';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Kinetic from '../components/Kinetic.astro';
+---
+
+<BaseLayout
+  title="Not printed · Slop Illustrated"
+  description="This page isn’t in the magazine. It may never have been."
+>
+  <section class="opus-404">
+    <div class="carbon-sheet">
+      <p class="datum-tag">Error 404 · Folio not found</p>
+      <h1 class="opus-404-headline"><Kinetic text="We didn’t print this page." /></h1>
+      <p class="opus-404-deck">
+        Either it never existed, or it was a draft we read once, felt bad about, and pulped. On balance, both are better
+        than printing something we couldn’t back up.
+      </p>
+      <p class="opus-404-proof" aria-hidden="true">
+        <span>Proof note:</span> <del>this page</del> <ins>stet the rest of the magazine</ins>
+      </p>
+      <div class="cta-row">
+        <a class="btn-primary" href={withBase('/')}>Back to the front page</a>
+        <a class="btn-secondary" href={withBase('/issues/02')}>Read the new issue</a>
+        <a class="btn-secondary" href={withBase('/source-room')}>Browse every source</a>
+      </div>
+      <p class="datum-tag">Looking for something specific? Press <kbd class="ctrl-kbd">/</kbd> to search everything we’ve printed.</p>
+    </div>
+  </section>
+</BaseLayout>
