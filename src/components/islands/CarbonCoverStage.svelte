@@ -105,6 +105,32 @@
             alpha: true,
             powerPreference: 'low-power'
           });
+          // Verify shaders actually compile & link on this GPU; if a strict/broken driver
+          // rejects shaders, fall back cleanly to the static SVG lattice instead of a blank frame.
+          const gl = glRenderer.getContext();
+          const vs = gl.createShader(gl.VERTEX_SHADER);
+          const fs = gl.createShader(gl.FRAGMENT_SHADER);
+          const prog = gl.createProgram();
+          let shaderOk = false;
+          if (vs && fs && prog) {
+            gl.shaderSource(vs, 'void main(){gl_Position=vec4(0.0,0.0,0.0,1.0);}');
+            gl.shaderSource(fs, 'precision mediump float;void main(){gl_FragColor=vec4(1.0);}');
+            gl.compileShader(vs);
+            gl.compileShader(fs);
+            if (gl.getShaderParameter(vs, gl.COMPILE_STATUS) && gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+              gl.attachShader(prog, vs);
+              gl.attachShader(prog, fs);
+              gl.linkProgram(prog);
+              shaderOk = Boolean(gl.getProgramParameter(prog, gl.LINK_STATUS));
+            }
+            gl.deleteProgram(prog);
+            gl.deleteShader(vs);
+            gl.deleteShader(fs);
+          }
+          if (!shaderOk) {
+            glRenderer.dispose();
+            throw new Error('WebGL shader health probe failed');
+          }
           activeRenderer = glRenderer;
           mode = 'WEBGL2 · NEON';
         } catch {
@@ -850,8 +876,8 @@
         pointerVel.y *= Math.exp(-dt * 6.0);
 
         const totalSpike = Math.min(1.6, velocitySpike + selectionSpike * 1.15);
-        const aberrationLevel = 0.09 + rizzBoost * 0.14 + totalSpike * 0.85;
-        const bloomLevel = 0.34 + rizzBoost * 0.22 + totalSpike * 0.92;
+        const aberrationLevel = 0.015 + rizzBoost * 0.1 + totalSpike * 0.72;
+        const bloomLevel = 0.16 + rizzBoost * 0.18 + totalSpike * 0.78;
 
         // Update 3D shockwave ring + screen-space ripple wave
         let shockProgress = 1;
@@ -943,10 +969,20 @@
             });
           } catch {
             renderWithPost = null;
-            activeRenderer.render(scene, camera);
+            try {
+              activeRenderer.render(scene, camera);
+            } catch {
+              rendererMode = 'STATIC SVG';
+              disposed = true;
+            }
           }
         } else {
-          activeRenderer.render(scene, camera);
+          try {
+            activeRenderer.render(scene, camera);
+          } catch {
+            rendererMode = 'STATIC SVG';
+            disposed = true;
+          }
         }
       };
 

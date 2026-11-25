@@ -21,7 +21,7 @@ liveUrl: null
 sourceRevision: "1f1e5f5486904f5d08a9768bc0321fb82b647e76"
 researchedAt: "2026-10-13"
 spotInkHex: "#2563eb"
-secondaryInkHex: "#7c3aed"
+secondaryInkHex: "#0284c7"
 techStack:
   [
     "Godot 4.5",

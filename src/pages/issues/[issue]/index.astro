@@ -80,8 +80,8 @@ const pressRunItems = issueArticles.map((a) => ({
       )}
 
       <h1 class="masthead-monument vt-issue-title">
-        <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}</span>
-        <span class="word-illustrated"><Kinetic text={issueData.title} /><span class="period-mark">.</span></span>
+        <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}{' '}</span>
+        <span class="word-illustrated"><Kinetic text={issueData.title} />{!/[.?!]$/.test(issueData.title.trim()) && <span class="period-mark">.</span>}</span>
       </h1>
       <p class="hero-issue-deck">{issueData.subtitle}</p>
 

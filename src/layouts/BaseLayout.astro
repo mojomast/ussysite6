@@ -46,6 +46,8 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={new URL(withBase('/assets/cover/machine-beneath-the-skin.webp'), Astro.site || 'https://ussy.host').toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="stylesheet" href={withBase('/vt-names.css')} />
     <link rel="expect" href="#page-end" blocking="render" />
@@ -54,7 +56,7 @@ const canonicalUrl = new URL(canonicalPath, Astro.site || 'https://ussy.host').t
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@400..800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Syne:wght@400..800&display=swap"
       rel="stylesheet"
     />
   </head>

@@ -231,7 +231,7 @@
         {/each}
       </ul>
     {:else}
-      <p class="datum-tag">
+      <p class="desk-empty-note">
         Nothing here yet. Press Save on anything that made you curious and it will wait for you, on this device and,
         if the server is up, in a small SQLite file that only knows you by a random number.
       </p>

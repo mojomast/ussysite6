@@ -43,13 +43,13 @@ html[data-rizz='max'][data-stock='rag'] {
 
 @media (prefers-reduced-motion: no-preference) {
   html[data-rizz='max'] {
-    animation: fx-rizz-hue-drift 18s linear infinite;
+    animation: fx-rizz-hue-drift 12s ease-in-out infinite alternate;
   }
 }
 
 @keyframes fx-rizz-hue-drift {
-  from { --fx-rizz-hue: 0deg; }
-  to { --fx-rizz-hue: 360deg; }
+  from { --fx-rizz-hue: -18deg; }
+  to { --fx-rizz-hue: 26deg; }
 }
 
 /* Neon edges on editorial frames */

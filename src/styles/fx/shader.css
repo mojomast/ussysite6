@@ -5,11 +5,10 @@
    ========================================================================== */
 
 /* --- 1. Static CSS fallback for lite / off / pre-hydration / no-GPU ------- */
-/* Below the full tier the grain is part of the paper: a pre-faded tile in the body background,
-   which costs nothing to composite. Two fixed, blended, full-viewport layers on top of the page
-   cost a 390px phone profile about half its frame rate (DESIGN.md §9.4). */
+/* Below the full tier the grain is part of the paper: a pre-faded feTurbulence SVG tile
+   (base64-encoded so LightningCSS never rewrites url(#g) into a broken /%23g request). */
 :root {
-  --fx-paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.05'/%3E%3C/svg%3E");
+  --fx-paper-grain: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxODAgMTgwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44MicgbnVtT2N0YXZlcz0nMycgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjZyknIG9wYWNpdHk9JzAuMDUnLz48L3N2Zz4=");
 }
 
 html[data-fx='full'] {
@@ -20,9 +19,8 @@ html:not([data-fx='full']) .fx-film-overlay {
   display: none;
 }
 
-/* One size per background layer: the grain tile, then the three ink gradients. The ink wash
-   covers the first spread only. Spread over the whole (8000px+) body, every repainted tile had to
-   re-raster three color-mix radial gradients: a 390px phone profile fell from 60 to 22fps. */
+/* One size per background layer: the grain tile, then the three restrained ink gradients.
+   Covers the first spread only so repainted tiles below never re-raster gradients. */
 body {
   background-size: 180px 180px, 100% 140vh, 100% 140vh, 100% 140vh;
   background-repeat: repeat, no-repeat, no-repeat, no-repeat;
@@ -31,17 +29,17 @@ body {
 body {
   background-image:
     var(--fx-paper-grain, none),
-    radial-gradient(64% 48% at 14% 12%, color-mix(in srgb, var(--proof-ink) 9%, transparent), transparent 68%),
-    radial-gradient(56% 46% at 86% 24%, color-mix(in srgb, var(--neon-cyan) 8%, transparent), transparent 66%),
-    radial-gradient(70% 54% at 48% 88%, color-mix(in srgb, var(--gilt) 7%, transparent), transparent 72%);
+    radial-gradient(64% 48% at 14% 12%, color-mix(in srgb, var(--proof-ink) 5%, transparent), transparent 68%),
+    radial-gradient(56% 46% at 86% 24%, color-mix(in srgb, var(--neon-cyan) 4.5%, transparent), transparent 66%),
+    radial-gradient(70% 54% at 48% 88%, color-mix(in srgb, var(--gilt) 4%, transparent), transparent 72%);
 }
 
 html[data-stock='rag'] body {
   background-image:
     var(--fx-paper-grain, none),
-    radial-gradient(64% 48% at 14% 12%, color-mix(in srgb, var(--proof-ink) 6%, transparent), transparent 68%),
-    radial-gradient(56% 46% at 86% 24%, color-mix(in srgb, var(--neon-cyan) 5%, transparent), transparent 66%),
-    radial-gradient(70% 54% at 48% 88%, color-mix(in srgb, var(--gilt) 5%, transparent), transparent 72%);
+    radial-gradient(64% 48% at 14% 12%, color-mix(in srgb, var(--proof-ink) 4%, transparent), transparent 68%),
+    radial-gradient(56% 46% at 86% 24%, color-mix(in srgb, var(--neon-cyan) 3.5%, transparent), transparent 66%),
+    radial-gradient(70% 54% at 48% 88%, color-mix(in srgb, var(--gilt) 3.5%, transparent), transparent 72%);
 }
 
 html[data-rizz='max'] body {
@@ -112,7 +110,7 @@ html:not(.fx-backdrop-live) .fx-backdrop {
   /* Normal blending on purpose: a blend mode on a fixed full-viewport layer makes the compositor
      re-blend everything beneath it every frame (measured: mobile scroll 58 → 26fps). */
   opacity: calc(var(--fx-grain-opacity, 0.07) * 0.6);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxODAgMTgwJz48ZmlsdGVyIGlkPSdnJz48ZmVUdXJidWxlbmNlIHR5cGU9J2ZyYWN0YWxOb2lzZScgYmFzZUZyZXF1ZW5jeT0nMC44MicgbnVtT2N0YXZlcz0nMycgc3RpdGNoVGlsZXM9J3N0aXRjaCcvPjxmZUNvbG9yTWF0cml4IHR5cGU9J3NhdHVyYXRlJyB2YWx1ZXM9JzAnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWx0ZXI9J3VybCgjZyknLz48L3N2Zz4=");
   background-size: 180px 180px;
   background-repeat: repeat;
 }

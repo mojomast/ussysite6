@@ -251,8 +251,9 @@
   overflow-y: auto;
 }
 
-.opus-cold-open:focus {
-  outline: none;
+.opus-cold-open:focus-visible {
+  outline: 2px solid var(--gilt);
+  outline-offset: -4px;
 }
 
 .opus-cold-open-inner {

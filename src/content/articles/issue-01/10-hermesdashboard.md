@@ -20,7 +20,7 @@ repoUrl: "https://github.com/mojomast/hermesdashboard"
 liveUrl: null
 sourceRevision: "74ef867f3d7ad408c6c3c6aca6c91d4532464da9"
 researchedAt: "2026-10-13"
-spotInkHex: "#6d28d9"
+spotInkHex: "#2563eb"
 secondaryInkHex: "#be185d"
 techStack:
   [

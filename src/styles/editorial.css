@@ -50,11 +50,11 @@
 
 .si-badge:hover {
   background: var(--signal-vermilion);
-  color: #ffffff;
+  color: var(--ink-on-signal);
 }
 
 .si-badge:hover span {
-  color: #ffffff;
+  color: var(--ink-on-signal);
 }
 
 .brand-imprint {
@@ -235,6 +235,8 @@
 
 .masthead-monument .word-illustrated {
   font-style: italic;
+  display: inline-block;
+  padding-right: 0.14em;
 }
 
 .masthead-monument .period-mark {
@@ -298,7 +300,7 @@
 .btn-primary {
   background: var(--signal-vermilion);
   border-color: var(--signal-vermilion);
-  color: #ffffff;
+  color: var(--ink-on-signal);
 }
 
 .btn-primary:hover {
@@ -1092,6 +1094,14 @@
   border: 1px solid var(--rule-strong);
   background: var(--bg-surface);
   padding: var(--space-4);
+}
+
+.desk-empty-note {
+  margin: var(--space-3) 0 var(--space-4);
+  font-family: var(--font-prose);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink-secondary);
 }
 
 /* 8. Modal Dialogs & Drawers (Finder, Ask Editor, Ussyverse Stratigraphy) */

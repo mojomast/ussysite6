@@ -22,7 +22,7 @@ repoUrl: "https://github.com/mojomast/open-higgsfield-skills"
 liveUrl: null
 sourceRevision: "5a1a2d492540d349a2d84d413e4b71f88aa94519"
 researchedAt: "2026-11-23"
-spotInkHex: "#a855f7"
+spotInkHex: "#e11d48"
 secondaryInkHex: "#f5a623"
 techStack:
   - "Python (stdlib driver)"
