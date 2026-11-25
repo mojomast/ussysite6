@@ -230,10 +230,16 @@
   gap: 0.45rem;
 }
 
+.press-mobile-desk .stock-group {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .press-mobile-tools .ctrl-btn,
 .press-mobile-desk .stock-group .ctrl-btn {
   min-height: 44px;
   padding: 0.5rem 0.75rem;
+  justify-content: center;
 }
 
 @media (max-width: 1023px) {

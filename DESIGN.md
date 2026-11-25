@@ -254,3 +254,29 @@ Merged as built, the wave took a 4×-throttled 390px feature scroll from 60 to ~
 
 ### 9.5 Research sources
 Three.js WebGPURenderer and RenderPipeline docs; Codrops (2026): dual-scene fluid X-ray, GoodGrowth flow-map smear, shader stamp loupe, GSAP clip-path wipes, EXAT variable-type showcase, mineral-collection halftone; Chrome for Developers: View Transitions in 2025, element-scoped view transitions, `scroll-state()` queries, `shape()`, scrollability affordances; web.dev Baseline 2026 and WebGPU support; MDN `style-src`.
+
+## 10. Taste Pass (`Ta·73`): Restraint, Rhythm & Editorial Discipline
+
+**Layer author:** Claude Opus 5.5, Phase 7, guided by `Leonxlnx/taste-skill` (`design-taste-frontend` v2.5.1, installed with its MIT license in `.cursor/skills/design-taste-frontend/`). After six waves of features and effects, the magazine needed an editor's red pencil: keep the Night Hive DNA, the copy voice (§7), and the memorable moments, while cutting everything generic, broken, or loud.
+
+### 10.1 References & Bar
+- **Interface restraint (`figma.com` and `x.ai` via `tasteskill 2.5.1`):** one compact, opaque navigation bar instead of a multi-row control cockpit; 90–95% neutral ground with one disciplined accent; equal content edges; zero layout shift; real contrast on every label and button; quiet hover micro-interactions rather than gimmicks.
+- **Editorial print craft (Swiss grid periodicals, `interfaces.dev`):** typography and alignment carry the spread; numbers are always accurate at rest; no captions repeating text already drawn inside a technical plate; no violet/lavender creeping into a Graphite/vermilion/gilt/cyan palette.
+
+### 10.2 What Real-Browser Checking Caught (`consistency.mjs`, `perf.mjs`, `copy-lint.mjs`, visual review)
+1. **Five-row mobile header (230px) & two-row desktop cockpit (108px):** 14 controls in the sticky header ate a quarter of the phone viewport and introduced 4 competing button styles on screen 1.
+2. **False numbers at rest (`StatNumber`/`StatText`):** Phase 6's scroll-linked `view()` counters sat halfway through their timeline at `scrollY = 0`, telling visitors the issue had *"5 features, 2 dispatches"*, *"#90 to #95"*, and *"1 contracts"* instead of 11, 4, #201–#211, and 4.
+3. **`CLS = 1.508` desktop / `1.012` mobile (`perf.mjs` FAIL):** `fx-ink-press` animated Syne's `wght` axis on headings as they scrolled into view, reflowing every block underneath.
+4. **Broken WebGL shader fallback (`gl-fallback` FAIL):** when a strict or broken GPU rejected shader compilation, `CarbonCoverStage.svelte` rendered a black empty box instead of dropping to `STATIC SVG`.
+5. **Overlapping reading rail:** at `1440×900`, `ReadingInkRail` chapter pills (`UNDER THE HOOD`) collided directly on top of the `OPEN THE REPO ↗` button.
+6. **Primary button WCAG AA failure (`3.44:1`):** white text on `#ff4422` vermilion fell below `4.5:1`.
+7. **Violet hive cells & `/%23g` 404:** three article spot inks (`#a855f7`, `#6d28d9`, `#7c3aed`) introduced purple cells into the hive, and LightningCSS turned the unencoded SVG noise `url(%23g)` into a broken `/%23g` network request.
+8. **Typographic & focus nits:** `Who Watches the Bees?.` double punctuation, `SLOPIllustrated.` missing accessible space, italic `d` right-edge clipping, `.opus-cold-open:focus { outline: none }`, all-caps body prose in the Source Room desk, and a 2px mobile right-edge clip on `.cover-node-btn`.
+
+### 10.3 Decisions: What Changed, What Was Cut, What Stayed
+- **Single-row masthead (58px desktop, 56px mobile):** desktop carries `Si. Slop Illustrated`, the 6 borderless nav links (`aria-current="page"` 2px vermilion rule), and 3 uniform ghost controls (`Find /`, `Ask Editor`, `Press ▾`, which opens the flat Press Desk tray for Paper Stock, Grid, Sound, Flexi-disc, and Shortcuts). Mobile shows `Si. Slop Illustrated`, `Find /`, and a 44px `Menu ☰` sheet with 48px Instrument Serif section rows and equal-width Paper Stock controls.
+- **Hero restraint & alignment:** front-page hero trimmed to two buttons on one line (`Open Issue 02 ↗` + `Read cover story`) plus a quiet inline link to the cold open; `.hero-highlights-dl` aligned flush to the left margin; redundant caption box removed under the front-page cover-story SVG; Issue 02's `Replay the opening` tucked cleanly into the cover header strip.
+- **True Four-Voice Typography & WCAG AA+ contrast:** removed the redundant 5th font (`Space Grotesk`) to match §2.2's four voices (`Instrument Serif`, `Syne`, `Newsreader`, `JetBrains Mono`); added `--ink-on-signal` (`#0b0c0e` on Graphite, `#071522` on Oxide, `#ffffff` on Rag → `5.7–7.6:1` contrast); replaced violet spot inks with crimson/cobalt/cerulean and bounded Max Rizz hue drift away from violet.
+- **WebGL fallback probe & base64 grain:** `CarbonCoverStage.svelte` now runs a compile+link shader health probe before leaving `STATIC SVG` and dials back idle chromatic aberration so the hive is razor-sharp at rest; SVG noise tiles are base64-encoded (zero `/%23g` 404s) and the body ink wash is softened ~35%.
+- **Cut for taste & stability:** scroll-linked stat counters (false figures on load), `fx-ink-press` scroll weight reflow (`CLS 1.508 → 0.002` desktop, `1.012 → 0.000` mobile), 3D card tilt and magnetic buttons (replaced with flat Swiss 2px card lift and 1.025 plate zoom inside `overflow: hidden` frames), giant outlined `SLOP ILLUSTRATED` background marquee on `.mo-scrolly::before`, and `ReadingInkRail` overlap below `1520px` (chapter labels `>= 1680px`).
+- **Preserved:** the Cold Open, WebGPU → WebGL2 → SVG 3D Hive + GPU bee swarm + cell shockwave, all 10 interactive step-through studies, cross-document page turns + shared-element morphs + ink-flood stock switch, pinned scrollytelling + Press Run, ink-nib follower + click splats, decoding mono labels, Last Page at dusk + reading lamp, proofreader ticks + Corrections, and MAXIMUM RIZZ / `proof` / `u-s-s-y` / opt-in sound.
