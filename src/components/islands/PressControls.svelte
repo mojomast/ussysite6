@@ -27,13 +27,31 @@
     citations?: Array<{ label: string; href: string }>;
   }
 
-  let { catalog = [] }: { catalog?: SearchEntry[] } = $props();
+  let { catalog = [], currentPath = '/' }: { catalog?: SearchEntry[]; currentPath?: string } = $props();
 
   let stock = $state<PaperStock>('graphite');
   let gridOn = $state(false);
   let audioDockOpen = $state(false);
   let soundOn = $state(false);
   let savedNos = $state<number[]>([]);
+
+  let deskOpen = $state(false);
+  let menuOpen = $state(false);
+
+  const NAV_ITEMS = [
+    { href: '/', label: 'Front Page', exact: true },
+    { href: '/issues/02', label: 'Issue 02 · Current', exact: false },
+    { href: '/issues/01', label: 'Issue 01', exact: false },
+    { href: '/issues', label: 'Back Issues', exact: true },
+    { href: '/source-room', label: 'Source Room', exact: false },
+    { href: '/about', label: 'About', exact: false }
+  ];
+
+  function navIsCurrent(item: { href: string; exact: boolean }): boolean {
+    return item.exact
+      ? currentPath === item.href
+      : currentPath === item.href || currentPath.startsWith(`${item.href}/`);
+  }
 
   let finderOpen = $state(false);
   let finderQuery = $state('');
@@ -156,6 +174,8 @@
         editorOpen = false;
         strataOpen = false;
         shortcutsOpen = false;
+        deskOpen = false;
+        menuOpen = false;
         return;
       }
 
@@ -339,80 +359,6 @@
 </script>
 
 <div class="press-controls-bar" role="region" aria-label="Press Room Controls">
-  <div class="stock-group" role="group" aria-label="Paper Stock">
-    <button
-      type="button"
-      class="ctrl-btn"
-      aria-pressed={stock === 'graphite'}
-      onclick={(e) => chooseStock('graphite', e.currentTarget)}
-      title="Pyrolytic Graphite dark stock"
-    >
-      Graphite
-    </button>
-    <button
-      type="button"
-      class="ctrl-btn"
-      aria-pressed={stock === 'rag'}
-      onclick={(e) => chooseStock('rag', e.currentTarget)}
-      title="Unbleached Cotton Rag daylight stock"
-    >
-      Rag
-    </button>
-    <button
-      type="button"
-      class="ctrl-btn"
-      aria-pressed={stock === 'oxide'}
-      onclick={(e) => chooseStock('oxide', e.currentTarget)}
-      title="Ferric Blueprint inspection stock"
-    >
-      Oxide
-    </button>
-  </div>
-
-  <button
-    type="button"
-    class="ctrl-btn"
-    aria-pressed={gridOn}
-    onclick={handleGridToggle}
-    title="Show the layout grid"
-  >
-    Grid
-  </button>
-
-  <button
-    type="button"
-    class="ctrl-btn"
-    aria-pressed={soundOn}
-    onclick={handleSoundToggle}
-    title="Interface sounds. Off unless you turn them on."
-  >
-    {soundOn ? '♪ Sound on' : 'Sound off'}
-  </button>
-
-  <button
-    type="button"
-    class="ctrl-btn neon-btn-accent"
-    aria-pressed={audioDockOpen}
-    onclick={handleAudioDockToggle}
-    title="Open the flexi-disc player"
-  >
-    {audioDockOpen ? 'Flexi-disc ▾' : 'Flexi-disc'}
-  </button>
-
-  <button
-    type="button"
-    class="ctrl-btn neon-btn-accent"
-    aria-expanded={editorOpen}
-    onclick={() => {
-      editorOpen = !editorOpen;
-      finderOpen = false;
-      shortcutsOpen = false;
-    }}
-    title="Ask the editor about anything in the archive"
-  >
-    Ask the Editor
-  </button>
-
   <button
     type="button"
     class="ctrl-btn"
@@ -421,12 +367,177 @@
       finderOpen = !finderOpen;
       editorOpen = false;
       shortcutsOpen = false;
+      deskOpen = false;
+      menuOpen = false;
     }}
     title="Search every issue (/)"
   >
     Find <kbd class="ctrl-kbd">/</kbd>
   </button>
+
+  <button
+    type="button"
+    class="ctrl-btn press-desktop-only"
+    aria-expanded={editorOpen}
+    onclick={() => {
+      editorOpen = !editorOpen;
+      finderOpen = false;
+      shortcutsOpen = false;
+      deskOpen = false;
+    }}
+    title="Ask the editor about anything in the archive"
+  >
+    Ask Editor
+  </button>
+
+  <button
+    type="button"
+    class="ctrl-btn press-desktop-only"
+    aria-expanded={deskOpen}
+    aria-controls="press-desk-tray"
+    onclick={() => {
+      deskOpen = !deskOpen;
+      finderOpen = false;
+      editorOpen = false;
+      shortcutsOpen = false;
+    }}
+    title="Paper stock, layout grid, sound and flexi-disc"
+  >
+    Press {deskOpen ? '▴' : '▾'}
+  </button>
+
+  <button
+    type="button"
+    class="ctrl-btn press-mobile-only"
+    aria-expanded={menuOpen}
+    aria-controls="press-mobile-sheet"
+    onclick={() => {
+      menuOpen = !menuOpen;
+      finderOpen = false;
+      editorOpen = false;
+      shortcutsOpen = false;
+    }}
+    aria-label={menuOpen ? 'Close navigation and press controls' : 'Open navigation and press controls'}
+  >
+    {menuOpen ? 'Close ×' : 'Menu ☰'}
+  </button>
 </div>
+
+{#if deskOpen}
+  <div id="press-desk-tray" class="press-desk-tray" role="region" aria-label="Press Desk">
+    <div class="carbon-sheet press-desk-tray-inner">
+      <div class="press-desk-group">
+        <span class="datum-tag">Stock</span>
+        <div class="stock-group" role="group" aria-label="Paper Stock">
+          <button
+            type="button"
+            class="ctrl-btn"
+            aria-pressed={stock === 'graphite'}
+            onclick={(e) => chooseStock('graphite', e.currentTarget)}
+            title="Pyrolytic Graphite dark stock"
+          >
+            Graphite
+          </button>
+          <button
+            type="button"
+            class="ctrl-btn"
+            aria-pressed={stock === 'rag'}
+            onclick={(e) => chooseStock('rag', e.currentTarget)}
+            title="Unbleached Cotton Rag daylight stock"
+          >
+            Rag
+          </button>
+          <button
+            type="button"
+            class="ctrl-btn"
+            aria-pressed={stock === 'oxide'}
+            onclick={(e) => chooseStock('oxide', e.currentTarget)}
+            title="Ferric Blueprint inspection stock"
+          >
+            Oxide
+          </button>
+        </div>
+      </div>
+
+      <div class="press-desk-group">
+        <button
+          type="button"
+          class="ctrl-btn"
+          aria-pressed={gridOn}
+          onclick={handleGridToggle}
+          title="Show the layout grid"
+        >
+          Grid
+        </button>
+
+        <button
+          type="button"
+          class="ctrl-btn"
+          aria-pressed={soundOn}
+          onclick={handleSoundToggle}
+          title="Interface sounds. Off unless you turn them on."
+        >
+          {soundOn ? '♪ Sound on' : 'Sound off'}
+        </button>
+
+        <button
+          type="button"
+          class="ctrl-btn"
+          aria-pressed={audioDockOpen}
+          onclick={handleAudioDockToggle}
+          title="Open the flexi-disc player"
+        >
+          {audioDockOpen ? 'Flexi-disc ▾' : 'Flexi-disc'}
+        </button>
+
+        <button
+          type="button"
+          class="ctrl-btn"
+          onclick={() => {
+            deskOpen = false;
+            shortcutsOpen = true;
+          }}
+          title="Keyboard shortcuts (?)"
+        >
+          Keys <kbd class="ctrl-kbd">?</kbd>
+        </button>
+      </div>
+    </div>
+  </div>
+{/if}
+
+{#if menuOpen}
+  <div id="press-mobile-sheet" class="press-mobile-sheet" role="region" aria-label="Site navigation and press desk">
+    <nav class="press-mobile-nav" aria-label="Sections (mobile)">
+      {#each NAV_ITEMS as item (item.href)}
+        <a
+          class="press-mobile-link"
+          href={withBase(item.href)}
+          aria-current={navIsCurrent(item) ? 'page' : undefined}
+          onclick={() => (menuOpen = false)}
+        >
+          {item.label}
+        </a>
+      {/each}
+    </nav>
+
+    <div class="press-mobile-desk">
+      <span class="datum-tag">Paper Stock</span>
+      <div class="stock-group" role="group" aria-label="Paper Stock">
+        <button type="button" class="ctrl-btn" aria-pressed={stock === 'graphite'} onclick={(e) => chooseStock('graphite', e.currentTarget)}>Graphite</button>
+        <button type="button" class="ctrl-btn" aria-pressed={stock === 'rag'} onclick={(e) => chooseStock('rag', e.currentTarget)}>Rag</button>
+        <button type="button" class="ctrl-btn" aria-pressed={stock === 'oxide'} onclick={(e) => chooseStock('oxide', e.currentTarget)}>Oxide</button>
+      </div>
+
+      <div class="press-mobile-tools">
+        <button type="button" class="ctrl-btn" aria-pressed={gridOn} onclick={handleGridToggle}>Grid</button>
+        <button type="button" class="ctrl-btn" aria-pressed={soundOn} onclick={handleSoundToggle}>{soundOn ? '♪ Sound on' : 'Sound off'}</button>
+        <button type="button" class="ctrl-btn" aria-pressed={audioDockOpen} onclick={() => { handleAudioDockToggle(); menuOpen = false; }}>Flexi-disc</button>
+        <button type="button" class="ctrl-btn" onclick={() => { menuOpen = false; editorOpen = true; }}>Ask the Editor</button>
+      </div>
+    </div>
+  </div>
+{/if}
 
 {#if hudNotice}
   <div class="neon-shortcut-hud" role="status" aria-live="polite">

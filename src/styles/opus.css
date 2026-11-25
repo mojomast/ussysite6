@@ -66,12 +66,12 @@
 }
 
 .opus-replay-btn {
-  margin: var(--space-3) 0 0;
+  margin: 0;
 }
 
 .opus-cold-open-slot {
-  display: flex;
-  justify-content: flex-end;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* --- Proofreader's ticks ----------------------------------------------- */

@@ -50,10 +50,7 @@ const isCurrent = (prefix: string) =>
       <a href={withBase('/')} class="si-badge" aria-label="Slop Illustrated, front page">
         Si<span>.</span>
       </a>
-      <div class="brand-imprint">
-        <a href={withBase('/')} class="brand-title">Slop Illustrated</a>
-        <span class="datum-tag">Software, mostly honest · Vol. 1</span>
-      </div>
+      <a href={withBase('/')} class="brand-title">Slop Illustrated</a>
     </div>
 
     <nav class="primary-nav" aria-label="Sections">
@@ -61,7 +58,7 @@ const isCurrent = (prefix: string) =>
         Front Page
       </a>
       <a class="nav-link" href={withBase('/issues/02')} aria-current={isCurrent('/issues/02') ? 'page' : undefined}>
-        Issue 02<span class="nav-link-badge">Wet ink</span>
+        Issue 02<span class="nav-live-dot" aria-hidden="true"></span>
       </a>
       <a class="nav-link" href={withBase('/issues/01')} aria-current={isCurrent('/issues/01') ? 'page' : undefined}>
         Issue 01
@@ -78,7 +75,7 @@ const isCurrent = (prefix: string) =>
     </nav>
 
     <div class="press-controls-wrap">
-      <PressControls client:load catalog={searchCatalog} />
+      <PressControls client:load catalog={searchCatalog} currentPath={currentPath} />
     </div>
   </div>
 </header>

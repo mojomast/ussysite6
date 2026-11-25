@@ -78,12 +78,14 @@ const num = currentIssue.data.issueNumber;
               Open Issue {num} ↗
             </a>
             <a class="btn-secondary" href={withBase(`/issues/${num}/${leadArticle.data.articleSlug}`)}>
-              Cover story: {leadArticle.data.title}
-            </a>
-            <a class="btn-secondary" href={withBase(`/issues/${num}#opening`)}>
-              ▶ Watch the opening
+              Read cover story
             </a>
           </div>
+          <p class="hero-replay-row">
+            <a class="hero-replay-link" href={withBase(`/issues/${num}#opening`)}>
+              ▶ Watch the 6-second press opening
+            </a>
+          </p>
 
           <dl class="hero-highlights-dl">
             {currentIssue.data.highlights.map((h) => (
@@ -156,10 +158,6 @@ const num = currentIssue.data.issueNumber;
               accent={leadArticle.data.spotInkHex}
               secondary={leadArticle.data.secondaryInkHex}
             />
-          </div>
-          <div class="plate-figcaption">
-            <span><strong>{leadArticle.data.plate.title}</strong></span>
-            <span class="datum-tag">{leadArticle.data.plate.medium}</span>
           </div>
         </div>
       </article>

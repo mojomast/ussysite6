@@ -68,16 +68,17 @@ const pressRunItems = issueArticles.map((a) => ({
         <span class="live-issue-pill">
           Folio 01 · The cover · Issue {issueData.issueNumber} {issueData.status === 'current' ? '· On the stands' : '· From the archive'}
         </span>
-        <span class="datum-tag">
-          {issueData.coverDate} · {folios.length} folios · Edited by {issueData.editorInChief}
-        </span>
-      </div>
-
-      {issueData.coldOpen.length > 0 && (
-        <div class="opus-cold-open-slot">
-          <ColdOpen client:load lines={issueData.coldOpen} issueNumber={issueData.issueNumber} issueTitle={issueData.title} />
+        <div class="masthead-datum-right">
+          <span class="datum-tag">
+            {issueData.coverDate} · {folios.length} folios · Edited by {issueData.editorInChief}
+          </span>
+          {issueData.coldOpen.length > 0 && (
+            <span class="opus-cold-open-slot">
+              <ColdOpen client:load lines={issueData.coldOpen} issueNumber={issueData.issueNumber} issueTitle={issueData.title} />
+            </span>
+          )}
         </div>
-      )}
+      </div>
 
       <h1 class="masthead-monument vt-issue-title">
         <span class="word-slop">SLOP · ISSUE {issueData.issueNumber}{' '}</span>
