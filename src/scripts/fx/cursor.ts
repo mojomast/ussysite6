@@ -144,7 +144,7 @@ export function init(): () => void {
     resetActiveSheen();
     delete root.dataset.cursorKb;
     kbMode = false;
-    canvasCtrl?.setSuppressed(true, 'tier');
+    canvasCtrl?.setSuppressed(true, 'off');
   };
 
   const playOptInPop = () => {
@@ -220,8 +220,8 @@ export function init(): () => void {
     } else {
       canvasCtrl?.setSuppressed(false, 'input');
       canvasCtrl?.setSuppressed(false, 'kb');
-      canvasCtrl?.setSuppressed(false, 'tier');
-      canvasCtrl?.onPointerMove(e.clientX, e.clientY, ctx);
+      canvasCtrl?.setSuppressed(false, 'off');
+      canvasCtrl?.onPointerMove(e.clientX, e.clientY, ctx, maxRizz());
     }
 
     updateSheen(e.clientX, e.clientY, e.target);
